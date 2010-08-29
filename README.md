@@ -1,7 +1,7 @@
 OpenBlocks refactoring branch
 =============================
 
-This is a fork of MIT OpenBlocks (covered by the MIT license) for refactoring purposes.
+This is a fork of [MIT OpenBlocks](http://education.mit.edu/drupal/openblocks) (covered by the MIT license) for refactoring purposes.
 
 The principal objective of the fork is to make the code more amenable to inclusion to other projects.
 
