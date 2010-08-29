@@ -8,5 +8,6 @@ The principal objective of the fork is to make the code more amenable to inclusi
 To do:
 ------
 
-* use specific instances and contexts instead of static singletons
-* move the code under the org.openblocks main package
+* remove dependency to TableLayout, which doesn't appear to be actively maintained, and really not even used in a very complex manner
+* replace static singletons with contexts and instances
+* move the various project packages from the main namespace to under the ``edu.mit.openblocks`` package
