@@ -6,5 +6,7 @@ This is a fork of [MIT OpenBlocks](http://education.mit.edu/drupal/openblocks) (
 The principal objective of the fork is to make the code more amenable to inclusion to other projects.
 
 To do:
+------
+
 * use specific instances and contexts instead of static singletons
 * move the code under the org.openblocks main package
