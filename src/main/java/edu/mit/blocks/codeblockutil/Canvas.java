@@ -27,25 +27,30 @@ import javax.swing.JComponent;
  *
  */
 public interface Canvas {
-	public String LABEL_CHANGE = "label_change_property";
-	/**
-	 * @return name of Canvas or an empty String by default.  MAY NOT BE NULL.
-	 */
-	public String getName();
-	/**
-	 * @return color of Canvas or null by default
-	 */
-	public Color getColor();
-	/**
-	 * @return the JComponent representation of this Canvas.  MAY NOT BE NULL.
-	 */
-	public JComponent getJComponent();
-	/**
-	 * If this canvas is to be highlighted (because it might
-	 * have focus for example), then getHighlight should return
-	 * the color of that highlight.  Otherwise, it should
-	 * return null
-	 * @return highlighting color or null by default.
-	 */
-	public Color getHighlight();
+
+    public String LABEL_CHANGE = "label_change_property";
+
+    /**
+     * @return name of Canvas or an empty String by default.  MAY NOT BE NULL.
+     */
+    public String getName();
+
+    /**
+     * @return color of Canvas or null by default
+     */
+    public Color getColor();
+
+    /**
+     * @return the JComponent representation of this Canvas.  MAY NOT BE NULL.
+     */
+    public JComponent getJComponent();
+
+    /**
+     * If this canvas is to be highlighted (because it might
+     * have focus for example), then getHighlight should return
+     * the color of that highlight.  Otherwise, it should
+     * return null
+     * @return highlighting color or null by default.
+     */
+    public Color getHighlight();
 }

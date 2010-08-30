@@ -6,9 +6,10 @@ package edu.mit.blocks.workspace;
  * (i.e. due to resize, rename, etc.)
  */
 public interface PageChangeListener {
-	/**
-	 * notifies this PageChangeListener that at least one
-	 * of the pages have changed states.
-	 */
-	public void update();
+
+    /**
+     * notifies this PageChangeListener that at least one
+     * of the pages have changed states.
+     */
+    public void update();
 }

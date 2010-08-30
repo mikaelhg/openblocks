@@ -2,20 +2,18 @@ package edu.mit.blocks.codeblockutil;
 
 import javax.sound.sampled.Clip;
 
-public class Sound
-{
+public class Sound {
+
     private Clip clip;
 
-    public Sound(Clip clip)
-    {
-	this.clip = clip;
+    public Sound(Clip clip) {
+        this.clip = clip;
     }
 
-    public void play()
-    {
-    	if(SoundManager.isSoundEnabled()){
-			clip.setFramePosition(0);
-			clip.loop(0);
-    	}
+    public void play() {
+        if (SoundManager.isSoundEnabled()) {
+            clip.setFramePosition(0);
+            clip.loop(0);
+        }
     }
 }

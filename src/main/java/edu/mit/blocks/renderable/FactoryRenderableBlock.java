@@ -22,60 +22,57 @@ import edu.mit.blocks.workspace.WorkspaceWidget;
  * in the background.  
  */
 public class FactoryRenderableBlock extends RenderableBlock {
-	
-	private static final long serialVersionUID = 1L;
-	
+
+    private static final long serialVersionUID = 1L;
     //the RenderableBlock to produce
     private RenderableBlock createdRB = null;
     private boolean createdRB_dragged = false;
-    
     //we have this instance of the dragHandler so that we can use it mouse entered
     //mouseexited methods to change the cursor appropriately, so that we can make it 
     //"seem" that this block is draggable
     private JComponentDragHandler dragHandler;
-    
+
     /**
      * Constructs a new FactoryRenderableBlock instance.
      * @param widget the parent widget of this
      * @param blockID the Long ID of its associated Block instance
      */
-    public FactoryRenderableBlock(WorkspaceWidget widget, Long blockID){
+    public FactoryRenderableBlock(WorkspaceWidget widget, Long blockID) {
         super(widget, blockID);
         this.setBlockLabelUneditable();
         dragHandler = new JComponentDragHandler(this);
     }
-    
+
     /**
      * Returns a new RenderableBlock instance (and creates its associated Block) instance of the same genus as this.
      * @return a new RenderableBlock instance with a new associated Block instance of the same genus as this.
      */
-    public RenderableBlock createNewInstance(){
+    public RenderableBlock createNewInstance() {
         return BlockUtilities.cloneBlock(Block.getBlock(super.getBlockID()));
     }
-    
+
     ///////////////////
     //MOUSE EVENTS (Overriding mouse events in super)
     ///////////////////
-    
     public void mousePressed(MouseEvent e) {
-    	this.requestFocus();
+        this.requestFocus();
         //create new renderable block and associated block
         createdRB = createNewInstance();
         //add this new rb to parent component of this
-        this.getParent().add(createdRB,0);
+        this.getParent().add(createdRB, 0);
         //set the parent widget of createdRB to parent widget of this
         //createdRB not really "added" to widget (not necessary to since it will be removed)
         createdRB.setParentWidget(this.getParentWidget());
         //set the location of new rb from this 
         createdRB.setLocation(this.getX(), this.getY());
         //send the event to the mousedragged() of new block
-        MouseEvent newE = SwingUtilities.convertMouseEvent(this, e, createdRB); 
+        MouseEvent newE = SwingUtilities.convertMouseEvent(this, e, createdRB);
         createdRB.mousePressed(newE);
         mouseDragged(e); // immediately make the RB appear under the mouse cursor
     }
 
     public void mouseDragged(MouseEvent e) {
-        if(createdRB != null){
+        if (createdRB != null) {
             //translate this e to a MouseEvent for createdRB
             MouseEvent newE = SwingUtilities.convertMouseEvent(this, e, createdRB);
             createdRB.mouseDragged(newE);
@@ -84,13 +81,13 @@ public class FactoryRenderableBlock extends RenderableBlock {
     }
 
     public void mouseReleased(MouseEvent e) {
-        if(createdRB != null){
-            if(!createdRB_dragged){
+        if (createdRB != null) {
+            if (!createdRB_dragged) {
                 Container parent = createdRB.getParent();
                 parent.remove(createdRB);
                 parent.validate();
                 parent.repaint();
-            }else{
+            } else {
                 //translate this e to a MouseEvent for createdRB
                 MouseEvent newE = SwingUtilities.convertMouseEvent(this, e, createdRB);
                 createdRB.mouseReleased(newE);
@@ -98,7 +95,7 @@ public class FactoryRenderableBlock extends RenderableBlock {
             createdRB_dragged = false;
         }
     }
-    
+
     public void mouseEntered(MouseEvent e) {
         dragHandler.mouseEntered(e);
     }
@@ -106,8 +103,16 @@ public class FactoryRenderableBlock extends RenderableBlock {
     public void mouseExited(MouseEvent e) {
         dragHandler.mouseExited(e);
     }
-    public void mouseClicked(MouseEvent e){}
-    public void startDragging(MouseEvent e) {}
-    public void stopDragging(MouseEvent e, WorkspaceWidget w) {}
-    public void setZoomLevel(double newZoom){}
+
+    public void mouseClicked(MouseEvent e) {
+    }
+
+    public void startDragging(MouseEvent e) {
+    }
+
+    public void stopDragging(MouseEvent e, WorkspaceWidget w) {
+    }
+
+    public void setZoomLevel(double newZoom) {
+    }
 }

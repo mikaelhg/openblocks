@@ -13,20 +13,20 @@ import edu.mit.blocks.workspace.WorkspaceWidget;
  *
  */
 public interface CommentSource {
-	
-	/**
-	 * returns the parent of the commentSource
-	 * @return
-	 */
-	public Container getParent();
 
-	/**
-	 * Returns the parent WorkspaceWidget containing this
-	 * @return the parent WorkspaceWidget containing this
-	 */
-	public WorkspaceWidget getParentWidget();
-	
-	/**
+    /**
+     * returns the parent of the commentSource
+     * @return
+     */
+    public Container getParent();
+
+    /**
+     * Returns the parent WorkspaceWidget containing this
+     * @return the parent WorkspaceWidget containing this
+     */
+    public WorkspaceWidget getParentWidget();
+
+    /**
      * returns where the CommentArrow should draw from
      * @return
      */
@@ -36,7 +36,7 @@ public interface CommentSource {
      * add commentLabel to the commentSource 
      * @param commentLabel
      */
-	public Component add(Component commentLabel);
+    public Component add(Component commentLabel);
 
-	public Long getBlockID();
+    public Long getBlockID();
 }

@@ -6,7 +6,7 @@ package edu.mit.blocks.codeblocks;
  *
  */
 public class SocketRule implements LinkRule {
-	
+
     /**
      * Returns true if the two sockets of the two blocks can link by matching their socket kind; false if not.
      * Both sockets must be empty to return true.
@@ -17,21 +17,23 @@ public class SocketRule implements LinkRule {
      * @return true if the two sockets of the two blocks can link; false if not
      */
     public boolean canLink(Block block1, Block block2, BlockConnector socket1, BlockConnector socket2) {
-    		// Make sure that none of the sockets are connected,
-    		// and that exactly one of the sockets is a plug.
-    		if (socket1.hasBlock() || socket2.hasBlock() ||
-    			!((block1.hasPlug() && block1.getPlug() == socket1) ^
-    			  (block2.hasPlug() && block2.getPlug() == socket2)))
-    			return false;
-    		
-    		// If they both have the same kind, then they can connect
-    		if (socket1.getKind().equals(socket2.getKind()))
-    			return true;
-    		
-    		return false;
+        // Make sure that none of the sockets are connected,
+        // and that exactly one of the sockets is a plug.
+        if (socket1.hasBlock() || socket2.hasBlock()
+                || !((block1.hasPlug() && block1.getPlug() == socket1)
+                ^ (block2.hasPlug() && block2.getPlug() == socket2))) {
+            return false;
+        }
+
+        // If they both have the same kind, then they can connect
+        if (socket1.getKind().equals(socket2.getKind())) {
+            return true;
+        }
+
+        return false;
     }
-    
+
     public boolean isMandatory() {
-    		return false;
+        return false;
     }
 }

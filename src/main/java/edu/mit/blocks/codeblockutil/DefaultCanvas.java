@@ -6,7 +6,6 @@ import java.awt.LayoutManager;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-
 /**
  * A Canvas is a low-level, mutable, CSwing component.
  * It is the UI component onto which other UI components
@@ -29,44 +28,50 @@ import javax.swing.JPanel;
  * @specfield highlight
  *
  */
-public class DefaultCanvas extends JPanel implements Canvas{
-	private static final long serialVersionUID = 328149080290L;
-	/**
-	 * constructs a new Canvas which supports all JComponent functions,
-	 * and with a default color of blue, and a no highlight values.
-	 *
-	 */
-	public DefaultCanvas() {
-		super();
-	}
-	/**
-	 * constructs a new Canvas which supports all JComponent functions,
-	 * and with a default color of blue, and a no highlight values.
-	 *
-	 */
-	public DefaultCanvas (LayoutManager m){
-		super(m);
-	}
-	/**
-	 * @return color of Canvas or null by default
-	 */
-	public Color getColor(){
-		return CGraphite.blue;
-	}
-	/**
-	 * @return the JComponent representation of this Canvas.  MAY NOT BE NULL.
-	 */
-	public JComponent getJComponent(){
-		return this;
-	}
-	/**
-	 * If this canvas is to be highlighted (because it might
-	 * have focus for example), then getHighlight should return
-	 * the color of that highlight.  Otherwise, it should
-	 * return null
-	 * @return highlighting color or null by default.
-	 */
-	public Color getHighlight(){
-		return null;
-	}
+public class DefaultCanvas extends JPanel implements Canvas {
+
+    private static final long serialVersionUID = 328149080290L;
+
+    /**
+     * constructs a new Canvas which supports all JComponent functions,
+     * and with a default color of blue, and a no highlight values.
+     *
+     */
+    public DefaultCanvas() {
+        super();
+    }
+
+    /**
+     * constructs a new Canvas which supports all JComponent functions,
+     * and with a default color of blue, and a no highlight values.
+     *
+     */
+    public DefaultCanvas(LayoutManager m) {
+        super(m);
+    }
+
+    /**
+     * @return color of Canvas or null by default
+     */
+    public Color getColor() {
+        return CGraphite.blue;
+    }
+
+    /**
+     * @return the JComponent representation of this Canvas.  MAY NOT BE NULL.
+     */
+    public JComponent getJComponent() {
+        return this;
+    }
+
+    /**
+     * If this canvas is to be highlighted (because it might
+     * have focus for example), then getHighlight should return
+     * the color of that highlight.  Otherwise, it should
+     * return null
+     * @return highlighting color or null by default.
+     */
+    public Color getHighlight() {
+        return null;
+    }
 }

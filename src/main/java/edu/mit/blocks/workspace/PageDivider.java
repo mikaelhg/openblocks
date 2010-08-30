@@ -41,105 +41,108 @@ import javax.swing.JComponent;
  * @Specfield color : Color //the color of this pageDivider
  * @specfield mouseIn : boolean flag //true if and only if mouse is over this PageDivider
  */
-public class PageDivider extends JComponent implements MouseListener, MouseMotionListener{
-	private static final long serialVersionUID = 328149080272L;
-	/** The color of all PageDividers */
-	private static final Color DIVIDER_COLOR = Color.GRAY;
-	/** A pointer to the left page of this PageDivider */
-	private final Page leftPage;
-	/** mouseIn Flag: true if and only if mouse is over this PageDivider */
-	private boolean mouseIn = false;
-	/** Drag Flag: true if and only if mosue is dragging this PageDivider */
-	private boolean dragDone = false;
-	/** The x corrdinate in pixel of the last mousePressed on this PageDivider */
-	private int mPressedX;
+public class PageDivider extends JComponent implements MouseListener, MouseMotionListener {
 
-	/**
-	 * @param left - the left page belonging to the this PageDivider
-	 * 
-	 * @requires left != null
-	 * @effects Constructs a new PageDivider that point to
-	 * 			"left" as the this PageDivier's left page.
-	 * 			Any user-generated triggers will mutate the
-	 * 			"left" page.  This.color is set to Page.DIVIDER_COLOR.
-	 */
-	public PageDivider(Page left) {
-		leftPage = left;
-		setCursor(new Cursor(Cursor.E_RESIZE_CURSOR));
-		addMouseListener(this);
-		addMouseMotionListener(this);
-	}
-	
-	/**
-	 * @return this.leftPage.  May NOT return null.
-	 */
-	public Page getLeftPage() {
-		return leftPage;
-	}
+    private static final long serialVersionUID = 328149080272L;
+    /** The color of all PageDividers */
+    private static final Color DIVIDER_COLOR = Color.GRAY;
+    /** A pointer to the left page of this PageDivider */
+    private final Page leftPage;
+    /** mouseIn Flag: true if and only if mouse is over this PageDivider */
+    private boolean mouseIn = false;
+    /** Drag Flag: true if and only if mosue is dragging this PageDivider */
+    private boolean dragDone = false;
+    /** The x corrdinate in pixel of the last mousePressed on this PageDivider */
+    private int mPressedX;
 
-	/**
-	 * renders this PageDivider to nornally be a line,
-	 * or a thick line with a width of 3 if mouseIn flag
-	 * is true.
-	 */
-	public void paintComponent(Graphics g) {
-		g.setColor(DIVIDER_COLOR);
-		g.drawLine(getWidth() / 2, 0, getWidth() / 2, getHeight());
-		if (mouseIn) {
-			g.fillRect(getWidth() / 2 - 1, 0, 3, getHeight());
-		}
-	}
-	
-	/**
-	 * @modifies this.leftPage
-	 * @effects reforms the minimum width of this.leftPage
-	 */
-	public void mousePressed(MouseEvent e) {
-		mPressedX = e.getX();
-		leftPage.reformMinimumPixelWidth();
-	}
-	
-	/**
-	 * @effects all WorkspaceListeners
-	 * @modies fires and notifys all WorkspaceListener of a Page_Resize event
-	 */
-	public void mouseReleased(MouseEvent e){
-		if(dragDone){
-			Workspace.getInstance().notifyListeners(new WorkspaceEvent(leftPage, WorkspaceEvent.PAGE_RESIZED, true));
-			dragDone = false;
-		}
-	}
-	
-	/**
-	 * @modifies mouseIn flag
-	 * @effects sets mouseIn boolean flag to true
-	 */
-	public void mouseEntered(MouseEvent e) {
-		mouseIn = true;
-		repaint();
-	}
-	
-	/**
-	 * @modifies mouseIn flag
-	 * @effects sets mouseIn boolean flag to false
-	 */
-	public void mouseExited(MouseEvent e) {
-		mouseIn = false;
-		repaint();
-	}
-	
-	/**
-	 * @modifies this.leftPage and all PageChangeListeners
-	 * @effects adds the delta x change to the elft page's abstract width
-	 * 			and informs all PageChangeListeners of this change
-	 */
-	public void mouseDragged(MouseEvent e) {
-		leftPage.addPixelWidth(e.getX() - mPressedX);
-		dragDone = true;
-		PageChangeEventManager.notifyListeners();
-	}
-	
-	public void mouseMoved(MouseEvent e) {}	    
-	public void mouseClicked(MouseEvent e){}
+    /**
+     * @param left - the left page belonging to the this PageDivider
+     *
+     * @requires left != null
+     * @effects Constructs a new PageDivider that point to
+     * 			"left" as the this PageDivier's left page.
+     * 			Any user-generated triggers will mutate the
+     * 			"left" page.  This.color is set to Page.DIVIDER_COLOR.
+     */
+    public PageDivider(Page left) {
+        leftPage = left;
+        setCursor(new Cursor(Cursor.E_RESIZE_CURSOR));
+        addMouseListener(this);
+        addMouseMotionListener(this);
+    }
 
+    /**
+     * @return this.leftPage.  May NOT return null.
+     */
+    public Page getLeftPage() {
+        return leftPage;
+    }
+
+    /**
+     * renders this PageDivider to nornally be a line,
+     * or a thick line with a width of 3 if mouseIn flag
+     * is true.
+     */
+    public void paintComponent(Graphics g) {
+        g.setColor(DIVIDER_COLOR);
+        g.drawLine(getWidth() / 2, 0, getWidth() / 2, getHeight());
+        if (mouseIn) {
+            g.fillRect(getWidth() / 2 - 1, 0, 3, getHeight());
+        }
+    }
+
+    /**
+     * @modifies this.leftPage
+     * @effects reforms the minimum width of this.leftPage
+     */
+    public void mousePressed(MouseEvent e) {
+        mPressedX = e.getX();
+        leftPage.reformMinimumPixelWidth();
+    }
+
+    /**
+     * @effects all WorkspaceListeners
+     * @modies fires and notifys all WorkspaceListener of a Page_Resize event
+     */
+    public void mouseReleased(MouseEvent e) {
+        if (dragDone) {
+            Workspace.getInstance().notifyListeners(new WorkspaceEvent(leftPage, WorkspaceEvent.PAGE_RESIZED, true));
+            dragDone = false;
+        }
+    }
+
+    /**
+     * @modifies mouseIn flag
+     * @effects sets mouseIn boolean flag to true
+     */
+    public void mouseEntered(MouseEvent e) {
+        mouseIn = true;
+        repaint();
+    }
+
+    /**
+     * @modifies mouseIn flag
+     * @effects sets mouseIn boolean flag to false
+     */
+    public void mouseExited(MouseEvent e) {
+        mouseIn = false;
+        repaint();
+    }
+
+    /**
+     * @modifies this.leftPage and all PageChangeListeners
+     * @effects adds the delta x change to the elft page's abstract width
+     * 			and informs all PageChangeListeners of this change
+     */
+    public void mouseDragged(MouseEvent e) {
+        leftPage.addPixelWidth(e.getX() - mPressedX);
+        dragDone = true;
+        PageChangeEventManager.notifyListeners();
+    }
+
+    public void mouseMoved(MouseEvent e) {
+    }
+
+    public void mouseClicked(MouseEvent e) {
+    }
 }

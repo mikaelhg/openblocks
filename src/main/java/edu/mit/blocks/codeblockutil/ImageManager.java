@@ -9,43 +9,42 @@ import java.awt.image.BufferedImage;
 import java.net.URL;
 
 public class ImageManager {
-    
+
     private Component comp;
-    
+
     public ImageManager(Component comp) {
-	assert(comp != null);
+        assert (comp != null);
         this.comp = comp;
     }
-    
+
     public BufferedImage createImage(String file) {
         Toolkit toolkit = Toolkit.getDefaultToolkit();
-	URL u = ImageManager.class.getResource(file);
-	if (u == null) {
-		System.out.println("Could not find resource " + file);
-		return null;
-	}
+        URL u = ImageManager.class.getResource(file);
+        if (u == null) {
+            System.out.println("Could not find resource " + file);
+            return null;
+        }
         Image img = toolkit.createImage(u);
         if (img == null) {
             System.out.println("Couldn't load image " + file);
             return null;
         }
 
-	
-	MediaTracker mt = new MediaTracker(comp);
-	try {
-	    mt.addImage(img,0);
-	    mt.waitForAll();
-	}
-	catch(Exception e) {
-            System.out.println("Couldn't load image "+file);
+
+        MediaTracker mt = new MediaTracker(comp);
+        try {
+            mt.addImage(img, 0);
+            mt.waitForAll();
+        } catch (Exception e) {
+            System.out.println("Couldn't load image " + file);
             System.out.println(e);
             return null;
         }
         if (mt.isErrorAny()) {
-            System.out.println("Couldn't load image "+file);
+            System.out.println("Couldn't load image " + file);
             return null;
         }
-        
+
 //         ImageObserver observer = new ImageObserver() {
 //             public boolean imageUpdate(Image img,int flags,int x,int y,int w,int h) {
 //                 if ((flags & (ALLBITS | FRAMEBITS | ABORT)) != 0) {
@@ -64,19 +63,17 @@ public class ImageManager {
 //             System.out.println("Couldn't load image "+file);
 //             return null;
 //         }
-	//System.out.println("image width "+ img.getWidth(comp) + 
-	//		   " height " + img.getHeight(comp));
+        //System.out.println("image width "+ img.getWidth(comp) +
+        //		   " height " + img.getHeight(comp));
         BufferedImage bimg =
-            comp.getGraphicsConfiguration()
-            .createCompatibleImage(img.getWidth(comp),
-				   img.getHeight(comp),
-				   Transparency.TRANSLUCENT);
-        bimg.getGraphics().drawImage(img,0,0,comp);
+                comp.getGraphicsConfiguration().createCompatibleImage(img.getWidth(comp),
+                img.getHeight(comp),
+                Transparency.TRANSLUCENT);
+        bimg.getGraphics().drawImage(img, 0, 0, comp);
         return bimg;
     }
-        
-    public static boolean hitTest(BufferedImage img,int x,int y) {
-        return ((img.getRGB(x,y) >> 24) & 0xFF) >= 0xFF/2;
+
+    public static boolean hitTest(BufferedImage img, int x, int y) {
+        return ((img.getRGB(x, y) >> 24) & 0xFF) >= 0xFF / 2;
     }
-    
 }

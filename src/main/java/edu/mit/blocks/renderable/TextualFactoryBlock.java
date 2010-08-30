@@ -9,41 +9,47 @@ package edu.mit.blocks.renderable;
  * AutoCompletePanel.menu when never have two equal items.
  */
 public class TextualFactoryBlock {
-	private final FactoryRenderableBlock block;
-	private final String stringRepresentation;
-	private final String ID;
-	
-	/**
-	 * Creates a TextualFactoryBlock with the given block and string representation
-	 * @param block the FactoryRenderableBlock tagged/represented by this TextualFactoryBlock
-	 * @param rep the String "representation" to use for this TFB.  Usually this would be the 
-	 * block's label.  To auto-generate a detailed rep, use the disambiguousStringRep() method.
-	 */
-	public TextualFactoryBlock(FactoryRenderableBlock block, String rep){
-		this.block = block;	
-		this.stringRepresentation = rep;
-		this.ID = BlockUtilities.disambiguousStringRep(block);
-	}
-	/** @return FactoryBlock contained in this TextualFactoryBlock */
-	public FactoryRenderableBlock getfactoryBlock(){
-		return this.block;
-	}
-	/** @return hashCode of this */
-	public int hashCode(){
-		return this.ID.hashCode();
-	}
-	public boolean equals(Object obj){
-		if(obj instanceof TextualFactoryBlock){
-			TextualFactoryBlock objBlock = (TextualFactoryBlock)obj;
-			return this.ID.equals(objBlock.ID);
-		}
-		return false;	
-	}
-	public int compareTo(TextualFactoryBlock b2){
-		return this.ID.toLowerCase().compareTo(b2.ID.toLowerCase());
-	}
-	/** @returns the string representation of this TextualFactoryBlock */
-	public String toString(){
-		return stringRepresentation;
-	}
+
+    private final FactoryRenderableBlock block;
+    private final String stringRepresentation;
+    private final String ID;
+
+    /**
+     * Creates a TextualFactoryBlock with the given block and string representation
+     * @param block the FactoryRenderableBlock tagged/represented by this TextualFactoryBlock
+     * @param rep the String "representation" to use for this TFB.  Usually this would be the
+     * block's label.  To auto-generate a detailed rep, use the disambiguousStringRep() method.
+     */
+    public TextualFactoryBlock(FactoryRenderableBlock block, String rep) {
+        this.block = block;
+        this.stringRepresentation = rep;
+        this.ID = BlockUtilities.disambiguousStringRep(block);
+    }
+
+    /** @return FactoryBlock contained in this TextualFactoryBlock */
+    public FactoryRenderableBlock getfactoryBlock() {
+        return this.block;
+    }
+
+    /** @return hashCode of this */
+    public int hashCode() {
+        return this.ID.hashCode();
+    }
+
+    public boolean equals(Object obj) {
+        if (obj instanceof TextualFactoryBlock) {
+            TextualFactoryBlock objBlock = (TextualFactoryBlock) obj;
+            return this.ID.equals(objBlock.ID);
+        }
+        return false;
+    }
+
+    public int compareTo(TextualFactoryBlock b2) {
+        return this.ID.toLowerCase().compareTo(b2.ID.toLowerCase());
+    }
+
+    /** @returns the string representation of this TextualFactoryBlock */
+    public String toString() {
+        return stringRepresentation;
+    }
 }

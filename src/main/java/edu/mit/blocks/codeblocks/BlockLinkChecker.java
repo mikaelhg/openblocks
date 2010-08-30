@@ -22,31 +22,31 @@ import edu.mit.blocks.workspace.WorkspaceListener;
  * There is only one instance of the <code>BlockLinkChecker</code>.
  */
 public class BlockLinkChecker {
-    
+
     private static ArrayList<LinkRule> rules = new ArrayList<LinkRule>();
-    
     // TODO get a better value
     private static double MAX_LINK_DISTANCE = 20.0;
-    
+
     /**
      * Clears all the rules within this.
      */
-    public static void reset(){
+    public static void reset() {
         rules.clear();
     }
-    
+
     /**
      * Adds a rule to the end of this checker's list of rules.
      * If the rule already exists in the rule list, the rule is removed in the original location and 
      * added to the end of the list.
      * @param rule the desired LinkRule to be added
      */
-    public static void addRule(LinkRule rule){
+    public static void addRule(LinkRule rule) {
         rules.add(rule);
-        if (rule instanceof WorkspaceListener)
-        		Workspace.getInstance().addWorkspaceListener((WorkspaceListener)rule);
+        if (rule instanceof WorkspaceListener) {
+            Workspace.getInstance().addWorkspaceListener((WorkspaceListener) rule);
+        }
     }
-    
+
     /**
      * Insert rule at the specified index in this checker's list of rules.  The original rule at the 
      * specified index and rules after it are shifted down the list. If the index is greater 
@@ -55,16 +55,16 @@ public class BlockLinkChecker {
      * @param rule the desired rule to insert
      * @param index the index to insert the rule in
      */
-    public static void insertRule(LinkRule rule, int index){
+    public static void insertRule(LinkRule rule, int index) {
         rules.remove(rule);
         rules.add(index, rule);
     }
-    
+
     /**
      * Removes the specified rule from the rule list
      * @param rule the desired LinkRule to remove
      */
-    public static void removeRule(LinkRule rule){
+    public static void removeRule(LinkRule rule) {
         rules.remove(rule);
     }
 
@@ -76,10 +76,11 @@ public class BlockLinkChecker {
      * @param con1 the BlockConnector at block1 to compare against con2
      * @param con2 the BlockConnector at block2 to compare against con1
      */
-    public static BlockLink canLink(Block block1, Block block2, BlockConnector con1, BlockConnector con2){
-        if(checkRules(block1, block2, con1, con2))
+    public static BlockLink canLink(Block block1, Block block2, BlockConnector con1, BlockConnector con2) {
+        if (checkRules(block1, block2, con1, con2)) {
             return BlockLink.getBlockLink(block1, block2, con1, con2);
-        
+        }
+
         return null;
     }
 
@@ -93,58 +94,59 @@ public class BlockLinkChecker {
      * or null if no such matching exists.
      */
     public static BlockLink getLink(RenderableBlock rblock1, Iterable<RenderableBlock> otherBlocks) {
-    		Block block1 = Block.getBlock(rblock1.getBlockID());
-    		BlockConnector closestSocket1 = null;
-    		BlockConnector closestSocket2 = null;
-    		Block closestBlock2 = null;
-    		double closestDistance = MAX_LINK_DISTANCE;
-    		double currentDistance;
+        Block block1 = Block.getBlock(rblock1.getBlockID());
+        BlockConnector closestSocket1 = null;
+        BlockConnector closestSocket2 = null;
+        Block closestBlock2 = null;
+        double closestDistance = MAX_LINK_DISTANCE;
+        double currentDistance;
 
-    		for (RenderableBlock rblock2 : otherBlocks) {
-        		BlockConnector currentPlug = getPlugEquivalent(block1);
-	    		Block block2 = Block.getBlock(rblock2.getBlockID());	            
-	    		if (block1.equals(block2) || !rblock1.isVisible() || !rblock2.isVisible() || rblock1.isCollapsed() || rblock2.isCollapsed())
-	    			continue;
+        for (RenderableBlock rblock2 : otherBlocks) {
+            BlockConnector currentPlug = getPlugEquivalent(block1);
+            Block block2 = Block.getBlock(rblock2.getBlockID());
+            if (block1.equals(block2) || !rblock1.isVisible() || !rblock2.isVisible() || rblock1.isCollapsed() || rblock2.isCollapsed()) {
+                continue;
+            }
 
-	    		Point2D currentPlugPoint = null;
-	    		Point2D currentSocketPoint = null;
-	    		if (currentPlug != null) {
-	    			currentPlugPoint = getAbsoluteSocketPoint(rblock1, currentPlug);
-		    		for (BlockConnector currentSocket : getSocketEquivalents(block2)) {
-		    			currentSocketPoint = getAbsoluteSocketPoint(rblock2, currentSocket);
-		    			currentDistance = currentPlugPoint.distance(currentSocketPoint);
-		    			if ((currentDistance < closestDistance) && checkRules(block1, block2, currentPlug, currentSocket)) {
-		    				closestBlock2 = block2;
-		    				closestSocket1 = currentPlug;
-		    				closestSocket2 = currentSocket;
-		    				closestDistance = currentDistance;
-		    			}
-		    		}
-	    		}
-	    		
-	    		currentPlug = getPlugEquivalent(block2);
-	    		if (currentPlug != null) {
-	    			currentPlugPoint = getAbsoluteSocketPoint(rblock2, currentPlug);
-		    		for (BlockConnector currentSocket : getSocketEquivalents(block1)) {
-		    			currentSocketPoint = getAbsoluteSocketPoint(rblock1, currentSocket);
-		    			currentDistance = currentPlugPoint.distance(currentSocketPoint);
-		    			if ((currentDistance < closestDistance) && checkRules(block1, block2, currentSocket, currentPlug)) {
-		    				closestBlock2 = block2;
-		    				closestSocket1 = currentSocket;
-		    				closestSocket2 = currentPlug;
-		    				closestDistance = currentDistance;
-		    			}
-		    		}
-    			}
-    		}
-    		
-    		if (closestSocket1 == null) {
-    			return null;
-    		}
-	    		
-    		return BlockLink.getBlockLink(block1, closestBlock2, closestSocket1, closestSocket2);
+            Point2D currentPlugPoint = null;
+            Point2D currentSocketPoint = null;
+            if (currentPlug != null) {
+                currentPlugPoint = getAbsoluteSocketPoint(rblock1, currentPlug);
+                for (BlockConnector currentSocket : getSocketEquivalents(block2)) {
+                    currentSocketPoint = getAbsoluteSocketPoint(rblock2, currentSocket);
+                    currentDistance = currentPlugPoint.distance(currentSocketPoint);
+                    if ((currentDistance < closestDistance) && checkRules(block1, block2, currentPlug, currentSocket)) {
+                        closestBlock2 = block2;
+                        closestSocket1 = currentPlug;
+                        closestSocket2 = currentSocket;
+                        closestDistance = currentDistance;
+                    }
+                }
+            }
+
+            currentPlug = getPlugEquivalent(block2);
+            if (currentPlug != null) {
+                currentPlugPoint = getAbsoluteSocketPoint(rblock2, currentPlug);
+                for (BlockConnector currentSocket : getSocketEquivalents(block1)) {
+                    currentSocketPoint = getAbsoluteSocketPoint(rblock1, currentSocket);
+                    currentDistance = currentPlugPoint.distance(currentSocketPoint);
+                    if ((currentDistance < closestDistance) && checkRules(block1, block2, currentSocket, currentPlug)) {
+                        closestBlock2 = block2;
+                        closestSocket1 = currentSocket;
+                        closestSocket2 = currentPlug;
+                        closestDistance = currentDistance;
+                    }
+                }
+            }
+        }
+
+        if (closestSocket1 == null) {
+            return null;
+        }
+
+        return BlockLink.getBlockLink(block1, closestBlock2, closestSocket1, closestSocket2);
     }
-    
+
     /**
      * NOTE: ALWAYS prefer BlockLinkChecker.getLink over this method.
      * 
@@ -161,58 +163,59 @@ public class BlockLinkChecker {
      * or null if no such matching exists.
      */
     public static BlockLink getWeakLink(RenderableBlock rblock1, Iterable<RenderableBlock> otherBlocks) {
-    		Block block1 = Block.getBlock(rblock1.getBlockID());
-    		BlockConnector closestSocket1 = null;
-    		BlockConnector closestSocket2 = null;
-    		Block closestBlock2 = null;
-    		double closestDistance = Double.POSITIVE_INFINITY;
-    		double currentDistance;
+        Block block1 = Block.getBlock(rblock1.getBlockID());
+        BlockConnector closestSocket1 = null;
+        BlockConnector closestSocket2 = null;
+        Block closestBlock2 = null;
+        double closestDistance = Double.POSITIVE_INFINITY;
+        double currentDistance;
 
-    		for (RenderableBlock rblock2 : otherBlocks) {
-        		BlockConnector currentPlug = getPlugEquivalent(block1);
-	    		Block block2 = Block.getBlock(rblock2.getBlockID());	            
-	    		if (block1.equals(block2) || !rblock1.isVisible() || !rblock2.isVisible())
-	    			continue;
+        for (RenderableBlock rblock2 : otherBlocks) {
+            BlockConnector currentPlug = getPlugEquivalent(block1);
+            Block block2 = Block.getBlock(rblock2.getBlockID());
+            if (block1.equals(block2) || !rblock1.isVisible() || !rblock2.isVisible()) {
+                continue;
+            }
 
-	    		Point2D currentPlugPoint = null;
-	    		Point2D currentSocketPoint = null;
-	    		if (currentPlug != null) {
-	    			currentPlugPoint = getAbsoluteSocketPoint(rblock1, currentPlug);
-		    		for (BlockConnector currentSocket : getSocketEquivalents(block2)) {
-		    			currentSocketPoint = getAbsoluteSocketPoint(rblock2, currentSocket);
-		    			currentDistance = currentPlugPoint.distance(currentSocketPoint);
-		    			if ((currentDistance < closestDistance) && checkRules(block1, block2, currentPlug, currentSocket)) {
-		    				closestBlock2 = block2;
-		    				closestSocket1 = currentPlug;
-		    				closestSocket2 = currentSocket;
-		    				closestDistance = currentDistance;
-		    			}
-		    		}
-	    		}
-	    		
-	    		currentPlug = getPlugEquivalent(block2);
-	    		if (currentPlug != null) {
-	    			currentPlugPoint = getAbsoluteSocketPoint(rblock2, currentPlug);
-		    		for (BlockConnector currentSocket : getSocketEquivalents(block1)) {
-		    			currentSocketPoint = getAbsoluteSocketPoint(rblock1, currentSocket);
-		    			currentDistance = currentPlugPoint.distance(currentSocketPoint);
-		    			if ((currentDistance < closestDistance) && checkRules(block1, block2, currentSocket, currentPlug)) {
-		    				closestBlock2 = block2;
-		    				closestSocket1 = currentSocket;
-		    				closestSocket2 = currentPlug;
-		    				closestDistance = currentDistance;
-		    			}
-		    		}
-    			}
-    		}
-    		
-    		if (closestSocket1 == null) {
-    			return null;
-    		}
-	    		
-    		return BlockLink.getBlockLink(block1, closestBlock2, closestSocket1, closestSocket2);
+            Point2D currentPlugPoint = null;
+            Point2D currentSocketPoint = null;
+            if (currentPlug != null) {
+                currentPlugPoint = getAbsoluteSocketPoint(rblock1, currentPlug);
+                for (BlockConnector currentSocket : getSocketEquivalents(block2)) {
+                    currentSocketPoint = getAbsoluteSocketPoint(rblock2, currentSocket);
+                    currentDistance = currentPlugPoint.distance(currentSocketPoint);
+                    if ((currentDistance < closestDistance) && checkRules(block1, block2, currentPlug, currentSocket)) {
+                        closestBlock2 = block2;
+                        closestSocket1 = currentPlug;
+                        closestSocket2 = currentSocket;
+                        closestDistance = currentDistance;
+                    }
+                }
+            }
+
+            currentPlug = getPlugEquivalent(block2);
+            if (currentPlug != null) {
+                currentPlugPoint = getAbsoluteSocketPoint(rblock2, currentPlug);
+                for (BlockConnector currentSocket : getSocketEquivalents(block1)) {
+                    currentSocketPoint = getAbsoluteSocketPoint(rblock1, currentSocket);
+                    currentDistance = currentPlugPoint.distance(currentSocketPoint);
+                    if ((currentDistance < closestDistance) && checkRules(block1, block2, currentSocket, currentPlug)) {
+                        closestBlock2 = block2;
+                        closestSocket1 = currentSocket;
+                        closestSocket2 = currentPlug;
+                        closestDistance = currentDistance;
+                    }
+                }
+            }
+        }
+
+        if (closestSocket1 == null) {
+            return null;
+        }
+
+        return BlockLink.getBlockLink(block1, closestBlock2, closestSocket1, closestSocket2);
     }
-    
+
     /**
      * Checks if a potential link satisfies ANY of the rules loaded into the link checker
      * @param block1 one Block in the potential link
@@ -222,20 +225,21 @@ public class BlockLinkChecker {
      * @return true if the pairing of block1 and block2 at socket1 and socket2 passes any rules, false otherwise
      */
     private static boolean checkRules(Block block1, Block block2, BlockConnector socket1, BlockConnector socket2) {
-    		Iterator<LinkRule> rulesList = Collections.unmodifiableList(rules).iterator();
-    		LinkRule currentRule = null;
-    		boolean foundRule = false;
-    		while(rulesList.hasNext()) {
-    			currentRule = rulesList.next();
-    			boolean canLink = currentRule.canLink(block1, block2, socket1, socket2);
-    			if (!currentRule.isMandatory())
-    				foundRule |= canLink;
-    			else if (!canLink)
-    				return false;
-    		}
-    		return foundRule;
+        Iterator<LinkRule> rulesList = Collections.unmodifiableList(rules).iterator();
+        LinkRule currentRule = null;
+        boolean foundRule = false;
+        while (rulesList.hasNext()) {
+            currentRule = rulesList.next();
+            boolean canLink = currentRule.canLink(block1, block2, socket1, socket2);
+            if (!currentRule.isMandatory()) {
+                foundRule |= canLink;
+            } else if (!canLink) {
+                return false;
+            }
+        }
+        return foundRule;
     }
-    
+
     /**
      * Gets the screen coordinate of the center of a socket.
      * @param block the RenderableBlock containting the socket
@@ -243,47 +247,50 @@ public class BlockLinkChecker {
      * @return a Point2D that represents the center of the socket on the screen.
      */
     private static Point2D getAbsoluteSocketPoint(RenderableBlock block, BlockConnector socket) {
-    		Point2D relativePoint = block.getSocketPixelPoint(socket);
-    		Point2D blockPosition = block.getLocationOnScreen();
-    		return new Point2D.Double(relativePoint.getX() + blockPosition.getX(), relativePoint.getY() + blockPosition.getY());
+        Point2D relativePoint = block.getSocketPixelPoint(socket);
+        Point2D blockPosition = block.getLocationOnScreen();
+        return new Point2D.Double(relativePoint.getX() + blockPosition.getX(), relativePoint.getY() + blockPosition.getY());
     }
-    
+
     public static boolean hasPlugEquivalent(Block b) {
-    		if (b == null)
-    			return false;
-    		boolean hasPlug = b.hasPlug();
-    		boolean hasBefore = b.hasBeforeConnector();
-    		// Should have at most one plug-type connector
-    		assert(!(hasPlug & hasBefore));
-    		return hasPlug | hasBefore;
+        if (b == null) {
+            return false;
+        }
+        boolean hasPlug = b.hasPlug();
+        boolean hasBefore = b.hasBeforeConnector();
+        // Should have at most one plug-type connector
+        assert (!(hasPlug & hasBefore));
+        return hasPlug | hasBefore;
     }
-    
+
     public static BlockConnector getPlugEquivalent(Block b) {
-    		if (!hasPlugEquivalent(b))
-    			return null;
-    		if (b.hasPlug())
-    			return b.getPlug();
-    		return b.getBeforeConnector();
+        if (!hasPlugEquivalent(b)) {
+            return null;
+        }
+        if (b.hasPlug()) {
+            return b.getPlug();
+        }
+        return b.getBeforeConnector();
     }
-    
+
     public static Iterable<BlockConnector> getSocketEquivalents(Block b) {
-    		if (b == null)
-    			return new ArrayList<BlockConnector>();
-    		if (!b.hasAfterConnector())
-    			return b.getSockets();
-    		ArrayList<BlockConnector> socketEquivalents = new ArrayList<BlockConnector>();
-    		for (BlockConnector socket : b.getSockets()) {
-    			socketEquivalents.add(socket);
-    		}
-    		socketEquivalents.add(b.getAfterConnector());
-    		return Collections.unmodifiableList(socketEquivalents);
+        if (b == null) {
+            return new ArrayList<BlockConnector>();
+        }
+        if (!b.hasAfterConnector()) {
+            return b.getSockets();
+        }
+        ArrayList<BlockConnector> socketEquivalents = new ArrayList<BlockConnector>();
+        for (BlockConnector socket : b.getSockets()) {
+            socketEquivalents.add(socket);
+        }
+        socketEquivalents.add(b.getAfterConnector());
+        return Collections.unmodifiableList(socketEquivalents);
     }
-    
+
     /**
      * Prints to the console all the rules this LinkChecker currently supports.
      */
-    public static void printRules(){
-        
+    public static void printRules() {
     }
-    
 }

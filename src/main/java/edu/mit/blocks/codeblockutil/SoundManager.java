@@ -12,86 +12,74 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 /** Manages the sounds for StarLogoBlocks */
-public class SoundManager
-{
-	public static boolean DEBUG = false;
-	
-	//set to true by default
-	private static boolean enableSound = true;
-	
-    public static Sound loadSound(String soundFileName)
-    {
-	URL url = SoundManager.class.getResource(soundFileName);
-	if (url == null) {
-		System.out.println("Could not find resource " + soundFileName);
-		return null;
-	}
+public class SoundManager {
 
-	AudioInputStream audioInputStream;
+    public static boolean DEBUG = false;
+    //set to true by default
+    private static boolean enableSound = true;
 
-	try
-	{
-	    audioInputStream = AudioSystem.getAudioInputStream(url);
-	}
-	catch(UnsupportedAudioFileException e)
-	{
-	    e.printStackTrace();
+    public static Sound loadSound(String soundFileName) {
+        URL url = SoundManager.class.getResource(soundFileName);
+        if (url == null) {
+            System.out.println("Could not find resource " + soundFileName);
+            return null;
+        }
 
-	    return null;
-	}
-	catch(IOException e)
-	{
-	    e.printStackTrace();
+        AudioInputStream audioInputStream;
 
-	    return null;
-	}
+        try {
+            audioInputStream = AudioSystem.getAudioInputStream(url);
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
 
-	AudioFormat format = audioInputStream.getFormat();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
 
-	if (DEBUG) {
-		System.out.println("Loading sound file \"" + url + "\"");
-		System.out.println("Format = " + format);
-	}
+            return null;
+        }
 
-	Clip clip;
+        AudioFormat format = audioInputStream.getFormat();
 
-	try
-	{
-		DataLine.Info info = new DataLine.Info(Clip.class, format);
+        if (DEBUG) {
+            System.out.println("Loading sound file \"" + url + "\"");
+            System.out.println("Format = " + format);
+        }
 
-	    clip = (Clip)AudioSystem.getLine(info);
-	    clip.open(audioInputStream);
-	}
-	catch(LineUnavailableException e)
-	{
-	    System.out.println("Sorry, sound is not available");
-	    return null;
-	}
-	catch(IOException e)
-	{
-	    e.printStackTrace();
+        Clip clip;
 
-	    return null;
-	}
+        try {
+            DataLine.Info info = new DataLine.Info(Clip.class, format);
 
-	return new Sound(clip);
+            clip = (Clip) AudioSystem.getLine(info);
+            clip.open(audioInputStream);
+        } catch (LineUnavailableException e) {
+            System.out.println("Sorry, sound is not available");
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+
+            return null;
+        }
+
+        return new Sound(clip);
     }
-    
+
     /**
      * Sets the ability to enable sound within the entire codeblocks library
      * If enableSound is set to false, no sounds can be played/heard until 
      * enableSound is set to true again.
      * @param enableSound
      */
-    public static void setSoundEnabled(boolean enableSound){
-    	SoundManager.enableSound = enableSound;
+    public static void setSoundEnabled(boolean enableSound) {
+        SoundManager.enableSound = enableSound;
     }
-    
+
     /**
      * Returns true iff sounds are being allowed to play.
      * @return true iff sounds are being allowed to play.
      */
-    public static boolean isSoundEnabled(){
-    	return SoundManager.enableSound;
+    public static boolean isSoundEnabled() {
+        return SoundManager.enableSound;
     }
 }

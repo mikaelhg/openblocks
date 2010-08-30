@@ -1,6 +1,5 @@
 package edu.mit.blocks.workspace;
 
-
 /**
  * This listener interface is for receiving "interesting" events on the workspace.  
  */
@@ -16,5 +15,4 @@ public interface WorkspaceListener {
      * event.
      */
     public void workspaceEventOccurred(WorkspaceEvent event);
-    
 }

@@ -34,59 +34,69 @@ import javax.swing.JComponent;
  * @author An Ho
  */
 public interface Explorer {
-	/**
-	 * @return JCompoent representation of this.  MAY NOT BE NULL.
-	 */
-	public JComponent getJComponent();
-	/**
-	 * @return name of exlorer or null by default.
-	 */
-	public String getName();
-	/**
-	 * sets the name of this exlorer
-	 * @param name
-	 */
-	public void setName(String name);
-	/**
-	 * Reassigns the set of canvases that this explorer controls.
-	 * Though the collection of canvas mnay be empty, it may not be null.
-	 * @param items
-	 * 
-	 * @requires items != null &&
-	 * 			 for each element in item, element!= null
-	 */
-	public void setDrawersCard(List<? extends Canvas> items);
-	/**
-	 * Selects the canvas at the specified index.  If the index is
-	 * out of bounds, perform no action.
-	 * @param index - the index of the canvas to be viewed.
-	 * 
-	 * @requires none (INDEX DOES NOT HAVE TO BE WITHIN BOUNDS)
-	 */
-	public void selectCanvas(int index);
-	/**
-	 * Reforms this explorer based on the new size or location of this explorer.
-	 * For some explorers whose implementation does not depend on the size of itself,
-	 * this method may trigger no action.
-	 */
-	public void reformView();
-	/**
-	 * Returns whether any Canvas is currently selected
-	 */
-	public boolean anyCanvasSelected();
-	/**
-	 * Returns the width of the Canvas when selected
-	 * @return the width of the Canvas when selected
-	 */
-	public int getSelectedCanvasWidth();
-	/**
-	 * Adds listener to the explorer
-	 * @param gel
-	 */	
-	public void addListener(ExplorerListener gel);
-	/**
-	 * Removes listener from the explorer
-	 * @param gel
-	 */	
-	public void removeListener(ExplorerListener gel);
+
+    /**
+     * @return JCompoent representation of this.  MAY NOT BE NULL.
+     */
+    public JComponent getJComponent();
+
+    /**
+     * @return name of exlorer or null by default.
+     */
+    public String getName();
+
+    /**
+     * sets the name of this exlorer
+     * @param name
+     */
+    public void setName(String name);
+
+    /**
+     * Reassigns the set of canvases that this explorer controls.
+     * Though the collection of canvas mnay be empty, it may not be null.
+     * @param items
+     *
+     * @requires items != null &&
+     * 			 for each element in item, element!= null
+     */
+    public void setDrawersCard(List<? extends Canvas> items);
+
+    /**
+     * Selects the canvas at the specified index.  If the index is
+     * out of bounds, perform no action.
+     * @param index - the index of the canvas to be viewed.
+     *
+     * @requires none (INDEX DOES NOT HAVE TO BE WITHIN BOUNDS)
+     */
+    public void selectCanvas(int index);
+
+    /**
+     * Reforms this explorer based on the new size or location of this explorer.
+     * For some explorers whose implementation does not depend on the size of itself,
+     * this method may trigger no action.
+     */
+    public void reformView();
+
+    /**
+     * Returns whether any Canvas is currently selected
+     */
+    public boolean anyCanvasSelected();
+
+    /**
+     * Returns the width of the Canvas when selected
+     * @return the width of the Canvas when selected
+     */
+    public int getSelectedCanvasWidth();
+
+    /**
+     * Adds listener to the explorer
+     * @param gel
+     */
+    public void addListener(ExplorerListener gel);
+
+    /**
+     * Removes listener from the explorer
+     * @param gel
+     */
+    public void removeListener(ExplorerListener gel);
 }

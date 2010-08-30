@@ -21,9 +21,10 @@ import edu.mit.blocks.workspace.ISupportMemento;
 import edu.mit.blocks.codeblocks.BlockConnector.PositionType;
 
 /**
- * Block holds the mutable prop (data) of a particular block.  These mutable prop include socket, 
- * before, after and blocks, "bad"-ness. In addition, Block maintains information to describe a particular 
- * block's relationship with other blocks. 
+ * Block holds the mutable prop (data) of a particular block.  These mutable 
+ * prop include socket, before, after and blocks, "bad"-ness. In addition,
+ * Block maintains information to describe a particular block's relationship
+ * with other blocks.
  * 
  */
 public class Block implements ISupportMemento {
@@ -34,11 +35,10 @@ public class Block implements ISupportMemento {
     //Defines a NULL id for a Block
     public static final Long NULL = Long.valueOf(-1);
     
-   
     /** A universal hashmap of all the Block instances*/
-    private final static HashMap<Long, Block> ALL_BLOCKS= new HashMap<Long,Block>();
+    private final static HashMap<Long, Block> ALL_BLOCKS = new HashMap<Long, Block>();
     
-	//block identifying information
+    //block identifying information
     private final Long blockID;
     private String label;
     private String pageLabel = null;
@@ -63,7 +63,6 @@ public class Block implements ISupportMemento {
     
     //block state information
     private boolean isBad = false;
-//    private boolean isPermanentlyBad = false;
     private String badMsg;
 	
     //focus information
@@ -84,66 +83,71 @@ public class Block implements ISupportMemento {
      * @param genusName the String name of this block's BlockGenus 
      * @param label the String label of this Block
      */
-    protected Block(Long id, String genusName, String label, boolean linkToStubs){
-        
-    	if (ALL_BLOCKS.containsKey(id)) {
-    		Block dup = ALL_BLOCKS.get(id);
-    		System.out.println("pre-existing block is: "+dup+" with genus "+dup.getGenusName()+" and label "+dup.getBlockLabel());
-    		assert !ALL_BLOCKS.containsKey(id) : "Block id: "+id+" already exists!  BlockGenus "+genusName+" label: "+label;
-    	}
+    protected Block(Long id, String genusName, String label, boolean linkToStubs) {
+
+        if (ALL_BLOCKS.containsKey(id)) {
+            Block dup = ALL_BLOCKS.get(id);
+            System.out.println("pre-existing block is: " + dup + " with genus " + dup.getGenusName() + " and label " + dup.getBlockLabel());
+            assert !ALL_BLOCKS.containsKey(id) : "Block id: " + id + " already exists!  BlockGenus " + genusName + " label: " + label;
+        }
         this.blockID = id;
-        
+
         //if this assigned id value equals the next id to automatically assign 
         // a new block, increment the next id value by 1
-        if(id.longValue() == NEXT_ID)
+        if (id.longValue() == NEXT_ID) {
             NEXT_ID++;
-        
+        }
+
         sockets = new ArrayList<BlockConnector>();
         argumentDescriptions = new ArrayList<String>();
         //copy connectors from BlockGenus
         try {
             BlockGenus genus = BlockGenus.getGenusWithName(genusName);
-            if(genus == null)
-                throw new Exception("genusName: "+genusName+" does not exist.");
-            
+            if (genus == null) {
+                throw new Exception("genusName: " + genusName + " does not exist.");
+            }
+
             //copy the block connectors from block genus
             Iterable<BlockConnector> iter = genus.getInitSockets();
-            for(BlockConnector con : iter){
+            for (BlockConnector con : iter) {
                 sockets.add(new BlockConnector(con));
             }
-            
-            if(genus.getInitPlug() != null)
+
+            if (genus.getInitPlug() != null) {
                 plug = new BlockConnector(genus.getInitPlug());
-            
-            if(genus.getInitBefore() != null)
-                before = new BlockConnector(genus.getInitBefore());
-            
-            if(genus.getInitAfter() != null)
-                after = new BlockConnector(genus.getInitAfter());
-               
-            this.genusName = genusName;
-            
-            this.label = label;
-            
-            Iterable<String> arguumentIter = genus.getInitialArgumentDescriptions();
-            for(String arg : arguumentIter){
-            	argumentDescriptions.add(arg.trim());
             }
-            
+
+            if (genus.getInitBefore() != null) {
+                before = new BlockConnector(genus.getInitBefore());
+            }
+
+            if (genus.getInitAfter() != null) {
+                after = new BlockConnector(genus.getInitAfter());
+            }
+
+            this.genusName = genusName;
+
+            this.label = label;
+
+            Iterable<String> arguumentIter = genus.getInitialArgumentDescriptions();
+            for (String arg : arguumentIter) {
+                argumentDescriptions.add(arg.trim());
+            }
+
             this.expandGroups = new ArrayList<List<BlockConnector>>(genus.getExpandGroups());
-            
+
             //add to ALL_BLOCKS
             //warning: publishing this block before constructor finishes has the 
             //potential to cause some problems such as data races
             //other threads could access this block from getBlock()
             ALL_BLOCKS.put(this.blockID, this);
-            
+
             //add itself to stubs hashmap
             //however factory blocks will have entries in hashmap...
-            if(linkToStubs && this.hasStubs()){
+            if (linkToStubs && this.hasStubs()) {
                 BlockStub.putNewParentInStubMap(this.blockID);
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -159,14 +163,15 @@ public class Block implements ISupportMemento {
      * if false, then this block even though the genus specifies it will not be 
      * linked to stubs
      */
-    public Block(String genusName, String label, boolean linkToStubs){
+    public Block(String genusName, String label, boolean linkToStubs) {
         //more will go into constructor;
         this(NEXT_ID, genusName, label, linkToStubs);
-        
+
         NEXT_ID++;
-        
-        while(ALL_BLOCKS.containsKey(NEXT_ID))
+
+        while (ALL_BLOCKS.containsKey(NEXT_ID)) {
             NEXT_ID++;
+        }
     }
     
     /**
@@ -176,14 +181,15 @@ public class Block implements ISupportMemento {
      * @param genusName the name of its associated <code>BlockGenus</code> 
      * @param label the label of this Block.  
      */
-    public Block(String genusName, String label){
+    public Block(String genusName, String label) {
         //more will go into constructor;
         this(NEXT_ID, genusName, label, true);
-        
+
         NEXT_ID++;
-        
-        while(ALL_BLOCKS.containsKey(NEXT_ID))
+
+        while (ALL_BLOCKS.containsKey(NEXT_ID)) {
             NEXT_ID++;
+        }
     }
     
     /**
@@ -192,7 +198,7 @@ public class Block implements ISupportMemento {
      * with its genus information.  
      * @param genusName the name of its associated <code>BlockGenus</code> 
      */
-    public Block(String genusName){
+    public Block(String genusName) {
         this(genusName, BlockGenus.getGenusWithName(genusName).getInitialLabel());
     }
     
@@ -205,7 +211,7 @@ public class Block implements ISupportMemento {
      * if false, then this block even though the genus specifies it will not be 
      * linked to stubs
      */
-    public Block(String genusName, boolean linkToStubs){
+    public Block(String genusName, boolean linkToStubs) {
         this(genusName, BlockGenus.getGenusWithName(genusName).getInitialLabel(), linkToStubs);
     }
     
@@ -214,15 +220,14 @@ public class Block implements ISupportMemento {
      * @param blockID
      * @return the Block instance with the specified blockID
      */
-    public static Block getBlock(Long blockID){
+    public static Block getBlock(Long blockID) {
         return ALL_BLOCKS.get(blockID);
     }
     
     /**
      * Clears all block instances and resets id assigment.
      */
-    public static void reset(){
-        //System.out.println("reseting all blocks");
+    public static void reset() {
         ALL_BLOCKS.clear();
         NEXT_ID = 1;
     }
@@ -234,7 +239,7 @@ public class Block implements ISupportMemento {
      * Returns the block ID of this
      * @return the block ID of this
      */
-    public Long getBlockID(){
+    public Long getBlockID() {
         return blockID;
     }
     
@@ -246,10 +251,10 @@ public class Block implements ISupportMemento {
      * @param value the value associated with this property
      * @return true if this property was set successfully
      */
-    public boolean setProperty(String property, String value){
-        if(getGenus().getProperty(property) != null)
+    public boolean setProperty(String property, String value) {
+        if (getGenus().getProperty(property) != null) {
             return false;
-        else{
+        } else {
             properties.put(property, value);
             return true;
         }
@@ -259,15 +264,15 @@ public class Block implements ISupportMemento {
      * Returns the block label of this
      * @return the block label of this
      */
-    public String getBlockLabel(){
-        return getGenus().getLabelPrefix()+label+getGenus().getLabelSuffix();
+    public String getBlockLabel() {
+        return getGenus().getLabelPrefix() + label + getGenus().getLabelSuffix();
     }
     
     /**
      * Returns true iff this block has a page label and it is non-empty
      * @return true iff this block has a page label and it is non-empty
      */
-    public boolean hasPageLabel(){
+    public boolean hasPageLabel() {
         return pageLabel != null && !pageLabel.equals("");
     }
     
@@ -276,16 +281,17 @@ public class Block implements ISupportMemento {
      * @return the page label string of this 
      */
     public String getPageLabel() {
-    		return pageLabel;
+        return pageLabel;
     }
     
     /**
      * Sets the block label of this iff this block label is editable
      * @param newLabel the desired label
      */
-    public void setBlockLabel(String newLabel){
-        if(this.linkToStubs && this.hasStubs())
+    public void setBlockLabel(String newLabel) {
+        if (this.linkToStubs && this.hasStubs()) {
             BlockStub.parentNameChanged(this.label, newLabel, this.blockID);
+        }
         label = newLabel;
     }
     
@@ -295,20 +301,17 @@ public class Block implements ISupportMemento {
      */
     public void setPageLabel(String newPageLabel) {
         //update stubs
-        if(this.linkToStubs && this.hasStubs())
+        if (this.linkToStubs && this.hasStubs()) {
             BlockStub.parentPageLabelChanged(newPageLabel, this.blockID);
-        
+        }
         pageLabel = newPageLabel;
     }
-    
- 
-   
     
     /**
      * Returns the BlockGenus of this
      * @return the BlockGenus of this
      */
-    private BlockGenus getGenus(){
+    private BlockGenus getGenus() {
         return BlockGenus.getGenusWithName(genusName);
     }
     
@@ -317,7 +320,7 @@ public class Block implements ISupportMemento {
      * relationships with other blocks it's connected to.
      * @param genusName the String name of the BlockGenus to change this Block to
      */
-    public void changeGenusTo(String genusName){
+    public void changeGenusTo(String genusName) {
         this.genusName = genusName;
         label = BlockGenus.getGenusWithName(genusName).getInitialLabel();
     }
@@ -332,9 +335,10 @@ public class Block implements ISupportMemento {
      * @return the Block ID connected to the before connector of this; Block.Null
      * if this does not have a before block
      */
-    public Long getBeforeBlockID(){
-        if (before == null)
-        		return Block.NULL;
+    public Long getBeforeBlockID() {
+        if (before == null) {
+            return Block.NULL;
+        }
         return before.getBlockID();
     }
     
@@ -344,9 +348,10 @@ public class Block implements ISupportMemento {
      * @return the Block ID connected to the after connector of this; 
      * Block.Null if this does not have an after block
      */
-    public Long getAfterBlockID(){
-        if (after == null)
-    			return Block.NULL;
+    public Long getAfterBlockID() {
+        if (after == null) {
+            return Block.NULL;
+        }
         return after.getBlockID();
     }
     
@@ -355,7 +360,7 @@ public class Block implements ISupportMemento {
      * @return the BlockConnector of the after connector
      */
     public BlockConnector getAfterConnector() {
-    		return after;
+        return after;
     }
     
     /**
@@ -363,7 +368,7 @@ public class Block implements ISupportMemento {
      * @return the BlockConnector of the before connector
      */
     public BlockConnector getBeforeConnector() {
-    		return before;
+        return before;
     }
     
     /**
@@ -388,7 +393,7 @@ public class Block implements ISupportMemento {
      * Return the expand-group for the given group. Can be null if group
      * doesn't exist.
      */
-    private static List<BlockConnector> getExpandGroup(List<List<BlockConnector>> groups, String group) { 
+    private static List<BlockConnector> getExpandGroup(List<List<BlockConnector>> groups, String group) {
         for (List<BlockConnector> list : groups) {
             // Always at least one element in the group.
             if (list.get(0).getExpandGroup().equals(group)) {
@@ -405,18 +410,19 @@ public class Block implements ISupportMemento {
     private void expandSocketGroup(String group) {
         List<BlockConnector> expandSockets = getExpandGroup(expandGroups, group);
         assert expandSockets != null;
-        
+
         // Search for the socket to insert after.
         int index = sockets.size() - 1;
         String label = expandSockets.get(expandSockets.size() - 1).getLabel();
         for (; index >= 0; index--) {
             BlockConnector conn = sockets.get(index);
-            if (conn.getLabel().equals(label) && conn.getExpandGroup().equals(group))
+            if (conn.getLabel().equals(label) && conn.getExpandGroup().equals(group)) {
                 break;
+            }
         }
-        
+
         assert index >= 0;
-        
+
         // Insert all the new sockets
         for (BlockConnector conn : expandSockets) {
             index++;
@@ -432,19 +438,20 @@ public class Block implements ISupportMemento {
         String group = socket.getExpandGroup();
         List<BlockConnector> expandSockets = getExpandGroup(expandGroups, group);
         assert expandSockets != null;
-        
+
         // Search for the first socket in the group, if not the expandable
         // one.
         String label = expandSockets.get(0).getLabel();
         int index = getSocketIndex(socket);
         for (; index >= 0; index--) {
             BlockConnector con = sockets.get(index);
-            if (con.getLabel().equals(label) && con.getExpandGroup().equals(group))
+            if (con.getLabel().equals(label) && con.getExpandGroup().equals(group)) {
                 break;
+            }
         }
-        
+
         assert index >= 0;
-        
+
         // Remove all the sockets.
         removeSocket(index);
         int total = expandSockets.size();
@@ -453,8 +460,7 @@ public class Block implements ISupportMemento {
             if (con.getLabel().equals(expandSockets.get(i).getLabel()) && con.getExpandGroup().equals(group)) {
                 removeSocket(index);
                 i++;
-            }
-            else {
+            } else {
                 index++;
             }
         }
@@ -469,18 +475,23 @@ public class Block implements ISupportMemento {
         for (int i = 0; i < total; i++) {
             BlockConnector conn = sockets.get(i);
             if (conn == socket) {
-                if (first == -1) first = i;
-                else return true;
-            }
-            else if (conn.getPositionType().equals(socket.getPositionType()) &&
-                     conn.isExpandable() == socket.isExpandable() && 
-                     conn.initKind().equals(socket.initKind()) && 
-                     conn.getExpandGroup().equals(socket.getExpandGroup())) {
-                if (first == -1) first = i;
-                else return true;
+                if (first == -1) {
+                    first = i;
+                } else {
+                    return true;
+                }
+            } else if (conn.getPositionType().equals(socket.getPositionType())
+                    && conn.isExpandable() == socket.isExpandable()
+                    && conn.initKind().equals(socket.initKind())
+                    && conn.getExpandGroup().equals(socket.getExpandGroup())) {
+                if (first == -1) {
+                    first = i;
+                } else {
+                    return true;
+                }
             }
         }
-        
+
         // If the socket is the first and last of its kind, then we can NOT
         // remove it. (We also can't remove it if they're both -1, obviously.)
         return false;
@@ -490,44 +501,47 @@ public class Block implements ISupportMemento {
      * Informs this Block that a block with id connectedBlockID has connected to the specified
      * connectedSocket
      */
-    public void blockConnected(BlockConnector connectedSocket, Long connectedBlockID){
-        if (connectedSocket.isExpandable()){
+    public void blockConnected(BlockConnector connectedSocket, Long connectedBlockID) {
+        if (connectedSocket.isExpandable()) {
             if (connectedSocket.getExpandGroup().length() > 0) {
                 // Part of an expand group
                 expandSocketGroup(connectedSocket.getExpandGroup());
-            }
-            else {
+            } else {
                 //expand into another one
                 int index = getSocketIndex(connectedSocket);
-                if(isProcedureDeclBlock())
-                    addSocket(index+1, connectedSocket.initKind(), connectedSocket.getPositionType(), "", connectedSocket.isLabelEditable(), connectedSocket.isExpandable(), Block.NULL);
-                else
-                    addSocket(index+1, connectedSocket.initKind(), connectedSocket.getPositionType(), connectedSocket.getLabel(), connectedSocket.isLabelEditable(), connectedSocket.isExpandable(), Block.NULL);
+                if (isProcedureDeclBlock()) {
+                    addSocket(index + 1, connectedSocket.initKind(), connectedSocket.getPositionType(), "", connectedSocket.isLabelEditable(), connectedSocket.isExpandable(), Block.NULL);
+                } else {
+                    addSocket(index + 1, connectedSocket.initKind(), connectedSocket.getPositionType(), connectedSocket.getLabel(), connectedSocket.isLabelEditable(), connectedSocket.isExpandable(), Block.NULL);
+                }
             }
         }
-        
+
         //NOTE: must update the sockets of this before updating its stubs as stubs use this as a reference to update its own sockets
         //if block has stubs, update its stubs as well
-        if(hasStubs())
+        if (hasStubs()) {
             BlockStub.parentConnectorsChanged(blockID);
+        }
     }
     
     /**
      * Informs this Block that a block has disconnected from the specified disconnectedSocket
      * @param disconnectedSocket
      */
-    public void blockDisconnected(BlockConnector disconnectedSocket){
-        if (disconnectedSocket.isExpandable() && canRemoveSocket(disconnectedSocket)){
-            if (disconnectedSocket.getExpandGroup().length() > 0)
+    public void blockDisconnected(BlockConnector disconnectedSocket) {
+        if (disconnectedSocket.isExpandable() && canRemoveSocket(disconnectedSocket)) {
+            if (disconnectedSocket.getExpandGroup().length() > 0) {
                 shrinkSocketGroup(disconnectedSocket);
-         	else
+            } else {
                 removeSocket(disconnectedSocket);
-   		}
-        
+            }
+        }
+
         //NOTE: must update the sockets of this before updating its stubs as stubs use this as a reference to update its own sockets
         //if block has stubs, update its stubs as well
-        if(hasStubs())
+        if (hasStubs()) {
             BlockStub.parentConnectorsChanged(blockID);
+        }
     }
  
     ////////////////////////////////
@@ -537,7 +551,7 @@ public class Block implements ISupportMemento {
      * Returns an unmodifiable iterable over a safe copy of the Sockets of this 
      * @return an unmodifiable iterable over a safe copy of the Sockets of this 
      */
-    public Iterable<BlockConnector> getSockets(){
+    public Iterable<BlockConnector> getSockets() {
         return Collections.unmodifiableList(new ArrayList<BlockConnector>(sockets));
     }
     
@@ -545,7 +559,7 @@ public class Block implements ISupportMemento {
      * Returns the number of sockets of this
      * @return the number of sockets of this
      */
-    public int getNumSockets(){
+    public int getNumSockets() {
         return sockets.size();
     }
     
@@ -554,8 +568,8 @@ public class Block implements ISupportMemento {
      * @param index the index of the desired socket.  0 <= index < getNumSockets()
      * @return the socket (BlockConnector instance) at the specified index
      */
-    public BlockConnector getSocketAt(int index){
-        assert index < sockets.size() : "Index "+index+" is greater than the num of sockets: "+sockets.size()+" of "+this;
+    public BlockConnector getSocketAt(int index) {
+        assert index < sockets.size() : "Index " + index + " is greater than the num of sockets: " + sockets.size() + " of " + this;
         return sockets.get(index);
     }
     
@@ -565,10 +579,8 @@ public class Block implements ISupportMemento {
 	 * @param isLabelEditable is true iff this BlockConnector can have its labels edited. 
      * @return true if socket successfully replaced
      */
-    public boolean setSocketAt(int index, String kind, PositionType pos, String label, boolean isLabelEditable, boolean isExpandable, Long blockID){
-        if(sockets.set(index, new BlockConnector(kind, pos, label, isLabelEditable, isExpandable, blockID)) != null)
-            return true;
-        else return false;
+    public boolean setSocketAt(int index, String kind, PositionType pos, String label, boolean isLabelEditable, boolean isExpandable, Long blockID) {
+        return sockets.set(index, new BlockConnector(kind, pos, label, isLabelEditable, isExpandable, blockID)) != null;
     }
     
     /**
@@ -577,10 +589,8 @@ public class Block implements ISupportMemento {
      * @return the index number of a given socket or -1 if socket doesn't exists on the block
      */
     public int getSocketIndex(BlockConnector socket) {
-        for(int i=0; i<sockets.size() ; i++) {
-            
+        for (int i = 0; i < sockets.size(); i++) {
             BlockConnector currentSocket = sockets.get(i);
-            
             //check for reference equality
             if (currentSocket == socket) {
                 return i;
@@ -599,7 +609,7 @@ public class Block implements ISupportMemento {
      * @param isExpandable true iff this connector can expand to another connector 
      * @param blockID the block id of the block attached to new socket
      */
-    public void addSocket(String kind, PositionType positionType, String label, boolean isLabelEditable, boolean isExpandable, Long blockID){
+    public void addSocket(String kind, PositionType positionType, String label, boolean isLabelEditable, boolean isExpandable, Long blockID) {
         BlockConnector newSocket = new BlockConnector(kind, positionType, label, isLabelEditable, isExpandable, blockID);
         sockets.add(newSocket);
     }
@@ -616,7 +626,7 @@ public class Block implements ISupportMemento {
      * @param isExpandable true iff this connector can expand to another connector 
      * @param blockID the block id of the block attached to new socket
      */
-    public BlockConnector addSocket(int index, String kind, PositionType positionType, String label, boolean isLabelEditable, boolean isExpandable, Long blockID){
+    public BlockConnector addSocket(int index, String kind, PositionType positionType, String label, boolean isLabelEditable, boolean isExpandable, Long blockID) {
         BlockConnector newSocket = new BlockConnector(kind, positionType, label, isLabelEditable, isExpandable, blockID);
         sockets.add(index, newSocket);
         return newSocket;
@@ -626,7 +636,7 @@ public class Block implements ISupportMemento {
      * Removes the socket at the specified index
      * @param index the index of the socket to remove
      */
-    public void removeSocket(int index){
+    public void removeSocket(int index) {
         removeSocket(sockets.get(index));
     }
     
@@ -634,9 +644,9 @@ public class Block implements ISupportMemento {
      * Removes specified socket
      * @param socket BlockConnector to remove from this
      */
-    public void removeSocket(BlockConnector socket){
+    public void removeSocket(BlockConnector socket) {
         //disconnect any blocks connected to socket
-        if(socket.getBlockID() != Block.NULL){
+        if (socket.getBlockID() != Block.NULL) {
             Block connectedBlock = Block.getBlock(socket.getBlockID());
             connectedBlock.getConnectorTo(this.blockID).setConnectorBlockID(Block.NULL);
             socket.setConnectorBlockID(Block.NULL);
@@ -650,16 +660,15 @@ public class Block implements ISupportMemento {
      * Returns if BlockConnector plug exists
      * @return if BlockConnector plug exists
      */
-    public boolean hasPlug(){
+    public boolean hasPlug() {
         return !(plug == null);
     }
-    
     
     /**
      * Returns the BlockConnector plug of this
      * @return the BlockConnector plug of this
      */
-    public BlockConnector getPlug(){
+    public BlockConnector getPlug() {
         return plug;
     }
     
@@ -672,50 +681,50 @@ public class Block implements ISupportMemento {
      * @param blockID the block id of the block attached to plug
      */
     public void setPlug(String kind, PositionType positionType, String label, boolean isLabelEditable, Long blockID) {
-        plug = new BlockConnector(kind, positionType, label, isLabelEditable, false, blockID); 
+        plug = new BlockConnector(kind, positionType, label, isLabelEditable, false, blockID);
     }
-    
     
     /**
      * Sets the plug kind of this
      * @param kind the desired plug kind
      */
-    public void setPlugKind(String kind){
+    public void setPlugKind(String kind) {
         assert plug != null : "Plug is null!  Can not set this information.";
-        
-        if(hasPlug())
+        if (hasPlug()) {
             plug.setKind(kind);
+        }
     }
     
     /**
      * Sets the plug label of this
      * @param label the desired plug label
      */
-    public void setPlugLabel(String label){
+    public void setPlugLabel(String label) {
         assert plug != null : "Plug is null!  Can not set this information.";
-        
-        if(hasPlug())
+        if (hasPlug()) {
             plug.setLabel(label);
+        }
     }
     
     /**
      * Sets the block attached to this plug
      * @param id the block id to attach to this plug
      */
-    public void setPlugBlockID(Long id){
+    public void setPlugBlockID(Long id) {
         assert plug != null : "Plug is null!  Can not set this information.";
-        
-        if(hasPlug())
+        if (hasPlug()) {
             plug.setConnectorBlockID(id);
+        }
     }
     
     /**
      * Return plug kind; null if plug does not exist
      * @return plug kind; null if plug does not exist
      */
-    public String getPlugKind(){
-        if(hasPlug())
+    public String getPlugKind() {
+        if (hasPlug()) {
             return plug.getKind();
+        }
         return null;
     }
     
@@ -723,9 +732,10 @@ public class Block implements ISupportMemento {
      * Return plug label; null if plug does not exist
      * @return plug label; null if plug does not exist
      */
-    public String getPlugLabel(){
-        if(hasPlug())
+    public String getPlugLabel() {
+        if (hasPlug()) {
             return plug.getLabel();
+        }
         return null;
     }
     
@@ -733,9 +743,10 @@ public class Block implements ISupportMemento {
      * Return plug block id; null if plug does not exist
      * @return plug block id; null if plug does not exist
      */
-    public Long getPlugBlockID(){
-        if(plug == null)
-        		return Block.NULL;
+    public Long getPlugBlockID() {
+        if (plug == null) {
+            return Block.NULL;
+        }
         return plug.getBlockID();
     }
     
@@ -752,18 +763,24 @@ public class Block implements ISupportMemento {
      * @return the BlockConnector linking this block to the other block
      */
     public BlockConnector getConnectorTo(Long otherBlockID) {
-    		if (otherBlockID == null || otherBlockID == Block.NULL)
-    			return null;
-    		if (getPlugBlockID().equals(otherBlockID))
-    			return plug;
-    		if (getBeforeBlockID().equals(otherBlockID))
-    			return before;
-    		if (getAfterBlockID().equals(otherBlockID))
-    			return after;
-    		for (BlockConnector socket : getSockets())
-    			if (socket.getBlockID().equals(otherBlockID))
-    				return socket;
-    		return null;
+        if (otherBlockID == null || otherBlockID == Block.NULL) {
+            return null;
+        }
+        if (getPlugBlockID().equals(otherBlockID)) {
+            return plug;
+        }
+        if (getBeforeBlockID().equals(otherBlockID)) {
+            return before;
+        }
+        if (getAfterBlockID().equals(otherBlockID)) {
+            return after;
+        }
+        for (BlockConnector socket : getSockets()) {
+            if (socket.getBlockID().equals(otherBlockID)) {
+                return socket;
+            }
+        }
+        return null;
     }
 
     ////////////////
@@ -772,7 +789,7 @@ public class Block implements ISupportMemento {
     /**
      * Returns true iff this block is "bad."  Bad means that this block has an associated compile error.
      */
-    public boolean isBad(){
+    public boolean isBad() {
         return isBad;
     }
     
@@ -780,14 +797,14 @@ public class Block implements ISupportMemento {
      * Sets the "bad"-ness of this block.  Bad means that this block has an associated compile error.
      * @param isBad
      */
-    public void setBad(boolean isBad){
+    public void setBad(boolean isBad) {
         this.isBad = isBad;
     }
     
     /**
      * Returns the "bad" message of this block.
      */
-    public String getBadMsg(){
+    public String getBadMsg() {
         return badMsg;
     }
     
@@ -796,7 +813,7 @@ public class Block implements ISupportMemento {
      * error associated with this block.
      * @param badMsg
      */
-    public void setBadMsg(String badMsg){
+    public void setBadMsg(String badMsg) {
         this.badMsg = badMsg;
     }
     
@@ -808,7 +825,7 @@ public class Block implements ISupportMemento {
      * Returns true iff this block has focus.  Focus means it is currently selected in the workspace.
      * Multiple blocks can have focus simultaniously.
      */
-    public boolean hasFocus(){
+    public boolean hasFocus() {
         return hasFocus;
     }
     
@@ -816,10 +833,9 @@ public class Block implements ISupportMemento {
      * Sets the focus state of the block.  Should only be used by FocusManager.
      * @param hasFocus
      */
-    public void setFocus(boolean hasFocus){
+    public void setFocus(boolean hasFocus) {
         this.hasFocus = hasFocus;
     }
-    
 
     ////////////////////
     //DEFAULT ARGUMENTS
@@ -835,15 +851,16 @@ public class Block implements ISupportMemento {
      * 
      * @return Returns a Long list of the newly created default argument block IDs; null if this block has none.
      */
-    public Iterable<Long> linkAllDefaultArgs(){
-        if(getGenus().hasDefaultArgs()){
+    public Iterable<Long> linkAllDefaultArgs() {
+        if (getGenus().hasDefaultArgs()) {
             ArrayList<Long> defargIDs = new ArrayList<Long>();
-            for (BlockConnector con : sockets){
+            for (BlockConnector con : sockets) {
                 Long id = con.linkDefArgument();
                 defargIDs.add(id);
                 //if id not null, then connect def arg's plug to this block
-                if(id != Block.NULL)
+                if (id != Block.NULL) {
                     Block.getBlock(id).getPlug().setConnectorBlockID(this.blockID);
+                }
             }
             return defargIDs;
         }
@@ -858,17 +875,14 @@ public class Block implements ISupportMemento {
      * Returns the Stubs of this Block, if it has Stubs; null otherwise
      * @return the Stubs of this Block, if it has Stubs; null otherwise
      */
-    public Iterable<BlockStub> getFreshStubs(){
-        
-        if(this.linkToStubs && this.hasStubs()){
+    public Iterable<BlockStub> getFreshStubs() {
+        if (this.linkToStubs && this.hasStubs()) {
             ArrayList<BlockStub> newStubBlocks = new ArrayList<BlockStub>();
-            
-            for(String stubGenus : getStubList())
+            for (String stubGenus : getStubList()) {
                 newStubBlocks.add(new BlockStub(this.getBlockID(), this.getGenusName(), this.getBlockLabel(), stubGenus));
-            
+            }
             return newStubBlocks;
         }
-        
         return null;
     }
     
@@ -883,7 +897,7 @@ public class Block implements ISupportMemento {
      * note: to be used only if there is no other convenient way to update 
      * view of an event/change to the block data from the ui side
      */
-    public void notifyRenderable(){
+    public void notifyRenderable() {
         RenderableBlock.getRenderableBlock(blockID).repaintBlock();
     }
     
@@ -900,7 +914,7 @@ public class Block implements ISupportMemento {
      * FORWARDED FROM BLOCK GENUS
      * @return the siblings of this genus.
      */
-    public List<String> getSiblingsList(){
+    public List<String> getSiblingsList() {
         return getGenus().getSiblingsList();
     }
     
@@ -911,7 +925,7 @@ public class Block implements ISupportMemento {
      * FORWARDED FROM BLOCK GENUS
      * @return true if this genus has siblings; false otherwise.
      */
-    public boolean hasSiblings(){
+    public boolean hasSiblings() {
         return getGenus().hasSiblings();
     }
     
@@ -922,11 +936,12 @@ public class Block implements ISupportMemento {
      * @return a list of the stub kinds (or stub genus names) of this; if this genus does not have any stubs, 
      * returns an empty list
      */
-    public Iterable<String> getStubList(){
-        if(this.linkToStubs)
+    public Iterable<String> getStubList() {
+        if (this.linkToStubs) {
             return getGenus().getStubList();
-        else
+        } else {
             return new ArrayList<String>();
+        }
     }
     
     /**
@@ -934,8 +949,8 @@ public class Block implements ISupportMemento {
      *  FORWARDED FROM BLOCK GENUS
      * @return true is this genus has stubs (references such as getters, setters, etc.); false otherwise
      */
-    public boolean hasStubs(){
-        return this.linkToStubs &&  getGenus().hasStubs();
+    public boolean hasStubs() {
+        return this.linkToStubs && getGenus().hasStubs();
     }
     
     /**
@@ -943,7 +958,7 @@ public class Block implements ISupportMemento {
      * FORWARDED FROM BLOCK GENUS
      * @return true iff any one of the connectors for this genus has default arguments; false otherwise
      */
-    public boolean hasDefaultArgs(){
+    public boolean hasDefaultArgs() {
         return getGenus().hasDefaultArgs();
     }
     
@@ -952,7 +967,7 @@ public class Block implements ISupportMemento {
      * FORWARDED FROM BLOCK GENUS
      * @return true if this block is a command block (i.e. forward, say, etc.); false otherwise
      */
-    public boolean isCommandBlock(){
+    public boolean isCommandBlock() {
         return getGenus().isCommandBlock();
     }
     
@@ -963,10 +978,9 @@ public class Block implements ISupportMemento {
      * @return Returns true if this block is a data block a.k.a. a primitive (i.e. number, string, boolean); 
      * false otherwise
      */
-    public boolean isDataBlock(){
+    public boolean isDataBlock() {
         return getGenus().isDataBlock();
     }
-    
     
     /**
      * Returns true iff this block is a function block, which takes in an input and produces an 
@@ -975,7 +989,7 @@ public class Block implements ISupportMemento {
      * @return true iff this block is a function block, which takes in an input and produces an 
      * output. (i.e. math blocks, arctan, add to list); false otherwise.
      */
-    public boolean isFunctionBlock(){
+    public boolean isFunctionBlock() {
         return getGenus().isFunctionBlock();
     }
     
@@ -984,7 +998,7 @@ public class Block implements ISupportMemento {
      * FORWARDED FROM BLOCK GENUS
      * @return true if this block is a variable block; false otherwise
      */
-    public boolean isVariableDeclBlock(){
+    public boolean isVariableDeclBlock() {
         return getGenus().isVariableDeclBlock();
     }
 
@@ -993,7 +1007,7 @@ public class Block implements ISupportMemento {
      * FORWARDED FROM BLOCK GENUS
      * @return true if this block is a procedure declaration block; false otherwise
      */
-    public boolean isProcedureDeclBlock(){
+    public boolean isProcedureDeclBlock() {
         return getGenus().isProcedureDeclBlock();
     }
     
@@ -1002,7 +1016,7 @@ public class Block implements ISupportMemento {
      * FORWARDED FROM BLOCK GENUS
      * @return true if this genus is a declaration block; false otherwise
      */
-    public boolean isDeclaration(){
+    public boolean isDeclaration() {
         return getGenus().isDeclaration();
     }
     
@@ -1022,14 +1036,14 @@ public class Block implements ISupportMemento {
      */
     public boolean isListRelated() {
         return getGenus().isListRelated();
-    }  
+    }
     
     /**
      * Returns true if this genus has a "before" connector; false otherwise.  
      * FORWARDED FROM BLOCK GENUS
      * @return true is this genus has a "before" connector; false otherwise.  
      */
-    public boolean hasBeforeConnector(){
+    public boolean hasBeforeConnector() {
         return before != null;
     }
     
@@ -1038,7 +1052,7 @@ public class Block implements ISupportMemento {
      * FORWARDED FROM BLOCK GENUS
      * @return true if this genus has a "after" connector; false otherwise.  
      */
-    public boolean hasAfterConnector(){
+    public boolean hasAfterConnector() {
         return after != null;
     }
     
@@ -1048,7 +1062,7 @@ public class Block implements ISupportMemento {
      * @return the initial before connector of this
      */
     public BlockConnector getInitBefore() {
-            return getGenus().getInitBefore();
+        return getGenus().getInitBefore();
     }
     
     /**
@@ -1057,7 +1071,7 @@ public class Block implements ISupportMemento {
      * @return the initial after connector of this
      */
     public BlockConnector getInitAfter() {
-            return getGenus().getInitAfter();
+        return getGenus().getInitAfter();
     }
     
     /**
@@ -1067,7 +1081,7 @@ public class Block implements ISupportMemento {
      * @return true if the value of this genus is contained within the label of this; false 
      * otherwise
      */
-    public boolean isLabelValue(){
+    public boolean isLabelValue() {
         return getGenus().isLabelValue();
     }
     
@@ -1076,7 +1090,7 @@ public class Block implements ISupportMemento {
      * FORWARDED FROM BLOCK GENUS
      * @return true if the label of this is editable; false otherwise
      */
-    public boolean isLabelEditable(){
+    public boolean isLabelEditable() {
         return getGenus().isLabelEditable();
     }
     
@@ -1085,17 +1099,16 @@ public class Block implements ISupportMemento {
      * FORWARDED FROM BLOCK GENUS
      * @return true iff page label of this is set by a page
      */
-    public boolean isPageLabelSetByPage(){
+    public boolean isPageLabelSetByPage() {
         return getGenus().isPageLabelSetByPage();
     }
-    
     
     /**
      * Returns true if the label of this must be unique; false otherwise
      * FORWARDED FROM BLOCK GENUS
      * @return true if the label of this must be unique; false otherwise
      */
-    public boolean labelMustBeUnique(){
+    public boolean labelMustBeUnique() {
         return getGenus().labelMustBeUnique();
     }
     
@@ -1104,7 +1117,7 @@ public class Block implements ISupportMemento {
      * FORWARDED FROM BLOCK GENUS 
      * @return true if this genus is infix (i.e. math blocks, and/or blocks); false otherwise
      */
-    public boolean isInfix(){
+    public boolean isInfix() {
         return getGenus().isInfix();
     }
     
@@ -1113,7 +1126,7 @@ public class Block implements ISupportMemento {
      * FORWARDED FROM BLOCK GENUS
      * @return true if this genus has expandable sockets; false otherwise
      */
-    public boolean areSocketsExpandable(){
+    public boolean areSocketsExpandable() {
         return getGenus().areSocketsExpandable();
     }
     
@@ -1122,7 +1135,7 @@ public class Block implements ISupportMemento {
      * FORWARDED FROM BLOCK GENUS
      * @return the name of this genus
      */
-    public String getGenusName(){
+    public String getGenusName() {
         return genusName;
     }
     
@@ -1131,7 +1144,7 @@ public class Block implements ISupportMemento {
      * FORWARDED FROM BLOCK GENUS
      * @return the initial label of this
      */
-    public String getInitialLabel(){
+    public String getInitialLabel() {
         return getGenus().getInitialLabel();
     }
     
@@ -1140,7 +1153,7 @@ public class Block implements ISupportMemento {
      * FORWARDED FROM BLOCK GENUS
      * @return the String block label prefix of this
      */
-    public String getLabelPrefix(){
+    public String getLabelPrefix() {
         return getGenus().getLabelPrefix();
     }
     
@@ -1149,7 +1162,7 @@ public class Block implements ISupportMemento {
      * FORWARDED FROM BLOCK GENUS
      * @return the String block label prefix of this
      */
-    public String getLabelSuffix(){
+    public String getLabelSuffix() {
         return getGenus().getLabelSuffix();
     }
     
@@ -1161,30 +1174,29 @@ public class Block implements ISupportMemento {
      * @returns the String block text description of this
      * 			or NULL if none exists.
      */
-    public String getBlockDescription(){
-    	return getGenus().getBlockDescription();
+    public String getBlockDescription() {
+        return getGenus().getBlockDescription();
     }
-    
+
     /**
      * Returns the the argument description at index i.
      * If the index is out of bounds or if no argument
      * description exists for arguemnt at index i , return null.
      * @returns the String argument descriptions of this or NULL.
      */
-    public String getArgumentDescription(int index){
-        if (index < argumentDescriptions.size() && index >= 0){
-        	return argumentDescriptions.get(index);
+    public String getArgumentDescription(int index) {
+        if (index < argumentDescriptions.size() && index >= 0) {
+            return argumentDescriptions.get(index);
         }
-    	return null;
+        return null;
     }
-    
     
     /**
      * Returns the Color of this; May return Color.Black if color was unspecified.
      * FORWARDED FROM BLOCK GENUS
      * @return the Color of this; May return Color.Black if color was unspecified.
      */
-    public Color getColor(){ 
+    public Color getColor() {
         return getGenus().getColor();
     }
     
@@ -1193,7 +1205,7 @@ public class Block implements ISupportMemento {
      * FORWARDED FROM BLOCK GENUS
      * @return the initial and unmodifiable BlockImageIcon mapping of this
      */
-    public Map<ImageLocation, BlockImageIcon> getInitBlockImageMap(){
+    public Map<ImageLocation, BlockImageIcon> getInitBlockImageMap() {
         return getGenus().getInitBlockImageMap();
     }
     
@@ -1203,11 +1215,12 @@ public class Block implements ISupportMemento {
      * @param property the property to look up 
      * @return the value of the specified language dependent property; null if property does not exist
      */
-    public String getProperty(String property){
-    	// block property overrides genus if that situation exists
-        String prop = properties.get(property); 
-        if(prop != null)
+    public String getProperty(String property) {
+        // block property overrides genus if that situation exists
+        String prop = properties.get(property);
+        if (prop != null) {
             return prop;
+        }
         return getGenus().getProperty(property);
     }
     
@@ -1216,7 +1229,7 @@ public class Block implements ISupportMemento {
      * FORWARDED FROM BLOCK GENUS
      * @return the initial set of sockets of this
      */
-    public Iterable<BlockConnector> getInitSockets(){
+    public Iterable<BlockConnector> getInitSockets() {
         return getGenus().getInitSockets();
     }
     
@@ -1225,16 +1238,15 @@ public class Block implements ISupportMemento {
      * FORWARDED FROM BLOCK GENUS
      * @return the initial plug connector of this
      */
-    public BlockConnector getInitPlug(){
+    public BlockConnector getInitPlug() {
         return getGenus().getInitPlug();
     }
-    
     
     /**
      * @returns current information about block
      */
     public String toString() {
-    		return "Block "+blockID+": " + label + " with sockets: " + sockets + " and plug: " + plug+" before: "+before+" after: "+after;
+        return "Block " + blockID + ": " + label + " with sockets: " + sockets + " and plug: " + plug + " before: " + before + " after: " + after;
     }
     
     /**
@@ -1243,11 +1255,11 @@ public class Block implements ISupportMemento {
      * @return true iff the other Object is an instance of Block and has the same
      * blockID as this; false otherwise
      */
-    public boolean equals(Object other){
-        if(other == null || !(other instanceof Block))
+    public boolean equals(Object other) {
+        if (other == null || !(other instanceof Block)) {
             return false;
-        
-        Block otherBlock = (Block)other;
+        }
+        Block otherBlock = (Block) other;
         return (this.blockID == otherBlock.blockID);
     }
     
@@ -1255,7 +1267,7 @@ public class Block implements ISupportMemento {
      * Returns the hash code of this
      * @return hash code of this
      */
-    public int hashCode(){
+    public int hashCode() {
         return blockID.hashCode();
     }
     
@@ -1263,15 +1275,13 @@ public class Block implements ISupportMemento {
     // SAVING AND LOADING //
     ////////////////////////
     private final String EQ_OPEN_QUOTE = "=\"";
-    private final String CLOSE_QUOTE ="\" ";
+    private final String CLOSE_QUOTE = "\" ";
     
     /**
      * Returns an escaped (safe) version of string.
      */
     public static String escape(String s) {
-        return s.replaceAll("&", "&amp;")
-                .replaceAll("<", "&lt;")
-                .replaceAll(">", "&gt;");
+        return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
     }
     
     /**
@@ -1283,29 +1293,30 @@ public class Block implements ISupportMemento {
      * @param y
      * @return the save string of this
      */
-    public String getSaveString(int x, int y, String commentSaveString, boolean isCollapsed){
+    public String getSaveString(int x, int y, String commentSaveString, boolean isCollapsed) {
         StringBuffer saveString = new StringBuffer();
         
         saveString.append("<Block ");
         appendAttribute("id", this.blockID.toString(), saveString);
         appendAttribute("genus-name", this.getGenusName(), saveString);
-        if(this.hasFocus)
+        if (this.hasFocus) {
             appendAttribute("has-focus", "yes", saveString);
+        }
         saveString.append(">");
         
-        if(!this.label.equals(this.getInitialLabel())){
+        if (!this.label.equals(this.getInitialLabel())) {
             saveString.append("<Label>");
             saveString.append(escape(label));
             saveString.append("</Label>");
         }
-        
-        if(pageLabel != null && !pageLabel.equals("")){
+
+        if (pageLabel != null && !pageLabel.equals("")) {
             saveString.append("<PageLabel>");
             saveString.append(escape(pageLabel));
             saveString.append("</PageLabel>");
         }
-        
-        if(this.isBad){
+
+        if (this.isBad) {
             saveString.append("<CompilerErrorMsg>");
             saveString.append(escape(pageLabel));
             saveString.append("</CompilerErrorMsg>");
@@ -1319,41 +1330,42 @@ public class Block implements ISupportMemento {
         saveString.append(y);
         saveString.append("</Y>");
         saveString.append("</Location>");
-        
 
-        if(isCollapsed)
-        	saveString.append("<Collapsed/>");
-        
-        if(commentSaveString != null){
-        	saveString.append(commentSaveString);
+        if (isCollapsed) {
+            saveString.append("<Collapsed/>");
+        }
+
+        if (commentSaveString != null) {
+            saveString.append(commentSaveString);
         }
         
-        if(this.hasBeforeConnector() && !this.getBeforeBlockID().equals(Block.NULL)){
+        if (this.hasBeforeConnector() && !this.getBeforeBlockID().equals(Block.NULL)) {
             saveString.append("<BeforeBlockId>");
             saveString.append(this.getBeforeBlockID());
             saveString.append("</BeforeBlockId>");
         }
         
-        if(this.hasAfterConnector() && !this.getAfterBlockID().equals(Block.NULL)){
+        if (this.hasAfterConnector() && !this.getAfterBlockID().equals(Block.NULL)) {
             saveString.append("<AfterBlockId>");
             saveString.append(this.getAfterBlockID());
             saveString.append("</AfterBlockId>");
         }
         
-        if(plug != null){
+        if (plug != null) {
             saveString.append("<Plug>");
             saveString.append(plug.getSaveString("plug"));
             saveString.append("</Plug>");
         }
         
-        if(sockets.size() > 0){
+        if (sockets.size() > 0) {
             saveString.append("<Sockets ");
-            appendAttribute("num-sockets", ""+this.getNumSockets(), saveString);
+            appendAttribute("num-sockets", "" + this.getNumSockets(), saveString);
             saveString.append(">");
-            for(BlockConnector con : getSockets()){
+            for (BlockConnector con : getSockets()) {
                 saveString.append(con.getSaveString("socket"));
             }
-            saveString.append("</Sockets>");  //sockets tricky... because what if 
+            saveString.append("</Sockets>");
+            //sockets tricky... because what if
             //one of the sockets is expanded?  should the socket keep a reference
             //to their genus socket?  and so should the expanded one?
         }
@@ -1361,9 +1373,9 @@ public class Block implements ISupportMemento {
         //save block properties that are not specified within genus
         //i.e. properties that were created/specified during runtime
         
-        if(!properties.isEmpty()){
+        if (!properties.isEmpty()) {
             saveString.append("<LangSpecProperties>");
-            for(String property : properties.keySet()){
+            for (String property : properties.keySet()) {
                 saveString.append("<LangSpecProperty ");
                 appendAttribute("key", property, saveString);
                 appendAttribute("value", properties.get(property), saveString);
@@ -1371,14 +1383,14 @@ public class Block implements ISupportMemento {
             }
             saveString.append("</LangSpecProperties>");
         }
-            
-        
+
+
         saveString.append("</Block>");
         return saveString.toString();
     }
     
     //TODO may put this in a separate XML writing utility class
-    private void appendAttribute(String att, String value, StringBuffer buf){
+    private void appendAttribute(String att, String value, StringBuffer buf) {
         buf.append(att);
         buf.append(EQ_OPEN_QUOTE);
         buf.append(escape(value));
@@ -1397,111 +1409,119 @@ public class Block implements ISupportMemento {
         String genusName = null;
         String label = null;
         String pagelabel = null;
-        String badMsg =  null;
+        String badMsg = null;
         Long beforeID = null;
         Long afterID = null;
         BlockConnector plug = null;
         ArrayList<BlockConnector> sockets = new ArrayList<BlockConnector>();
         HashMap<String, String> blockLangProperties = null;
-//        int numSockets;
         boolean hasFocus = false;
         
         //stub information if this node contains a stub
-        boolean isStubBlock =  false;
+        boolean isStubBlock = false;
         String stubParentName = null;
         String stubParentGenus = null;
-        Pattern attrExtractor=Pattern.compile("\"(.*)\"");
+        Pattern attrExtractor = Pattern.compile("\"(.*)\"");
         Matcher nameMatcher;
         
-        if(node.getNodeName().equals("BlockStub")){
+        if (node.getNodeName().equals("BlockStub")) {
             isStubBlock = true;
             Node blockNode = null;
             NodeList stubChildren = node.getChildNodes();
-            for(int j = 0; j <stubChildren.getLength(); j++){
+            for (int j = 0; j < stubChildren.getLength(); j++) {
                 Node infoNode = stubChildren.item(j);
-                if(infoNode.getNodeName().equals("StubParentName"))
+                if (infoNode.getNodeName().equals("StubParentName")) {
                     stubParentName = infoNode.getTextContent();
-                else if(infoNode.getNodeName().equals("StubParentGenus"))
+                } else if (infoNode.getNodeName().equals("StubParentGenus")) {
                     stubParentGenus = infoNode.getTextContent();
-                else if(infoNode.getNodeName().equals("Block"))
+                } else if (infoNode.getNodeName().equals("Block")) {
                     blockNode = infoNode;
+                }
             }
             node = blockNode;
         }
         
-        if(node.getNodeName().equals("Block")){
+        if (node.getNodeName().equals("Block")) {
             //load attributes
-            nameMatcher=attrExtractor.matcher(node.getAttributes().getNamedItem("id").toString());
-            if (nameMatcher.find()) //will be true
+            nameMatcher = attrExtractor.matcher(node.getAttributes().getNamedItem("id").toString());
+            if (nameMatcher.find()) {
                 id = translateLong(Long.parseLong(nameMatcher.group(1)), idMapping);
-            nameMatcher=attrExtractor.matcher(node.getAttributes().getNamedItem("genus-name").toString());
-            if (nameMatcher.find()) //will be true
+            }
+            nameMatcher = attrExtractor.matcher(node.getAttributes().getNamedItem("genus-name").toString());
+            if (nameMatcher.find()) {
                 genusName = nameMatcher.group(1);
+            }
             //load optional items
             Node opt_item = node.getAttributes().getNamedItem("has-focus");
-            if(opt_item != null){
-                nameMatcher=attrExtractor.matcher(opt_item.toString());
+            if (opt_item != null) {
+                nameMatcher = attrExtractor.matcher(opt_item.toString());
                 if (nameMatcher.find()) //will be true
-                    hasFocus= nameMatcher.group(1).equals("yes") ? true : false;
+                {
+                    hasFocus = nameMatcher.group(1).equals("yes") ? true : false;
+                }
             }
             
             //load elements
             NodeList children = node.getChildNodes();
             Node child;
-            for(int i=0; i<children.getLength(); i++){
+            for (int i = 0; i < children.getLength(); i++) {
                 child = children.item(i);
-                if(child.getNodeName().equals("Label")){
+                if (child.getNodeName().equals("Label")) {
                     label = child.getTextContent();
-                }else if(child.getNodeName().equals("PageLabel")){
+                } else if (child.getNodeName().equals("PageLabel")) {
                     pagelabel = child.getTextContent();
-                }else if(child.getNodeName().equals("CompilerErrorMsg")){
+                } else if (child.getNodeName().equals("CompilerErrorMsg")) {
                     badMsg = child.getTextContent();
-                }else if(child.getNodeName().equals("BeforeBlockId")){
+                } else if (child.getNodeName().equals("BeforeBlockId")) {
                     beforeID = translateLong(Long.parseLong(child.getTextContent()), idMapping);
-                }else if(child.getNodeName().equals("AfterBlockId")){
+                } else if (child.getNodeName().equals("AfterBlockId")) {
                     afterID = translateLong(Long.parseLong(child.getTextContent()), idMapping);
-                }else if(child.getNodeName().equals("Plug")){
+                } else if (child.getNodeName().equals("Plug")) {
                     NodeList plugs = child.getChildNodes(); //there should only one child
                     Node plugNode;
-                    for(int j=0; j<plugs.getLength(); j++){
+                    for (int j = 0; j < plugs.getLength(); j++) {
                         plugNode = plugs.item(j);
-                        if(plugNode.getNodeName().equals("BlockConnector")){
+                        if (plugNode.getNodeName().equals("BlockConnector")) {
                             plug = BlockConnector.loadBlockConnector(plugNode, idMapping);
                         }
                     }
-                }else if(child.getNodeName().equals("Sockets")){
+                } else if (child.getNodeName().equals("Sockets")) {
                     NodeList socketNodes = child.getChildNodes();
-                    Node socketNode; 
-                    for(int k=0; k<socketNodes.getLength(); k++){
+                    Node socketNode;
+                    for (int k = 0; k < socketNodes.getLength(); k++) {
                         socketNode = socketNodes.item(k);
-                        if(socketNode.getNodeName().equals("BlockConnector")){
+                        if (socketNode.getNodeName().equals("BlockConnector")) {
                             sockets.add(BlockConnector.loadBlockConnector(socketNode, idMapping));
                         }
                     }
-                }else if(child.getNodeName().equals("LangSpecProperties")){
+                } else if (child.getNodeName().equals("LangSpecProperties")) {
                     blockLangProperties = new HashMap<String, String>();
                     NodeList propertyNodes = child.getChildNodes();
-                    Node propertyNode; 
-                    String key = null; 
+                    Node propertyNode;
+                    String key = null;
                     String value = null;
-                    for(int m=0; m<propertyNodes.getLength(); m++){
+                    for (int m = 0; m < propertyNodes.getLength(); m++) {
                         propertyNode = propertyNodes.item(m);
-                        if(propertyNode.getNodeName().equals("LangSpecProperty")){
-                            nameMatcher=attrExtractor.matcher(propertyNode.getAttributes().getNamedItem("key").toString());
+                        if (propertyNode.getNodeName().equals("LangSpecProperty")) {
+                            nameMatcher = attrExtractor.matcher(propertyNode.getAttributes().getNamedItem("key").toString());
                             if (nameMatcher.find()) //will be true
+                            {
                                 key = nameMatcher.group(1);
+                            }
                             opt_item = propertyNode.getAttributes().getNamedItem("value");
-                            if(opt_item != null){
-                                nameMatcher=attrExtractor.matcher(opt_item.toString());
-                                if(nameMatcher.find()) //will be true
+                            if (opt_item != null) {
+                                nameMatcher = attrExtractor.matcher(opt_item.toString());
+                                if (nameMatcher.find()) //will be true
+                                {
                                     value = nameMatcher.group(1);
-                            }else{
+                                }
+                            } else {
                                 value = propertyNode.getTextContent();
                             }
-                            if(key != null && value != null){
+                            if (key != null && value != null) {
                                 blockLangProperties.put(key, value);/*
                                 if(key.equals("xml"))
-                                    System.err.println("VALUE OF XML: "+value);*/
+                                System.err.println("VALUE OF XML: "+value);*/
                                 key = null;
                                 value = null;
                             }
@@ -1510,20 +1530,20 @@ public class Block implements ISupportMemento {
                 }
             }
             
-            assert genusName != null && id != null : "Block did not contain required info id: "+id+" genus: "+genusName;
+            assert genusName != null && id != null : "Block did not contain required info id: " + id + " genus: " + genusName;
             //create block or block stub instance
-            if(!isStubBlock){
-                if(label == null) {
+            if (!isStubBlock) {
+                if (label == null) {
                     block = new Block(id, genusName, BlockGenus.getGenusWithName(genusName).getInitialLabel(), true);
-                } else { 
+                } else {
                     block = new Block(id, genusName, label, true);
                 }
-            }else{
+            } else {
                 assert label != null : "Loading a block stub, but has a null label!";
                 block = new BlockStub(id, genusName, label, stubParentName, stubParentGenus);
             }
             
-            if(plug != null) {
+            if (plug != null) {
                 // Some callers can change before/after/plug types. We have
                 // to synchronize so that we never have both.
                 assert beforeID == null && afterID == null;
@@ -1531,28 +1551,29 @@ public class Block implements ISupportMemento {
                 block.removeBeforeAndAfter();
             }
             
-            if(sockets.size() > 0)
+            if (sockets.size() > 0) {
                 block.sockets = sockets;
+            }
             
-            if(beforeID != null)
+            if (beforeID != null) {
                 block.before.setConnectorBlockID(beforeID);
-            if(afterID != null)
+            }
+            if (afterID != null) {
                 block.after.setConnectorBlockID(afterID);
-            if(pagelabel != null)
+            }
+            if (pagelabel != null) {
                 block.pageLabel = pagelabel;
-            if(badMsg != null){
+            }
+            if (badMsg != null) {
                 block.isBad = true;
                 block.badMsg = badMsg;
             }
             block.hasFocus = hasFocus;
             
             //load language dependent properties
-            if(blockLangProperties != null && !blockLangProperties.isEmpty()){
+            if (blockLangProperties != null && !blockLangProperties.isEmpty()) {
                 block.properties = blockLangProperties;
             }
-            
-            
-            //System.out.println("Loaded Block: "+block);
             
             return block;
         }
@@ -1561,38 +1582,38 @@ public class Block implements ISupportMemento {
     }
     
     public static Long translateLong(Long input, HashMap<Long, Long> mapping) {
-    		if (mapping == null)
-    			return input;
-    		if (mapping.containsKey(input))
-    			return mapping.get(input);
-    		Long newID = Long.valueOf(NEXT_ID++);
-    		mapping.put(input, newID);
-    		return newID;
+        if (mapping == null) {
+            return input;
+        }
+        if (mapping.containsKey(input)) {
+            return mapping.get(input);
+        }
+        Long newID = Long.valueOf(NEXT_ID++);
+        mapping.put(input, newID);
+        return newID;
     }
     
     //Temp code so compiler can see all blocks
     //TODO remove when a more appropriate method exists for the workspace
     public static Iterable<Block> getAllBlocks() {
-    		return ALL_BLOCKS.values();
+        return ALL_BLOCKS.values();
     }
     
     /***********************************
     * State Saving Stuff for Undo/Redo *
     ***********************************/
       
-    private class BlockState
-    {
-    	//basic information
-    	public String label;
+    private class BlockState {
+        //basic information
+
+        public String label;
         public String pageLabel;
         public boolean isBad;
         public String badMsg;
         public boolean hasFocus;
         public HashMap<String, String> properties;
-        
         //block connection and genus information
         public String genusName;
-        
         //Block Connector Stuff
         public int numberOfSockets;
         public ArrayList<Object> sockets;
@@ -1602,136 +1623,106 @@ public class Block implements ISupportMemento {
     }
     
 
-	public Object getState()
-	{
-		BlockState state = new BlockState();
-		
-		//Get Basic Stuff
-		state.label = this.label;
-		state.pageLabel = this.getPageLabel();
-		state.isBad = this.isBad();
-		state.badMsg = this.getBadMsg();		
-		state.hasFocus = this.hasFocus();
-		
-		//Get Properties
-		state.properties = new HashMap<String, String>();
-		for(String name : this.properties.keySet())
-		{
-			state.properties.put(name, this.getProperty(name));
-		}
-		
-		//Get Genus and Connection Stuff
-		state.genusName = this.getGenusName();
-		
-		//TODO: this needs evaluation since I'm not sure if there are knock on effects
-		//of setting this memory directly
-		if(this.plug != null)
-		{
-			state.plug = this.plug.getState();
-		}
-		else
-		{
-			state.plug = null;
-		}
-		
-		if(this.before != null)
-		{
-			state.before = this.before.getState();
-		}
-		else
-		{
-			state.before = null;
-		}
-		
-		if(this.after != null)
-		{
-			state.after = this.after.getState();
-		}
-		else
-		{
-			state.after = null;
-		}
-				
-		//Get the Sockets
-		state.numberOfSockets = this.getNumSockets();
-		state.sockets = new ArrayList<Object>();
-		
-		for(BlockConnector socket : this.getSockets())
-		{
-			state.sockets.add(socket.getState());
-		}
-				
-		return state;
-	}
+    public Object getState() {
+        BlockState state = new BlockState();
 
-	public void loadState(Object memento)
-	{
-		if(memento instanceof BlockState)
-		{
-			BlockState state = (BlockState)memento;
-			
-			//Set the basic properties
-			this.setPageLabel(state.pageLabel);
-			this.setBlockLabel(state.label);
-			this.setBad(state.isBad);
-			this.setBadMsg(state.badMsg);			
-			this.setFocus(state.hasFocus);
-			
-			//Properties
-			for(String name : state.properties.keySet())
-			{
-				this.setProperty(name, state.properties.get(name));
-			}	
-			
-			//Genus stuff, to avoid more work than necessary
-			if(this.genusName != state.genusName)
-			{
-				this.changeGenusTo(state.genusName);
-			}
-			
-			if(state.plug == null)
-			{
-				this.plug = null;
-			}
-			else
-			{
-				this.plug = BlockConnector.instantiateFromState(state.plug);
-			}
-			
-			if(state.before == null)
-			{
-				this.before = null;
-			}
-			else
-			{
-				this.before = BlockConnector.instantiateFromState(state.before);
-			}
-			
-			if(state.after == null)
-			{
-				this.after = null;
-			}
-			else
-			{
-				this.after = BlockConnector.instantiateFromState(state.after);
-			}
-			
-			for(int i = 0; i < state.numberOfSockets; i++)
-			{
-				if(i >= this.getNumSockets())
-				{
-					this.sockets.add(BlockConnector.instantiateFromState(state.sockets.get(i)));
-				}
-				else
-				{
-					this.sockets.get(i).loadState(state.sockets.get(i));
-				}
-			}
-			
-			for(int i = state.numberOfSockets; i < this.getNumSockets(); i++)
-			{
-				this.removeSocket(i);
-			}			
-		}
-	}    
+        //Get Basic Stuff
+        state.label = this.label;
+        state.pageLabel = this.getPageLabel();
+        state.isBad = this.isBad();
+        state.badMsg = this.getBadMsg();
+        state.hasFocus = this.hasFocus();
+
+        //Get Properties
+        state.properties = new HashMap<String, String>();
+        for (String name : this.properties.keySet()) {
+            state.properties.put(name, this.getProperty(name));
+        }
+
+        //Get Genus and Connection Stuff
+        state.genusName = this.getGenusName();
+
+        //TODO: this needs evaluation since I'm not sure if there are knock on effects
+        //of setting this memory directly
+        if (this.plug != null) {
+            state.plug = this.plug.getState();
+        } else {
+            state.plug = null;
+        }
+
+        if (this.before != null) {
+            state.before = this.before.getState();
+        } else {
+            state.before = null;
+        }
+
+        if (this.after != null) {
+            state.after = this.after.getState();
+        } else {
+            state.after = null;
+        }
+
+        //Get the Sockets
+        state.numberOfSockets = this.getNumSockets();
+        state.sockets = new ArrayList<Object>();
+
+        for (BlockConnector socket : this.getSockets()) {
+            state.sockets.add(socket.getState());
+        }
+
+        return state;
+    }
+
+    public void loadState(Object memento) {
+        if (memento instanceof BlockState) {
+            BlockState state = (BlockState) memento;
+
+            //Set the basic properties
+            this.setPageLabel(state.pageLabel);
+            this.setBlockLabel(state.label);
+            this.setBad(state.isBad);
+            this.setBadMsg(state.badMsg);
+            this.setFocus(state.hasFocus);
+
+            //Properties
+            for (String name : state.properties.keySet()) {
+                this.setProperty(name, state.properties.get(name));
+            }
+
+            //Genus stuff, to avoid more work than necessary
+            if (this.genusName != state.genusName) {
+                this.changeGenusTo(state.genusName);
+            }
+
+            if (state.plug == null) {
+                this.plug = null;
+            } else {
+                this.plug = BlockConnector.instantiateFromState(state.plug);
+            }
+
+            if (state.before == null) {
+                this.before = null;
+            } else {
+                this.before = BlockConnector.instantiateFromState(state.before);
+            }
+
+            if (state.after == null) {
+                this.after = null;
+            } else {
+                this.after = BlockConnector.instantiateFromState(state.after);
+            }
+
+            for (int i = 0; i < state.numberOfSockets; i++) {
+                if (i >= this.getNumSockets()) {
+                    this.sockets.add(BlockConnector.instantiateFromState(state.sockets.get(i)));
+                } else {
+                    this.sockets.get(i).loadState(state.sockets.get(i));
+                }
+            }
+
+            for (int i = state.numberOfSockets; i < this.getNumSockets(); i++) {
+                this.removeSocket(i);
+            }
+        }
+    }
 }

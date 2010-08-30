@@ -14,7 +14,6 @@ public interface LinkRule {
      * @return true if the two sockets of the two blocks can link; false if not
      */
     public boolean canLink(Block block1, Block block2, BlockConnector socket1, BlockConnector socket2);
-    
+
     public boolean isMandatory();
-    
 }
