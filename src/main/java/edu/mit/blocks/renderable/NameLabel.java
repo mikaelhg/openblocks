@@ -1,8 +1,8 @@
-package renderable;
+package edu.mit.blocks.renderable;
 
 import java.awt.Color;
 
-import codeblocks.BlockConnectorShape;
+import edu.mit.blocks.codeblocks.BlockConnectorShape;
 
 /**
  * 

@@ -1,4 +1,4 @@
-package workspace.typeblocking;
+package edu.mit.blocks.workspace.typeblocking;
 
 import java.awt.Container;
 import java.awt.Point;
@@ -8,20 +8,20 @@ import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import renderable.BlockNode;
-import renderable.BlockUtilities;
-import renderable.RenderableBlock;
-import renderable.TextualFactoryBlock;
-import workspace.BlockCanvas;
-import workspace.Page;
-import workspace.PageChangeEventManager;
-import workspace.Workspace;
-import workspace.WorkspaceEvent;
-import workspace.WorkspaceWidget;
-import codeblocks.Block;
-import codeblocks.BlockConnector;
-import codeblocks.BlockLink;
-import codeblocks.BlockLinkChecker;
+import edu.mit.blocks.renderable.BlockNode;
+import edu.mit.blocks.renderable.BlockUtilities;
+import edu.mit.blocks.renderable.RenderableBlock;
+import edu.mit.blocks.renderable.TextualFactoryBlock;
+import edu.mit.blocks.workspace.BlockCanvas;
+import edu.mit.blocks.workspace.Page;
+import edu.mit.blocks.workspace.PageChangeEventManager;
+import edu.mit.blocks.workspace.Workspace;
+import edu.mit.blocks.workspace.WorkspaceEvent;
+import edu.mit.blocks.workspace.WorkspaceWidget;
+import edu.mit.blocks.codeblocks.Block;
+import edu.mit.blocks.codeblocks.BlockConnector;
+import edu.mit.blocks.codeblocks.BlockLink;
+import edu.mit.blocks.codeblocks.BlockLinkChecker;
 
 
 

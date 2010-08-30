@@ -1,16 +1,16 @@
-package workspace.typeblocking;
+package edu.mit.blocks.workspace.typeblocking;
 
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import renderable.RenderableBlock;
-import workspace.Page;
-import workspace.PageChangeEventManager;
-import workspace.Workspace;
-import workspace.WorkspaceEvent;
-import codeblocks.Block;
-import codeblocks.BlockLink;
+import edu.mit.blocks.renderable.RenderableBlock;
+import edu.mit.blocks.workspace.Page;
+import edu.mit.blocks.workspace.PageChangeEventManager;
+import edu.mit.blocks.workspace.Workspace;
+import edu.mit.blocks.workspace.WorkspaceEvent;
+import edu.mit.blocks.codeblocks.Block;
+import edu.mit.blocks.codeblocks.BlockLink;
 
 /**
  * The BlockDropAnimator has two function, to fly a block to

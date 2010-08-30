@@ -1,5 +1,5 @@
 
-package renderable;
+package edu.mit.blocks.renderable;
 
 import java.awt.Dimension;
 

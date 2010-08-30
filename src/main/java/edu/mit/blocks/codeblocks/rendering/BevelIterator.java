@@ -1,4 +1,4 @@
-package codeblocks.rendering;
+package edu.mit.blocks.codeblocks.rendering;
 
 import java.awt.Shape;
 import java.awt.geom.PathIterator;

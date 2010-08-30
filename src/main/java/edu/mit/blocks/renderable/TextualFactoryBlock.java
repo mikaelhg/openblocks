@@ -1,4 +1,4 @@
-package renderable;
+package edu.mit.blocks.renderable;
 
 /**
  * This private class acts as an IMMUTABLE ID tag for

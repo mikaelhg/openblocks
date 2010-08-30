@@ -1,4 +1,4 @@
-package codeblocks;
+package edu.mit.blocks.codeblocks;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;

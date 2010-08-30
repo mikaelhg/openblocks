@@ -1,5 +1,5 @@
 
-package codeblocks;
+package edu.mit.blocks.codeblocks;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -7,11 +7,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import codeblocks.BlockConnector.PositionType;
+import edu.mit.blocks.codeblocks.BlockConnector.PositionType;
 
-import renderable.RenderableBlock;
-import workspace.Workspace;
-import workspace.WorkspaceEvent;
+import edu.mit.blocks.renderable.RenderableBlock;
+import edu.mit.blocks.workspace.Workspace;
+import edu.mit.blocks.workspace.WorkspaceEvent;
 
 /**
  * <code>BlockStub</code> are a special form of blocks that provide a particular

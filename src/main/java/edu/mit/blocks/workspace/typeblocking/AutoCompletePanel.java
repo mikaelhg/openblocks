@@ -1,4 +1,4 @@
-package workspace.typeblocking;
+package edu.mit.blocks.workspace.typeblocking;
 
 
 import java.awt.BorderLayout;
@@ -29,10 +29,10 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import renderable.BlockUtilities;
-import renderable.TextualFactoryBlock;
-import workspace.Workspace;
-import codeblockutil.CTracklessScrollPane;
+import edu.mit.blocks.renderable.BlockUtilities;
+import edu.mit.blocks.renderable.TextualFactoryBlock;
+import edu.mit.blocks.workspace.Workspace;
+import edu.mit.blocks.codeblockutil.CTracklessScrollPane;
 
 
 /**

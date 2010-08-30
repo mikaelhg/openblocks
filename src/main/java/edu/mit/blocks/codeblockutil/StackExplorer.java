@@ -1,4 +1,4 @@
-package codeblockutil;
+package edu.mit.blocks.codeblockutil;
 
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;

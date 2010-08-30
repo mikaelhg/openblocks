@@ -1,7 +1,7 @@
-package workspace;
+package edu.mit.blocks.workspace;
 
 import codeblocks.Block;
-import codeblocks.BlockLink;
+import edu.mit.blocks.codeblocks.BlockLink;
 
 public class WorkspaceEvent {
 

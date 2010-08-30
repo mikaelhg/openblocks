@@ -1,12 +1,12 @@
-package renderable;
+package edu.mit.blocks.renderable;
 
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 
-import workspace.Workspace;
-import workspace.WorkspaceEvent;
+import edu.mit.blocks.workspace.Workspace;
+import edu.mit.blocks.workspace.WorkspaceEvent;
 
 /**
  * The CommentLabel class controls the visibility of a Comment on a RenderableBlock

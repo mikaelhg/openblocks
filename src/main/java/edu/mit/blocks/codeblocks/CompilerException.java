@@ -1,4 +1,4 @@
-package codeblocks;
+package edu.mit.blocks.codeblocks;
 
 public class CompilerException extends Exception {
 	

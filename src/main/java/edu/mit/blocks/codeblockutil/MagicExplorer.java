@@ -1,4 +1,4 @@
-package codeblockutil;
+package edu.mit.blocks.codeblockutil;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -17,7 +17,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import codeblockutil.CScrollPane.ScrollPolicy;
+import edu.mit.blocks.codeblockutil.CScrollPane.ScrollPolicy;
 
 
 /**

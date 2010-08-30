@@ -1,4 +1,4 @@
-package workspace;
+package edu.mit.blocks.workspace;
 
 /**
  * The PageChangedListener interface must be implemented by anything

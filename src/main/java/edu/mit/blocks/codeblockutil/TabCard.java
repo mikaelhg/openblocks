@@ -1,4 +1,4 @@
-package codeblockutil;
+package edu.mit.blocks.codeblockutil;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -9,7 +9,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
-import codeblockutil.CScrollPane.ScrollPolicy;
+import edu.mit.blocks.codeblockutil.CScrollPane.ScrollPolicy;
 
 
 /**

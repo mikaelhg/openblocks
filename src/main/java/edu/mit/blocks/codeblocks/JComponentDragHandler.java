@@ -1,4 +1,4 @@
-package codeblocks;
+package edu.mit.blocks.codeblocks;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -15,8 +15,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
-import workspace.Workspace;
-import codeblockutil.GraphicsManager;
+import edu.mit.blocks.workspace.Workspace;
+import edu.mit.blocks.codeblockutil.GraphicsManager;
 
 /**
  * This class can be used to add dragging capability to any JComponents.

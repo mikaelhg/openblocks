@@ -1,8 +1,8 @@
-package workspace;
+package edu.mit.blocks.workspace;
 
 import java.awt.Color;
 
-import renderable.RenderableBlock;
+import edu.mit.blocks.renderable.RenderableBlock;
 
 /**
  * An Immuateble class identifying a subset's properties and blocks

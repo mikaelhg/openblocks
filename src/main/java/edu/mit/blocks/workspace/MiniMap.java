@@ -1,4 +1,4 @@
-package workspace;
+package edu.mit.blocks.workspace;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -20,10 +20,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import renderable.Comment;
-import renderable.RenderableBlock;
-import codeblocks.Block;
-import codeblocks.BlockConnector;
+import edu.mit.blocks.renderable.Comment;
+import edu.mit.blocks.renderable.RenderableBlock;
+import edu.mit.blocks.codeblocks.Block;
+import edu.mit.blocks.codeblocks.BlockConnector;
 
 /**
  * A MiniMap is a miniturized representation of the

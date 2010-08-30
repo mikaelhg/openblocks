@@ -1,10 +1,10 @@
-package renderable;
+package edu.mit.blocks.renderable;
 
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Point;
 
-import workspace.WorkspaceWidget;
+import edu.mit.blocks.workspace.WorkspaceWidget;
 
 /**
  * CommentSource interface that must be implemented by a class if a comment is to be linked to it.

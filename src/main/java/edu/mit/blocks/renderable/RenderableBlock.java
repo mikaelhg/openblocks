@@ -1,4 +1,4 @@
-package renderable;
+package edu.mit.blocks.renderable;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -35,28 +35,28 @@ import javax.swing.SwingUtilities;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import renderable.BlockImageIcon.ImageLocation;
-import workspace.ContextMenu;
-import workspace.FactoryManager;
-import workspace.ISupportMemento;
-import workspace.MiniMap;
-import workspace.RBParent;
-import workspace.SearchableElement;
-import workspace.Workspace;
-import workspace.WorkspaceEvent;
-import workspace.WorkspaceWidget;
-import codeblocks.Block;
-import codeblocks.BlockConnector;
-import codeblocks.BlockConnectorShape;
-import codeblocks.BlockLink;
-import codeblocks.BlockLinkChecker;
-import codeblocks.BlockShape;
-import codeblocks.BlockStub;
-import codeblocks.InfixBlockShape;
-import codeblocks.JComponentDragHandler;
-import codeblocks.rendering.BlockShapeUtil;
-import codeblockutil.CToolTip;
-import codeblockutil.GraphicsManager;
+import edu.mit.blocks.renderable.BlockImageIcon.ImageLocation;
+import edu.mit.blocks.workspace.ContextMenu;
+import edu.mit.blocks.workspace.FactoryManager;
+import edu.mit.blocks.workspace.ISupportMemento;
+import edu.mit.blocks.workspace.MiniMap;
+import edu.mit.blocks.workspace.RBParent;
+import edu.mit.blocks.workspace.SearchableElement;
+import edu.mit.blocks.workspace.Workspace;
+import edu.mit.blocks.workspace.WorkspaceEvent;
+import edu.mit.blocks.workspace.WorkspaceWidget;
+import edu.mit.blocks.codeblocks.Block;
+import edu.mit.blocks.codeblocks.BlockConnector;
+import edu.mit.blocks.codeblocks.BlockConnectorShape;
+import edu.mit.blocks.codeblocks.BlockLink;
+import edu.mit.blocks.codeblocks.BlockLinkChecker;
+import edu.mit.blocks.codeblocks.BlockShape;
+import edu.mit.blocks.codeblocks.BlockStub;
+import edu.mit.blocks.codeblocks.InfixBlockShape;
+import edu.mit.blocks.codeblocks.JComponentDragHandler;
+import edu.mit.blocks.codeblocks.rendering.BlockShapeUtil;
+import edu.mit.blocks.codeblockutil.CToolTip;
+import edu.mit.blocks.codeblockutil.GraphicsManager;
 
 
 /**

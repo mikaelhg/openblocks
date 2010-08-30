@@ -1,15 +1,15 @@
-package renderable;
+package edu.mit.blocks.renderable;
 
 import java.awt.Container;
 import java.awt.event.MouseEvent;
 
 import javax.swing.SwingUtilities;
 
-import codeblocks.Block;
-import codeblocks.JComponentDragHandler;
+import edu.mit.blocks.codeblocks.Block;
+import edu.mit.blocks.codeblocks.JComponentDragHandler;
 
 
-import workspace.WorkspaceWidget;
+import edu.mit.blocks.workspace.WorkspaceWidget;
 
 /**
  * FactoryRenderableBlock extends RenderableBlock and is used within FactoryBlockDrawers.

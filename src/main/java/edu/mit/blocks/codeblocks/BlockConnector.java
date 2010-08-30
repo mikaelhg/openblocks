@@ -1,11 +1,11 @@
-package codeblocks;
+package edu.mit.blocks.codeblocks;
 
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.w3c.dom.Node;
 
-import workspace.ISupportMemento;
+import edu.mit.blocks.workspace.ISupportMemento;
 
 /**
  * <code>BlockConnector</code> is a light class that describes the socket/plug information for each socket or plug of a particular Block.  

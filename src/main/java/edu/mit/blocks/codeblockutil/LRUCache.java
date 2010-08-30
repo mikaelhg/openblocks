@@ -1,4 +1,4 @@
-package codeblockutil;
+package edu.mit.blocks.codeblockutil;
 
 import java.util.*;
 

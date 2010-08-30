@@ -1,4 +1,4 @@
-package codeblocks;
+package edu.mit.blocks.codeblocks;
 
 /**
  * <code>LinkRule</code> specifies a rule for <code>Block</code> linking.

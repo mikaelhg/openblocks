@@ -1,4 +1,4 @@
-package renderable;
+package edu.mit.blocks.renderable;
 
 
 import java.awt.Color;
@@ -32,14 +32,14 @@ import javax.swing.undo.UndoManager;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import workspace.Workspace;
-import workspace.WorkspaceEvent;
+import edu.mit.blocks.workspace.Workspace;
+import edu.mit.blocks.workspace.WorkspaceEvent;
 
 
-import codeblocks.Block;
-import codeblocks.JComponentDragHandler;
-import codeblockutil.CTracklessScrollPane;
-import codeblockutil.CScrollPane.ScrollPolicy;
+import edu.mit.blocks.codeblocks.Block;
+import edu.mit.blocks.codeblocks.JComponentDragHandler;
+import edu.mit.blocks.codeblockutil.CTracklessScrollPane;
+import edu.mit.blocks.codeblockutil.CScrollPane.ScrollPolicy;
 
 
 /**

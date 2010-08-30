@@ -1,9 +1,9 @@
-package workspace.typeblocking;
+package edu.mit.blocks.workspace.typeblocking;
 
-import codeblocks.Block;
-import codeblocks.BlockConnector;
-import codeblocks.BlockLink;
-import codeblocks.BlockLinkChecker;
+import edu.mit.blocks.codeblocks.Block;
+import edu.mit.blocks.codeblocks.BlockConnector;
+import edu.mit.blocks.codeblocks.BlockLink;
+import edu.mit.blocks.codeblocks.BlockLinkChecker;
 
 /**
  * Utilities class to find links between two blocks

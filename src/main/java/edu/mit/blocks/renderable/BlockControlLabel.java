@@ -1,4 +1,4 @@
-package renderable;
+package edu.mit.blocks.renderable;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -12,7 +12,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-import codeblocks.BlockConnectorShape;
+import edu.mit.blocks.codeblocks.BlockConnectorShape;
 
 /**
  * BlockControlLabel is a basic Label that exists on a given block that is used to control a property that may be toggled between two states.  This class should be extended to handle the particular states that are toggled.

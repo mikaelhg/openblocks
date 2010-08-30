@@ -1,4 +1,4 @@
-package controller;
+package edu.mit.blocks.controller;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -18,14 +18,14 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import workspace.SearchBar;
-import workspace.SearchableContainer;
-import workspace.Workspace;
-import codeblocks.BlockConnectorShape;
-import codeblocks.BlockGenus;
-import codeblocks.BlockLinkChecker;
-import codeblocks.CommandRule;
-import codeblocks.SocketRule;
+import edu.mit.blocks.workspace.SearchBar;
+import edu.mit.blocks.workspace.SearchableContainer;
+import edu.mit.blocks.workspace.Workspace;
+import edu.mit.blocks.codeblocks.BlockConnectorShape;
+import edu.mit.blocks.codeblocks.BlockGenus;
+import edu.mit.blocks.codeblocks.BlockLinkChecker;
+import edu.mit.blocks.codeblocks.CommandRule;
+import edu.mit.blocks.codeblocks.SocketRule;
 
 /**
  * 

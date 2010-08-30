@@ -1,4 +1,4 @@
-package workspace;
+package edu.mit.blocks.workspace;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -16,14 +16,14 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import renderable.FactoryRenderableBlock;
-import renderable.RenderableBlock;
-import codeblocks.Block;
-import codeblocks.BlockStub;
-import codeblockutil.CBorderlessButton;
-import codeblockutil.CLabel;
-import codeblockutil.Canvas;
-import codeblockutil.Navigator;
+import edu.mit.blocks.renderable.FactoryRenderableBlock;
+import edu.mit.blocks.renderable.RenderableBlock;
+import edu.mit.blocks.codeblocks.Block;
+import edu.mit.blocks.codeblocks.BlockStub;
+import edu.mit.blocks.codeblockutil.CBorderlessButton;
+import edu.mit.blocks.codeblockutil.CLabel;
+import edu.mit.blocks.codeblockutil.Canvas;
+import edu.mit.blocks.codeblockutil.Navigator;
 
 
 /**

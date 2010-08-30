@@ -1,5 +1,5 @@
 
-package codeblocks;
+package edu.mit.blocks.codeblocks;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
@@ -7,9 +7,9 @@ import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-import renderable.RenderableBlock;
+import edu.mit.blocks.renderable.RenderableBlock;
 
-import codeblocks.rendering.BlockShapeUtil;
+import edu.mit.blocks.codeblocks.rendering.BlockShapeUtil;
 
 
 /**

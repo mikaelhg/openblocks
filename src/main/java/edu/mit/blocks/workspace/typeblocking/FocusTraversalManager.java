@@ -1,4 +1,4 @@
-package workspace.typeblocking;
+package edu.mit.blocks.workspace.typeblocking;
 
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -8,14 +8,14 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import renderable.RenderableBlock;
+import edu.mit.blocks.renderable.RenderableBlock;
 
-import workspace.Page;
-import workspace.WorkspaceEvent;
-import workspace.WorkspaceListener;
-import workspace.BlockCanvas.Canvas;
-import codeblocks.Block;
-import codeblocks.BlockConnector;
+import edu.mit.blocks.workspace.Page;
+import edu.mit.blocks.workspace.WorkspaceEvent;
+import edu.mit.blocks.workspace.WorkspaceListener;
+import edu.mit.blocks.workspace.BlockCanvas.Canvas;
+import edu.mit.blocks.codeblocks.Block;
+import edu.mit.blocks.codeblocks.BlockConnector;
 
 
 /**

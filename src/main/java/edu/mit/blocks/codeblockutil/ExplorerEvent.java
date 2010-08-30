@@ -1,4 +1,4 @@
-package codeblockutil;
+package edu.mit.blocks.codeblockutil;
 
 public interface ExplorerEvent {
 	public int getEventType();

@@ -1,4 +1,4 @@
-package renderable;
+package edu.mit.blocks.renderable;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
@@ -19,8 +19,8 @@ import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
 
-import workspace.RBParent;
-import codeblockutil.GraphicsManager;
+import edu.mit.blocks.workspace.RBParent;
+import edu.mit.blocks.codeblockutil.GraphicsManager;
 
 /**
  * The RBHighlightHandler class is responsible for maintaining the

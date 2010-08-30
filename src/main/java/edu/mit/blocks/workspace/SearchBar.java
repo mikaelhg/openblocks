@@ -1,4 +1,4 @@
-package workspace;
+package edu.mit.blocks.workspace;
 
 
 import java.awt.Color;
@@ -22,7 +22,7 @@ import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import codeblockutil.CQueryField;
+import edu.mit.blocks.codeblockutil.CQueryField;
 
 /**
  * Contributes a search bar component to the CodeBlocks GUI, which allows the user to find 

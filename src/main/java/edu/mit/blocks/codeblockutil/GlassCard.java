@@ -1,4 +1,4 @@
-package codeblockutil;
+package edu.mit.blocks.codeblockutil;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
@@ -23,7 +23,7 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JComponent;
 
-import codeblockutil.CScrollPane.ScrollPolicy;
+import edu.mit.blocks.codeblockutil.CScrollPane.ScrollPolicy;
 
 /**
  * A GlassCard is used by glass explorers explorers as a

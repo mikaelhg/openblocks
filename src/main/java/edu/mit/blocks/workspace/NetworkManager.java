@@ -1,4 +1,4 @@
-package workspace;
+package edu.mit.blocks.workspace;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -14,7 +14,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.swing.JOptionPane;
 
-import workspace.NetworkEvent.MsgId;
+import edu.mit.blocks.workspace.NetworkEvent.MsgId;
 
 /**
  * A NetworkManager maintains connections and host information. The network

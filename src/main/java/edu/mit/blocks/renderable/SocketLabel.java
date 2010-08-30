@@ -1,10 +1,10 @@
-package renderable;
+package edu.mit.blocks.renderable;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
 
-import codeblocks.BlockConnector;
-import codeblocks.BlockConnectorShape;
+import edu.mit.blocks.codeblocks.BlockConnector;
+import edu.mit.blocks.codeblocks.BlockConnectorShape;
 
 class SocketLabel extends BlockLabel{
 	private BlockConnector socket;

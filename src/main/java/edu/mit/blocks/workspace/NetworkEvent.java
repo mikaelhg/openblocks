@@ -1,4 +1,4 @@
-package workspace;
+package edu.mit.blocks.workspace;
 
 import java.io.*;
 import java.util.Arrays;

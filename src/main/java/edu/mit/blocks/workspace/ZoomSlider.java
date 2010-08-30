@@ -1,4 +1,4 @@
-package workspace;
+package edu.mit.blocks.workspace;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -10,7 +10,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
-import codeblockutil.CSlider;
+import edu.mit.blocks.codeblockutil.CSlider;
 
 /**
  * A ZoomSlider manages the zooming of the block canvas

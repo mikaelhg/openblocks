@@ -1,4 +1,4 @@
-package renderable;
+package edu.mit.blocks.renderable;
 
 import java.util.ArrayList;
 import java.util.List;

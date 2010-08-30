@@ -1,10 +1,10 @@
-package workspace;
+package edu.mit.blocks.workspace;
 
 import java.util.Collection;
 
 import javax.swing.JComponent;
 
-import renderable.RenderableBlock;
+import edu.mit.blocks.renderable.RenderableBlock;
 
 
 

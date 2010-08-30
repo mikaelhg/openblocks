@@ -1,4 +1,4 @@
-package workspace;
+package edu.mit.blocks.workspace;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -15,8 +15,8 @@ import java.util.Collection;
 
 import javax.swing.JComponent;
 
-import renderable.BlockUtilities;
-import renderable.RenderableBlock;
+import edu.mit.blocks.renderable.BlockUtilities;
+import edu.mit.blocks.renderable.RenderableBlock;
 
 
 public class TrashCan extends JComponent implements MouseListener, WorkspaceWidget, ComponentListener {

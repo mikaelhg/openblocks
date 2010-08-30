@@ -1,4 +1,4 @@
-package codeblocks;
+package edu.mit.blocks.codeblocks;
 
 /**
  * <code>SocketRule</code> checks if the two sockets being matched can connect simply by checking if the socket/plug

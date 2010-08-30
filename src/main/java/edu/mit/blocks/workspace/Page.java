@@ -1,4 +1,4 @@
-package workspace;
+package edu.mit.blocks.workspace;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -29,9 +29,9 @@ import javax.swing.SwingUtilities;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import renderable.RenderableBlock;
-import codeblocks.Block;
-import codeblockutil.CToolTip;
+import edu.mit.blocks.renderable.RenderableBlock;
+import edu.mit.blocks.codeblocks.Block;
+import edu.mit.blocks.codeblockutil.CToolTip;
 
 
 /**

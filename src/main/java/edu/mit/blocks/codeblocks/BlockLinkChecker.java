@@ -1,14 +1,14 @@
-package codeblocks;
+package edu.mit.blocks.codeblocks;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Collections;
 
-import renderable.RenderableBlock;
+import edu.mit.blocks.renderable.RenderableBlock;
 
-import workspace.Workspace;
-import workspace.WorkspaceListener;
+import edu.mit.blocks.workspace.Workspace;
+import edu.mit.blocks.workspace.WorkspaceListener;
 
 /**
  * <code>BlockLinkChecker</code> determines if two <code>Block</code> objects can connect.  In particular, 

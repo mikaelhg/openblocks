@@ -1,7 +1,7 @@
-package codeblocks;
+package edu.mit.blocks.codeblocks;
 
-import workspace.WorkspaceEvent;
-import workspace.WorkspaceListener;
+import edu.mit.blocks.workspace.WorkspaceEvent;
+import edu.mit.blocks.workspace.WorkspaceListener;
 
 public class CommandRule implements LinkRule, WorkspaceListener {
 	

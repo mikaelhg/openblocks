@@ -1,4 +1,4 @@
-package codeblocks.rendering;
+package edu.mit.blocks.codeblocks.rendering;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -12,8 +12,8 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import codeblockutil.GraphicsManager;
-import codeblockutil.LRUCache;
+import edu.mit.blocks.codeblockutil.GraphicsManager;
+import edu.mit.blocks.codeblockutil.LRUCache;
 
 public class BlockShapeUtil {
 

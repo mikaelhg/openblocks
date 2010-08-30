@@ -1,4 +1,4 @@
-package codeblocks;
+package edu.mit.blocks.codeblocks;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -12,13 +12,13 @@ import java.util.regex.Pattern;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import renderable.BlockImageIcon;
-import renderable.RenderableBlock;
-import renderable.BlockImageIcon.ImageLocation;
+import edu.mit.blocks.renderable.BlockImageIcon;
+import edu.mit.blocks.renderable.RenderableBlock;
+import edu.mit.blocks.renderable.BlockImageIcon.ImageLocation;
 
-import workspace.ISupportMemento;
+import edu.mit.blocks.workspace.ISupportMemento;
 
-import codeblocks.BlockConnector.PositionType;
+import edu.mit.blocks.codeblocks.BlockConnector.PositionType;
 
 /**
  * Block holds the mutable prop (data) of a particular block.  These mutable prop include socket, 

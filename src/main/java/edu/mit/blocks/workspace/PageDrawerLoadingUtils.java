@@ -1,4 +1,4 @@
-package workspace;
+package edu.mit.blocks.workspace;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -12,11 +12,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import renderable.FactoryRenderableBlock;
-import renderable.RenderableBlock;
+import edu.mit.blocks.renderable.FactoryRenderableBlock;
+import edu.mit.blocks.renderable.RenderableBlock;
 
-import codeblocks.Block;
-import codeblocks.BlockGenus;
+import edu.mit.blocks.codeblocks.Block;
+import edu.mit.blocks.codeblocks.BlockGenus;
 
 /**
  * Utilities class that provides the loading and saving of

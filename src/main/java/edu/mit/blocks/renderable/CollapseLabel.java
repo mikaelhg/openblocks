@@ -1,10 +1,10 @@
-package renderable;
+package edu.mit.blocks.renderable;
 
 import java.awt.event.MouseEvent;
 
-import codeblocks.Block;
-import codeblocks.BlockConnector;
-import codeblocks.BlockConnectorShape;
+import edu.mit.blocks.codeblocks.Block;
+import edu.mit.blocks.codeblocks.BlockConnector;
+import edu.mit.blocks.codeblocks.BlockConnectorShape;
 
 /**
  * CollapseLabel is a label that can be added to a renderable block that 

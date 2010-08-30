@@ -1,4 +1,4 @@
-package codeblocks;
+package edu.mit.blocks.codeblocks;
 
 import java.awt.Color;
 import java.awt.Image;
@@ -26,8 +26,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import renderable.BlockImageIcon;
-import renderable.BlockImageIcon.ImageLocation;
+import edu.mit.blocks.renderable.BlockImageIcon;
+import edu.mit.blocks.renderable.BlockImageIcon.ImageLocation;
 
 /**
  * A genus describes the properties that define a block.  For example, fd is a block genus 

@@ -1,4 +1,4 @@
-package codeblocks;
+package edu.mit.blocks.codeblocks;
 
 import java.awt.Dimension;
 import java.awt.geom.AffineTransform;
@@ -12,7 +12,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import codeblocks.rendering.BlockShapeUtil;
+import edu.mit.blocks.codeblocks.rendering.BlockShapeUtil;
 
 
 /**

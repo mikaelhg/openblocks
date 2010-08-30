@@ -1,10 +1,10 @@
-package codeblocks;
+package edu.mit.blocks.codeblocks;
 
-import renderable.RenderableBlock;
-import workspace.Workspace;
-import workspace.WorkspaceEvent;
-import codeblockutil.SoundManager;
-import codeblockutil.Sound;
+import edu.mit.blocks.renderable.RenderableBlock;
+import edu.mit.blocks.workspace.Workspace;
+import edu.mit.blocks.workspace.WorkspaceEvent;
+import edu.mit.blocks.codeblockutil.SoundManager;
+import edu.mit.blocks.codeblockutil.Sound;
 
 /**
  * A class that stores information about a potential block connection.

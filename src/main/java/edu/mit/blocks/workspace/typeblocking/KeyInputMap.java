@@ -1,11 +1,11 @@
-package workspace.typeblocking;
+package edu.mit.blocks.workspace.typeblocking;
 
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
 
-import workspace.typeblocking.TypeBlockManager.Direction;
+import edu.mit.blocks.workspace.typeblocking.TypeBlockManager.Direction;
 
 
 /**

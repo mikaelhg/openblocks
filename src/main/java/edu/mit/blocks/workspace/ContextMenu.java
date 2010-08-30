@@ -1,11 +1,11 @@
-package workspace;
+package edu.mit.blocks.workspace;
 
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import renderable.RenderableBlock;
+import edu.mit.blocks.renderable.RenderableBlock;
 
 
 /**

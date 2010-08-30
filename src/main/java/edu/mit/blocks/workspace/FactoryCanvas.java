@@ -1,4 +1,4 @@
-package workspace;
+package edu.mit.blocks.workspace;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import renderable.RenderableBlock;
-import codeblocks.Block;
-import codeblockutil.CGraphite;
-import codeblockutil.Canvas;
+import edu.mit.blocks.renderable.RenderableBlock;
+import edu.mit.blocks.codeblocks.Block;
+import edu.mit.blocks.codeblockutil.CGraphite;
+import edu.mit.blocks.codeblockutil.Canvas;
 
 /**
  * A Canvas that acts as the parent of all blocks.

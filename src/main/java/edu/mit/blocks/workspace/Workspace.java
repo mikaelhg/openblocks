@@ -1,4 +1,4 @@
-package workspace;
+package edu.mit.blocks.workspace;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -30,14 +30,14 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import renderable.BlockUtilities;
-import renderable.RenderableBlock;
-import workspace.typeblocking.FocusTraversalManager;
-import workspace.typeblocking.TypeBlockManager;
-import codeblocks.Block;
-import codeblockutil.Explorer;
-import codeblockutil.ExplorerEvent;
-import codeblockutil.ExplorerListener;
+import edu.mit.blocks.renderable.BlockUtilities;
+import edu.mit.blocks.renderable.RenderableBlock;
+import edu.mit.blocks.workspace.typeblocking.FocusTraversalManager;
+import edu.mit.blocks.workspace.typeblocking.TypeBlockManager;
+import edu.mit.blocks.codeblocks.Block;
+import edu.mit.blocks.codeblockutil.Explorer;
+import edu.mit.blocks.codeblockutil.ExplorerEvent;
+import edu.mit.blocks.codeblockutil.ExplorerListener;
 
 
 /**

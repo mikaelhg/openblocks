@@ -1,4 +1,4 @@
-package codeblockutil;
+package edu.mit.blocks.codeblockutil;
 
 public class GlassExplorerEvent implements ExplorerEvent{
 	public final static int SLIDING_CONTAINER_FINISHED_OPEN = 1;

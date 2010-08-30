@@ -1,4 +1,4 @@
-package codeblockutil;
+package edu.mit.blocks.codeblockutil;
 
 /**
  * XMLStringWriter is a very simple and naive writer to create XML Strings that 

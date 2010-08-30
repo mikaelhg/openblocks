@@ -1,4 +1,4 @@
-package codeblockutil;
+package edu.mit.blocks.codeblockutil;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
@@ -21,7 +21,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import workspace.Workspace;
+import edu.mit.blocks.workspace.Workspace;
 
 /**
  * See documentation for Explorer.

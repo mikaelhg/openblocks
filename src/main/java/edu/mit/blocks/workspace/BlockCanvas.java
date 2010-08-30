@@ -1,4 +1,4 @@
-package workspace;
+package edu.mit.blocks.workspace;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -20,11 +20,11 @@ import javax.swing.SwingUtilities;
 
 import org.w3c.dom.Element;
 
-import renderable.RenderableBlock;
-import codeblockutil.CGraphite;
-import codeblockutil.CHoverScrollPane;
-import codeblockutil.CScrollPane;
-import codeblockutil.CScrollPane.ScrollPolicy;
+import edu.mit.blocks.renderable.RenderableBlock;
+import edu.mit.blocks.codeblockutil.CGraphite;
+import edu.mit.blocks.codeblockutil.CHoverScrollPane;
+import edu.mit.blocks.codeblockutil.CScrollPane;
+import edu.mit.blocks.codeblockutil.CScrollPane.ScrollPolicy;
 
 
 /**

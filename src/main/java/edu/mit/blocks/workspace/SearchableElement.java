@@ -1,4 +1,4 @@
-package workspace;
+package edu.mit.blocks.workspace;
 
 public interface SearchableElement {
 

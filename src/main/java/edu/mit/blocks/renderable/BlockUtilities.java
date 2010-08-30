@@ -1,4 +1,4 @@
-package renderable;
+package edu.mit.blocks.renderable;
 
 import java.awt.Container;
 import java.util.ArrayList;
@@ -11,14 +11,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import workspace.Workspace;
-import workspace.WorkspaceEvent;
-import workspace.WorkspaceWidget;
-import codeblocks.Block;
-import codeblocks.BlockConnector;
-import codeblocks.BlockLink;
-import codeblocks.BlockLinkChecker;
-import codeblocks.BlockStub;
+import edu.mit.blocks.workspace.Workspace;
+import edu.mit.blocks.workspace.WorkspaceEvent;
+import edu.mit.blocks.workspace.WorkspaceWidget;
+import edu.mit.blocks.codeblocks.Block;
+import edu.mit.blocks.codeblocks.BlockConnector;
+import edu.mit.blocks.codeblocks.BlockLink;
+import edu.mit.blocks.codeblocks.BlockLinkChecker;
+import edu.mit.blocks.codeblocks.BlockStub;
 
 public class BlockUtilities {
 	private static final Map<String, Integer> instanceCounter = new HashMap<String, Integer>();
