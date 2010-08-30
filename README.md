@@ -9,7 +9,9 @@ The principal objective of the fork is to make the code more amenable to inclusi
 To do:
 ------
 
-* remove dependency to TableLayout, which doesn't appear to be actively maintained, 
+* make the student code more legible
+* remove dependency to TableLayout, which doesn't appear to be actively maintained,
   and really not even used in a very complex manner
+* possibly refactor out functionality such as network communication
 * replace static singletons with contexts and instances
-* move the various project packages from the main namespace to under the ``edu.mit.openblocks`` package
+* move the various project packages from the main namespace to under the ``edu.mit.blocks`` package
