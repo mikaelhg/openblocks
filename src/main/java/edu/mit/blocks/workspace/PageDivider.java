@@ -18,9 +18,9 @@ import javax.swing.JComponent;
  * when a user presses the PageDivider, it forces the 
  * left page to recalculate the minimum width by invoking 
  * Page.reformMinimumPixelWidth().  When a user drags a 
- * PageDivider, it resizes the left pages’s abstract width 
+ * PageDivider, it resizes the left pages's abstract width 
  * by invoking Page.addPixelWidth().  Note that this only 
- * changes the page’s abstract width but does not re-render 
+ * changes the page's abstract width but does not re-render 
  * the left to reflect the change in the abstract width.  
  * This is done by various page listeners handled when 
  * the PageDivider informs the PageChangedEventListener 

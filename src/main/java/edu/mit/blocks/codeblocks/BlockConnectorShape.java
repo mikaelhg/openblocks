@@ -556,9 +556,9 @@ public class BlockConnectorShape {
 	 * connector.
 	 * 
 	 * Adds a curved segment, defined by three new points, to the path by
-	 * drawing a BŽzier curve that intersects both the current coordinates and
+	 * drawing a BÃ©zier curve that intersects both the current coordinates and
 	 * the coordinates (x3, y3), using the specified points (x1, y1) and (x2,
-	 * y2) as BŽzier control points.
+	 * y2) as BÃ©zier control points.
 	 */
     private void _curveTo(float x1, float y1, float x2, float y2, float x3, float y3)  {
     		currentConnectorPath.curveTo( 

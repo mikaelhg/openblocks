@@ -16,10 +16,10 @@ public class CLabel extends JLabel{
 	private static final long serialVersionUID = 328149080212L;
 	//To get the shadow effect the text must be displayed multiple times at
 	//multiple locations.  x represents the center, white label.
-	// o is color values (0,0,0,0.5f) and ¥ is black.
+	// o is color values (0,0,0,0.5f) and b is black.
 	//			  o o
-	//			o x ¥ o
-	//			o ¥ o
+	//			o x b o
+	//			o b o
 	//			  o
 	//offsetArrays representing the translation movement needed to get from
 	// the center location to a specific offset location given in {{x,y},{x,y}....}

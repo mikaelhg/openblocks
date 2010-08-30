@@ -44,7 +44,7 @@ import codeblockutil.CScrollPane.ScrollPolicy;
 
 /**
  * Comment stores and displays user-generated text that
- * can be edited by the user. Comments begin in “editable” state.
+ * can be edited by the user. Comments begin in 'editable' state.
  *
  * Comments are associated with a parent source of type JComponent.
  * It should "tag" along with that component.  Note, however, that

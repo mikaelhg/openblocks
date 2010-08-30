@@ -57,8 +57,8 @@ import codeblockutil.CToolTip;
  * remember to reform the pages in order to synchronize the 
  * data between the model and view.
  * 
- * A page’s abstract color is rendered the same no matter 
- * what state the page is in.  A page’s abstract name is 
+ * A page's abstract color is rendered the same no matter 
+ * what state the page is in.  A page's abstract name is 
  * rendered thrice centered at every fourth of the page.  
  * The name is rendered with a size depending on the zoom 
  * level of that page (it tries to maintain a constant aspect 
@@ -918,10 +918,10 @@ public class Page  implements WorkspaceWidget, SearchableContainer, ISupportMeme
 		private static final long serialVersionUID = 328149080273L;
 		//To get the shadow effect the text must be displayed multiple times at
 		//multiple locations.  x represents the center, white label.
-		// o is color values (0,0,0,0.5f) and ¥ is black.
+		// o is color values (0,0,0,0.5f) and b is black.
 		//			  o o
-		//			o x ¥ o
-		//			o ¥ o
+		//			o x b o
+		//			o b o
 		//			  o
 		//offsetArrays representing the translation movement needed to get from
 		// the center location to a specific offset location given in {{x,y},{x,y}....}
