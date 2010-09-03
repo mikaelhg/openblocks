@@ -743,30 +743,6 @@ public class Comment extends JPanel {
     }
 
     /**
-     * Test application for comment.
-     * @param args
-     */
-    public static void main(String[] args) {
-        //Need comment source for comments
-        /**
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setLayout(new BorderLayout());
-        f.setSize(400, 400);
-        JPanel p =new JPanel(null);
-        p.add(new Comment("", null,  Color.green, 1.0), 0);
-        f.add(p);
-        p.add(new Comment("", null,  Color.orange, 1.0), 0);
-        f.add(p);
-        p.add(new Comment("", null,  Color.red, 1.0), 0);
-        f.add(p);
-        p.add(new Comment("", null,  Color.blue, 1.0), 0);
-        f.add(p);
-        f.setVisible(true);
-         */
-    }
-
-    /**
      * @return the pressed true, if this comment has been pressed
      */
     boolean isPressed() {

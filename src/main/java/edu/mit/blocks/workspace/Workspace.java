@@ -50,13 +50,13 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
      * Single Workspace instance
      */
     private static Workspace ws = new Workspace();
+
     /** WorkspaceListeners that monitor:
      * block: added, removed, dropped, label changed, connected, disconnected
      * workspace: scrolled, zoom changed
      */
     private HashSet<WorkspaceListener> workspaceListeners = new HashSet<WorkspaceListener>();
-    /** The reundomanager instance*/
-    //private ReundoManager reundoManager;
+
     /** WorkspaceWidgets are components within the workspace other than blocks that
      * include bars, buttons, factory drawers, and single instance widgets such as
      * the MiniMap and the TrashCan.
@@ -64,7 +64,7 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
     private TreeSet<WorkspaceWidget> workspaceWidgets = new TreeSet<WorkspaceWidget>(
             // store these in a sorted set according to their "draw depth"
             new Comparator<WorkspaceWidget>() {
-
+        @Override
         public int compare(WorkspaceWidget w1, WorkspaceWidget w2) {
             // by returning the difference in "draw depth", we make this comparitor
             // sort according to ascending "draw depth" (i.e. front to back)
@@ -86,6 +86,7 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
             }
         }
     });
+
     public static boolean everyPageHasDrawer = false;
 
     /** The Workspace has a BlockCanvas widget on which blocks actually live.
