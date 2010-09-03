@@ -39,14 +39,11 @@ public class WorkspaceController {
     private String languageDefinitionFilePath;
     private static Element langDefRoot;
     private boolean isWorkspacePanelInitialized = false;
-
     protected JPanel workspacePanel;
     protected static Workspace workspace;
     protected SearchBar searchBar;
-
     //flag to indicate if a new lang definition file has been set
     private boolean langDefDirty = true;
-
     //flag to indicate if a workspace has been loaded/initialized 
     private boolean workspaceLoaded = false;
 
@@ -69,8 +66,7 @@ public class WorkspaceController {
         final Document doc;
         try {
             builder = factory.newDocumentBuilder();
-            final String langDefLocation = /*workingDirectory +*/ languageDefinitionFilePath;
-            doc = builder.parse(new File(langDefLocation));
+            doc = builder.parse(new File(filePath));
             langDefRoot = doc.getDocumentElement();
             //set the dirty flag for the language definition file 
             //to true now that a new file has been set
@@ -409,13 +405,15 @@ public class WorkspaceController {
         frame.setVisible(true);
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
+
             public void run() {
                 final WorkspaceController wc = new WorkspaceController();
-                wc.setLangDefFilePath("/evo_lang_def.xml");
+                System.out.println("loading " + args[0]);
+                wc.setLangDefFilePath(args[0]);
                 wc.loadFreshWorkspace();
                 createAndShowGUI(wc);
             }
@@ -424,6 +422,7 @@ public class WorkspaceController {
 
     public static void initWithLangDefFilePath(final String langDefFilePath) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
+
             public void run() {
                 final WorkspaceController wc = new WorkspaceController();
                 wc.setLangDefFilePath(langDefFilePath);

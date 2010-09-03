@@ -68,7 +68,7 @@ public class BlockLink {
     static {
         //load the sound for connecting blocks, but only once
         try {
-            clickSound = SoundManager.loadSound("/codeblocks/click.wav");
+            clickSound = SoundManager.loadSound("/click.wav");
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error initializing sounds.  Continuing...");
