@@ -28,19 +28,14 @@ import edu.mit.blocks.codeblocks.CommandRule;
 import edu.mit.blocks.codeblocks.SocketRule;
 
 /**
- * 
- * There are three options in setting the language definition file.  It may be set
- * once and unchanged or it can be set multiple times.  You can set 
- * 
  * @author Ricarose Roque
  */
 public class WorkspaceController {
 
-    private String languageDefinitionFilePath;
-    private static Element langDefRoot;
+    private Element langDefRoot;
     private boolean isWorkspacePanelInitialized = false;
     protected JPanel workspacePanel;
-    protected static Workspace workspace;
+    protected Workspace workspace;
     protected SearchBar searchBar;
     //flag to indicate if a new lang definition file has been set
     private boolean langDefDirty = true;
@@ -58,9 +53,9 @@ public class WorkspaceController {
 
     /**
      * Sets the file path for the language definition file, if the 
-     * language definition file is located in 
+     * language definition file is located in
      */
-    public void setLangDefFilePath(String filePath) {
+    public void setLangDefFilePath(final String filePath) {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         final DocumentBuilder builder;
         final Document doc;
@@ -68,59 +63,6 @@ public class WorkspaceController {
             builder = factory.newDocumentBuilder();
             doc = builder.parse(new File(filePath));
             langDefRoot = doc.getDocumentElement();
-            //set the dirty flag for the language definition file 
-            //to true now that a new file has been set
-            langDefDirty = true;
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        } catch (SAXException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Sets the contents of the Lang Def File to the specified 
-     * String langDefContents
-     * @param langDefContents String contains the specification of a language
-     * definition file
-     */
-    public void setLangDefFileString(String langDefContents) {
-        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        final DocumentBuilder builder;
-        final Document doc;
-        try {
-            builder = factory.newDocumentBuilder();
-            doc = builder.parse(new InputSource(new StringReader(langDefContents)));
-            langDefRoot = doc.getDocumentElement();
-            //set the dirty flag for the language definition file 
-            //to true now that a new file has been set
-            langDefDirty = true;
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        } catch (SAXException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Sets the Lang Def File to the specified File langDefFile.  
-     * @param langDefFile File contains the specification of the a language 
-     * definition file.
-     */
-    public void setLangDefFile(File langDefFile) {
-        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        final DocumentBuilder builder;
-        final Document doc;
-        try {
-            builder = factory.newDocumentBuilder();
-            doc = builder.parse(langDefFile);
-            langDefRoot = doc.getDocumentElement();
-            //set the dirty flag for the language definition file 
-            //to true now that a new file has been set
             langDefDirty = true;
         } catch (ParserConfigurationException e) {
             throw new RuntimeException(e);
@@ -136,10 +78,9 @@ public class WorkspaceController {
      * a language specified in the pre-defined language def file.
      * @param root Loads the language specified in the Element root
      */
-    public void loadBlockLanguage(Element root) {
-        //load connector shapes
-        //MUST load shapes before genuses in order to initialize connectors within
-        //each block correctly
+    public void loadBlockLanguage(final Element root) {
+        /* MUST load shapes before genuses in order to initialize
+         connectors within each block correctly */
         BlockConnectorShape.loadBlockConnectorShapes(root);
 
         //load genuses
@@ -160,11 +101,8 @@ public class WorkspaceController {
      *
      */
     public void resetLanguage() {
-        //clear shape mappings
         BlockConnectorShape.resetConnectorShapeMappings();
-        //clear block genuses
         BlockGenus.resetAllGenuses();
-        //clear all link rules
         BlockLinkChecker.reset();
     }
 
@@ -178,12 +116,8 @@ public class WorkspaceController {
      */
     public String getSaveString() {
         final StringBuilder saveString = new StringBuilder();
-        //append the save data
         saveString.append("<?xml version=\"1.0\" encoding=\"ISO-8859\"?>");
         saveString.append("\r\n");
-        //dtd file path may not be correct...
-        //saveString.append("<!DOCTYPE StarLogo-TNG SYSTEM \""+SAVE_FORMAT_DTD_FILEPATH+"\">");
-        //append root node
         saveString.append("<CODEBLOCKS>");
         saveString.append(workspace.getSaveString());
         saveString.append("</CODEBLOCKS>");
@@ -195,9 +129,6 @@ public class WorkspaceController {
      * definition file.  The block canvas will have no live blocks.   
      */
     public void loadFreshWorkspace() {
-        //need to just reset workspace (no need to reset language) unless
-        //language was never loaded
-        //reset only if workspace actually exists
         if (workspaceLoaded) {
             resetWorkspace();
         }
@@ -214,7 +145,7 @@ public class WorkspaceController {
      * been specified for this programming project.
      * @param path String file path of the programming project to load
      */
-    public void loadProjectFromPath(String path) {
+    public void loadProjectFromPath(final String path) {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         final DocumentBuilder builder;
         final Document doc;
@@ -227,43 +158,6 @@ public class WorkspaceController {
             //are present in root, then the default set of drawers is loaded from 
             //langDefRoot
             workspace.loadWorkspaceFrom(projectRoot, langDefRoot);
-            workspaceLoaded = true;
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        } catch (SAXException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Loads the programming project specified in the projectContents.   
-     * This method assumes that a Language Definition File has already been 
-     * specified for this programming project.
-     * @param projectContents
-     */
-    public void loadProject(String projectContents) {
-        //need to reset workspace and language (only if new language has been set)
-        //reset only if workspace actually exists
-        if (workspaceLoaded) {
-            resetWorkspace();
-        }
-        if (langDefDirty) {
-            loadBlockLanguage(langDefRoot);
-        }
-        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        final DocumentBuilder builder;
-        final Document doc;
-        try {
-            builder = factory.newDocumentBuilder();
-            doc = builder.parse(new InputSource(new StringReader(projectContents)));
-            final Element root = doc.getDocumentElement();
-            //load the canvas (or pages and page blocks if any) blocks from the save file
-            //also load drawers, or any custom drawers from file.  if no custom drawers
-            //are present in root, then the default set of drawers is loaded from 
-            //langDefRoot
-            workspace.loadWorkspaceFrom(root, langDefRoot);
             workspaceLoaded = true;
         } catch (ParserConfigurationException e) {
             throw new RuntimeException(e);
@@ -304,19 +198,14 @@ public class WorkspaceController {
             final Element projectRoot = projectDoc.getDocumentElement();
             langDoc = builder.parse(new InputSource(new StringReader(projectContents)));
             final Element langRoot = langDoc.getDocumentElement();
-
-            //need to reset workspace and language (if langDefContents != null)
-            //reset only if workspace actually exists
             if (workspaceLoaded) {
                 resetWorkspace();
             }
-
             if (langDefContents == null) {
                 loadBlockLanguage(langDefRoot);
             } else {
                 loadBlockLanguage(langRoot);
             }
-            //TODO should verify that the roots of the two XML strings are valid
             workspace.loadWorkspaceFrom(projectRoot, langRoot);
             workspaceLoaded = true;
         } catch (ParserConfigurationException e) {
@@ -388,47 +277,33 @@ public class WorkspaceController {
      * Create the GUI and show it.  For thread safety, this method should be
      * invoked from the event-dispatching thread.
      */
-    private static void createAndShowGUI(WorkspaceController wc) {
+    private void createAndShowGUI() {
         final JFrame frame = new JFrame("WorkspaceDemo");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setBounds(100, 100, 500, 500);
-        final SearchBar searchBar = new SearchBar("Search blocks",
+        final SearchBar sb = new SearchBar("Search blocks",
                 "Search for blocks in the drawers and workspace", workspace);
-        for (final SearchableContainer con : wc.getAllSearchableContainers()) {
-            searchBar.addSearchableContainer(con);
+        for (final SearchableContainer con : this.getAllSearchableContainers()) {
+            sb.addSearchableContainer(con);
         }
         final JPanel topPane = new JPanel();
-        searchBar.getComponent().setPreferredSize(new Dimension(130, 23));
-        topPane.add(searchBar.getComponent());
+        sb.getComponent().setPreferredSize(new Dimension(130, 23));
+        topPane.add(sb.getComponent());
         frame.add(topPane, BorderLayout.PAGE_START);
-        frame.add(wc.getWorkspacePanel(), BorderLayout.CENTER);
+        frame.add(this.getWorkspacePanel(), BorderLayout.CENTER);
         frame.setVisible(true);
     }
 
     public static void main(final String[] args) {
-        //Schedule a job for the event-dispatching thread:
-        //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
-
-            public void run() {
+            @Override public void run() {
                 final WorkspaceController wc = new WorkspaceController();
-                System.out.println("loading " + args[0]);
                 wc.setLangDefFilePath(args[0]);
                 wc.loadFreshWorkspace();
-                createAndShowGUI(wc);
+                wc.createAndShowGUI();
             }
         });
     }
 
-    public static void initWithLangDefFilePath(final String langDefFilePath) {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-
-            public void run() {
-                final WorkspaceController wc = new WorkspaceController();
-                wc.setLangDefFilePath(langDefFilePath);
-                wc.loadFreshWorkspace();
-                createAndShowGUI(wc);
-            }
-        });
-    }
 }
+3
