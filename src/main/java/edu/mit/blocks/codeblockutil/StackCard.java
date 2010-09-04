@@ -206,8 +206,8 @@ class StackCard implements PropertyChangeListener {
 
     void animate() {
         if (count < 0 || count > partitions) {
-            new RuntimeException("StackCard may not grow or move beyond the"
-                    + "boundaries set by the origin and destination bounds").printStackTrace();
+            System.err.println("StackCard may not grow or move beyond the"
+                    + "boundaries set by the origin and destination bounds");
         } else {
             int x, y, w, h;
             x = this.origin.x + dx * count;

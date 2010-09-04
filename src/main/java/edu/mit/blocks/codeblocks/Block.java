@@ -101,55 +101,49 @@ public class Block implements ISupportMemento {
         sockets = new ArrayList<BlockConnector>();
         argumentDescriptions = new ArrayList<String>();
         //copy connectors from BlockGenus
-        try {
-            BlockGenus genus = BlockGenus.getGenusWithName(genusName);
-            if (genus == null) {
-                throw new Exception("genusName: " + genusName + " does not exist.");
-            }
 
-            //copy the block connectors from block genus
-            Iterable<BlockConnector> iter = genus.getInitSockets();
-            for (BlockConnector con : iter) {
-                sockets.add(new BlockConnector(con));
-            }
+        final BlockGenus genus = BlockGenus.getGenusWithName(genusName);
+        if (genus == null) {
+            throw new RuntimeException("genusName: " + genusName + " does not exist.");
+        }
 
-            if (genus.getInitPlug() != null) {
-                plug = new BlockConnector(genus.getInitPlug());
-            }
+        //copy the block connectors from block genus
+        for (final BlockConnector con : genus.getInitSockets()) {
+            sockets.add(new BlockConnector(con));
+        }
 
-            if (genus.getInitBefore() != null) {
-                before = new BlockConnector(genus.getInitBefore());
-            }
+        if (genus.getInitPlug() != null) {
+            plug = new BlockConnector(genus.getInitPlug());
+        }
 
-            if (genus.getInitAfter() != null) {
-                after = new BlockConnector(genus.getInitAfter());
-            }
+        if (genus.getInitBefore() != null) {
+            before = new BlockConnector(genus.getInitBefore());
+        }
 
-            this.genusName = genusName;
+        if (genus.getInitAfter() != null) {
+            after = new BlockConnector(genus.getInitAfter());
+        }
 
-            this.label = label;
+        this.genusName = genusName;
 
-            Iterable<String> arguumentIter = genus.getInitialArgumentDescriptions();
-            for (String arg : arguumentIter) {
-                argumentDescriptions.add(arg.trim());
-            }
+        this.label = label;
 
-            this.expandGroups = new ArrayList<List<BlockConnector>>(genus.getExpandGroups());
+        for (final String arg : genus.getInitialArgumentDescriptions()) {
+            argumentDescriptions.add(arg.trim());
+        }
 
-            //add to ALL_BLOCKS
-            //warning: publishing this block before constructor finishes has the 
-            //potential to cause some problems such as data races
-            //other threads could access this block from getBlock()
-            ALL_BLOCKS.put(this.blockID, this);
+        this.expandGroups = new ArrayList<List<BlockConnector>>(genus.getExpandGroups());
 
-            //add itself to stubs hashmap
-            //however factory blocks will have entries in hashmap...
-            if (linkToStubs && this.hasStubs()) {
-                BlockStub.putNewParentInStubMap(this.blockID);
-            }
+        //add to ALL_BLOCKS
+        //warning: publishing this block before constructor finishes has the
+        //potential to cause some problems such as data races
+        //other threads could access this block from getBlock()
+        ALL_BLOCKS.put(this.blockID, this);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        //add itself to stubs hashmap
+        //however factory blocks will have entries in hashmap...
+        if (linkToStubs && this.hasStubs()) {
+            BlockStub.putNewParentInStubMap(this.blockID);
         }
     }
     
@@ -661,7 +655,7 @@ public class Block implements ISupportMemento {
      * @return if BlockConnector plug exists
      */
     public boolean hasPlug() {
-        return !(plug == null);
+        return plug != null;
     }
     
     /**

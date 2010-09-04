@@ -37,16 +37,16 @@ public final class CFileHandler {
                         data.add(line);
                     }
                 } catch (FileNotFoundException ex) {
-                    ex.printStackTrace();
+                    throw new RuntimeException(ex);
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                    throw new RuntimeException(ex);
                 } finally {
                     try {
                         if (input != null) {
                             input.close();
                         }
                     } catch (IOException ex) {
-                        ex.printStackTrace();
+                        throw new RuntimeException(ex);
                     }
                 }
                 return data.toArray(new String[data.size()]);
@@ -81,7 +81,6 @@ public final class CFileHandler {
                 output.close();
                 return true;
             } catch (IOException io) {
-                io.printStackTrace();
                 return false;
             }
         }
@@ -113,7 +112,6 @@ public final class CFileHandler {
                 ImageIO.write(image, "jpg", f);
                 return true;
             } catch (IOException io) {
-                io.printStackTrace();
                 return false;
             }
         }

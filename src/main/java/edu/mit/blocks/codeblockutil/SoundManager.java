@@ -14,12 +14,10 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 /** Manages the sounds for StarLogoBlocks */
 public class SoundManager {
 
-    public static boolean DEBUG = false;
-    //set to true by default
     private static boolean enableSound = true;
 
     public static Sound loadSound(String soundFileName) {
-        URL url = SoundManager.class.getResource(soundFileName);
+        final URL url = SoundManager.class.getResource(soundFileName);
         if (url == null) {
             System.out.println("Could not find resource " + soundFileName);
             return null;
@@ -30,35 +28,22 @@ public class SoundManager {
         try {
             audioInputStream = AudioSystem.getAudioInputStream(url);
         } catch (UnsupportedAudioFileException e) {
-            e.printStackTrace();
-
             return null;
         } catch (IOException e) {
-            e.printStackTrace();
-
             return null;
         }
 
-        AudioFormat format = audioInputStream.getFormat();
+        final AudioFormat format = audioInputStream.getFormat();
 
-        if (DEBUG) {
-            System.out.println("Loading sound file \"" + url + "\"");
-            System.out.println("Format = " + format);
-        }
-
-        Clip clip;
-
+        final Clip clip;
         try {
             DataLine.Info info = new DataLine.Info(Clip.class, format);
-
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(audioInputStream);
         } catch (LineUnavailableException e) {
             System.out.println("Sorry, sound is not available");
             return null;
         } catch (IOException e) {
-            e.printStackTrace();
-
             return null;
         }
 

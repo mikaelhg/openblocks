@@ -131,13 +131,6 @@ public class TypeBlockManager {
         }
     }
 
-    /**
-     * @effects throws new Exception in stack but does not stop the program
-     */
-    private static void throwError(String message) {
-        new RuntimeException(message).printStackTrace();
-    }
-
     ///////////////////////
     //Automation Handlers//
     ///////////////////////
@@ -152,7 +145,7 @@ public class TypeBlockManager {
      */
     protected static void automateBlockDeletion() {
         if (TypeBlockManager.manager == null) {
-            throwError("AutoMateBlockDeletion invoked but typeBlockManager is disabled.");
+            System.err.println("AutoMateBlockDeletion invoked but typeBlockManager is disabled.");
             return;
         } else {
             if (!isNullBlockInstance(TypeBlockManager.manager.focusManager.getFocusBlockID())) {
@@ -424,7 +417,7 @@ public class TypeBlockManager {
 
     protected static void automateCopyBlock() {
         if (TypeBlockManager.manager == null) {
-            throwError("AutoMateCopyBlock invoked but typeBlockManager is disabled.");
+            System.err.println("AutoMateCopyBlock invoked but typeBlockManager is disabled.");
             return;
         }
         TypeBlockManager.manager.bufferedBlock =
@@ -433,7 +426,7 @@ public class TypeBlockManager {
 
     protected static void automateCopyAll() {
         if (TypeBlockManager.manager == null) {
-            throwError("AutoMatePasteBlock invoked but typeBlockManager is disabled.");
+            System.err.println("AutoMatePasteBlock invoked but typeBlockManager is disabled.");
             return;
         }
         TypeBlockManager.manager.bufferedBlock =
@@ -446,7 +439,7 @@ public class TypeBlockManager {
      */
     protected static void automatePasteBlock() {
         if (TypeBlockManager.manager == null) {
-            throwError("AutoMatePasteBlock invoked but typeBlockManager is disabled.");
+            System.err.println("AutoMatePasteBlock invoked but typeBlockManager is disabled.");
             return;
         }
 
@@ -494,13 +487,6 @@ public class TypeBlockManager {
                 mirror.setLocation(spot);
                 mirror.moveConnectedBlocks(); // make sure the childrens are placed correctly
             } else {
-                /*widgets = Workspace.getInstance().getWorkspaceWidgets();
-                for (WorkspaceWidget widg: widgets){
-                if (widg instanceof Page){
-                widget = widg;
-                break;
-                }
-                }*/
                 //TODO: future version, allow them to paste
                 JOptionPane.showMessageDialog(TypeBlockManager.manager.frame, "You cannot paste blocks that are currently NOT on the canvas."
                         + "\nThis function will be available in a future version.\n", "Error", JOptionPane.PLAIN_MESSAGE);
@@ -516,7 +502,7 @@ public class TypeBlockManager {
      */
     protected static void automateFocusTraversal(Direction dir) {
         if (TypeBlockManager.manager == null) {
-            throwError("AutoMateFocusTraversal invoked but typeBlockManager is disabled.");
+            System.err.println("AutoMateFocusTraversal invoked but typeBlockManager is disabled.");
             return;
         } else {
             manager.traverseFocus(dir);
@@ -566,7 +552,7 @@ public class TypeBlockManager {
      */
     protected static void automateAutoComplete(char character) {
         if (TypeBlockManager.manager == null) {
-            throwError("AutoMateAutoComplete invoked but typeBlockManager is disabled.");
+            System.err.println("AutoMateAutoComplete invoked but typeBlockManager is disabled.");
             return;
         } else {
             manager.displayAutoCompletePanel(character);
@@ -608,7 +594,7 @@ public class TypeBlockManager {
      */
     protected static void automateNegationInsertion() {
         if (TypeBlockManager.manager == null) {
-            throwError("AutoMateNegationInsertion invoked but typeBlockManager is disabled.");
+            System.err.println("AutoMateNegationInsertion invoked but typeBlockManager is disabled.");
             return;
         }
 
@@ -636,13 +622,9 @@ public class TypeBlockManager {
 
     protected static void automateMultiplication(char character) {
         if (TypeBlockManager.manager == null) {
-            throwError("AutoMateMultiplication invoked but typeBlockManager is disabled.");
+            System.err.println("AutoMateMultiplication invoked but typeBlockManager is disabled.");
             return;
         }
-
-//		====================>>>>>>>>>>>>>>>>>>>>>>>>>
-//		====================focus coming in>>>>>>>>>> TODO
-//		====================>>>>>>>>>>>>>>>>>>>>>>>>>
         if (!isNullBlockInstance(TypeBlockManager.manager.focusManager.getFocusBlockID())) {
             Block parentBlock = Block.getBlock(TypeBlockManager.manager.focusManager.getFocusBlockID());
             if (parentBlock.getGenusName().equals("number")) {
@@ -656,12 +638,9 @@ public class TypeBlockManager {
 
     protected static void automateAddition(char character) {
         if (TypeBlockManager.manager == null) {
-            throwError("AutoMateMultiplication invoked but typeBlockManager is disabled.");
+            System.err.println("AutoMateMultiplication invoked but typeBlockManager is disabled.");
             return;
         }
-//		====================>>>>>>>>>>>>>>>>>>>>>>>>>
-//		====================focus coming in>>>>>>>>>> TODO
-//		====================>>>>>>>>>>>>>>>>>>>>>>>>>
         //get focus block
         Long parentBlockID = TypeBlockManager.manager.focusManager.getFocusBlockID();
         if (isNullBlockInstance(parentBlockID)) {
@@ -702,7 +681,7 @@ public class TypeBlockManager {
      */
     protected static void automateBlockInsertion(String genusName, String label) {
         if (TypeBlockManager.manager == null) {
-            throwError("AutoMateBlockInsertion invoked but typeBlockManager is disabled.");
+            System.err.println("AutoMateBlockInsertion invoked but typeBlockManager is disabled.");
             return;
         }
         //if genus is null, DO NOT insert a new block, DO NOT change the focus
@@ -765,7 +744,7 @@ public class TypeBlockManager {
      */
     protected static void automateBlockInsertion(TextualFactoryBlock block, String label) {
         if (TypeBlockManager.manager == null) {
-            throwError("AutoMateBlockInsertion invoked but typeBlockManager is disabled.");
+            System.err.println("AutoMateBlockInsertion invoked but typeBlockManager is disabled.");
             return;
         }
         RenderableBlock createdRB = createRenderableBlock(block);
@@ -846,9 +825,6 @@ public class TypeBlockManager {
             throw new RuntimeException("Invariant Violated: may not pass an invalid instance of renderabel block");
         }
 
-//		====================>>>>>>>>>>>>>>>>>>>>>>>>>
-//		====================focus coming in>>>>>>>>>> TODO
-//		====================>>>>>>>>>>>>>>>>>>>>>>>>>
         //ignore default arguments
         block.ignoreDefaultArguments();
         this.blockCanvas.getCanvas().add(block, 0);

@@ -107,8 +107,7 @@ final public class Navigator {
      * @param m
      */
     private void printError(String m) {
-        System.out.println(m);
-        //new RuntimeException(m).printStackTrace();
+        System.err.println(m);
     }
 
     /**

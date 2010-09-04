@@ -70,7 +70,6 @@ public class BlockLink {
         try {
             clickSound = SoundManager.loadSound("/click.wav");
         } catch (Exception e) {
-            e.printStackTrace();
             System.out.println("Error initializing sounds.  Continuing...");
         }
     }

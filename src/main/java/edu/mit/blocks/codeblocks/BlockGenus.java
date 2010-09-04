@@ -681,7 +681,7 @@ public class BlockGenus {
                                     genus.blockImageMap.put(imgLoc, new BlockImageIcon(icon, imgLoc, isEditable, textWrap));
                                 }
                             } catch (MalformedURLException e) {
-                                e.printStackTrace();
+                                throw new RuntimeException(e);
                             }
                         }
                     }
