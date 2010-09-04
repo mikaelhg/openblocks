@@ -46,6 +46,7 @@ import edu.mit.blocks.codeblockutil.ExplorerListener;
 public class Workspace extends JLayeredPane implements ISupportMemento, RBParent, ChangeListener, ExplorerListener {
 
     private static final long serialVersionUID = 328149080422L;
+
     /**
      * Single Workspace instance
      */
@@ -126,15 +127,13 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
         this.factory = new FactoryManager(true, true);
         this.addWorkspaceListener(this.factory);
         this.blockCanvas.getHorizontalModel().addChangeListener(this);
-        List<Explorer> explorers = factory.getNavigator().getExplorers();
-        for (Explorer exp : explorers) {
+        for (final Explorer exp : factory.getNavigator().getExplorers()) {
             exp.addListener(this);
         }
 
         this.miniMap = new MiniMap();
         this.addWidget(this.miniMap, true, true);
         this.addComponentListener(new ComponentAdapter() {
-
             public void componentResized(ComponentEvent e) {
                 miniMap.repositionMiniMap();
                 blockCanvas.reformBlockCanvas();
@@ -162,17 +161,15 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
      * If event is of type "2" then shows the Minimize page button
      * Event type details can be found in the GlassExplorerEvent class
      */
+    @Override
     public void explorerEventOccurred(ExplorerEvent event) {
-        Explorer exp = event.getSource();
+        final Explorer exp = event.getSource();
         if (event.getEventType() == 1) {
-            List<Page> leftPages = blockCanvas.getLeftmostPages(exp.getSelectedCanvasWidth());
-            for (Page p : leftPages) {
+            for (final Page p : blockCanvas.getLeftmostPages(exp.getSelectedCanvasWidth())) {
                 p.disableMinimize();
             }
-        }
-        if (event.getEventType() == 2) {
-            List<Page> leftPages = blockCanvas.getLeftmostPages(exp.getSelectedCanvasWidth());
-            for (Page p : leftPages) {
+        } else if (event.getEventType() == 2) {
+            for (final Page p : blockCanvas.getLeftmostPages(exp.getSelectedCanvasWidth())) {
                 p.enableMinimize();
             }
         }
@@ -319,7 +316,9 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
                 revalidate();
                 repaint();
             } else {
-                blockCanvas.getJComponent().setPreferredSize(new Dimension(blockCanvas.getWidth() - widget.getJComponent().getWidth(), blockCanvasLayer.getHeight()));
+                blockCanvas.getJComponent().setPreferredSize(new Dimension(
+                        blockCanvas.getWidth() - widget.getJComponent().getWidth(),
+                        blockCanvasLayer.getHeight()));
             }
         }
         boolean success = workspaceWidgets.add(widget);
@@ -372,8 +371,8 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
      */
     public Iterable<Block> getBlocks() {
         //TODO: performance issue, must iterate through all blocks
-        ArrayList<Block> blocks = new ArrayList<Block>();
-        for (RenderableBlock renderable : blockCanvas.getBlocks()) {
+        final ArrayList<Block> blocks = new ArrayList<Block>();
+        for (final RenderableBlock renderable : blockCanvas.getBlocks()) {
             blocks.add(Block.getBlock(renderable.getBlockID()));
         }
         return blocks;

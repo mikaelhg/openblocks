@@ -2,8 +2,6 @@ package edu.mit.blocks.codeblocks;
 
 import java.awt.Color;
 import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -16,15 +14,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.ImageIcon;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import edu.mit.blocks.renderable.BlockImageIcon;
 import edu.mit.blocks.renderable.BlockImageIcon.ImageLocation;
@@ -492,17 +485,6 @@ public class BlockGenus {
             if (description.getNodeName().equals("text")) {
                 genus.blockDescription = description.getTextContent();
             } else if (description.getNodeName().equals("arg-description")) {
-                /*            	int argumentIndex = 0;
-                String argumentDescription = ""; 
-                nameMatcher=attrExtractor.matcher(description.getAttributes().getNamedItem("n").toString());
-                if (nameMatcher.find()){
-                argumentIndex = Integer.parseInt(nameMatcher.group(1));
-                }
-                System.out.println(description);
-                nameMatcher=attrExtractor.matcher(description.getAttributes().getNamedItem("doc-name").toString());
-                if (nameMatcher.find()){
-                argumentDescription = nameMatcher.group(1);
-                }*/
                 String argumentDescription = description.getTextContent();
                 if (argumentDescription != null) {
                     genus.argumentDescriptions.add(argumentDescription);
@@ -536,44 +518,37 @@ public class BlockGenus {
 
                 if (connector.getAttributes().getLength() > 0) {
                     nameMatcher = attrExtractor.matcher(connector.getAttributes().getNamedItem("connector-kind").toString());
-                    if (nameMatcher.find()) //will be true
-                    {
+                    if (nameMatcher.find()) {
                         connectorKind = nameMatcher.group(1).equals("socket") ? 0 : 1;
                     }
                     nameMatcher = attrExtractor.matcher(connector.getAttributes().getNamedItem("connector-type").toString());
-                    if (nameMatcher.find()) //will be true
-                    {
+                    if (nameMatcher.find()) {
                         connectorType = nameMatcher.group(1);
                     }
                     nameMatcher = attrExtractor.matcher(connector.getAttributes().getNamedItem("position-type").toString());
-                    if (nameMatcher.find()) //will be true
-                    {
+                    if (nameMatcher.find()) {
                         positionType = nameMatcher.group(1);
                     }
                     nameMatcher = attrExtractor.matcher(connector.getAttributes().getNamedItem("is-expandable").toString());
-                    if (nameMatcher.find()) //will be true
-                    {
-                        isExpandable = nameMatcher.group(1).equals("yes") ? true : false;
+                    if (nameMatcher.find()) {
+                        isExpandable = nameMatcher.group(1).equals("yes");
                     }
                     nameMatcher = attrExtractor.matcher(connector.getAttributes().getNamedItem("label-editable").toString());
-                    if (nameMatcher.find()) //will be true
-                    {
-                        isLabelEditable = nameMatcher.group(1).equals("yes") ? true : false;
+                    if (nameMatcher.find()) {
+                        isLabelEditable = nameMatcher.group(1).equals("yes");
                     }
                     //load optional items
                     opt_item = connector.getAttributes().getNamedItem("label");
                     if (opt_item != null) {
                         nameMatcher = attrExtractor.matcher(opt_item.toString());
-                        if (nameMatcher.find()) //will be true
-                        {
+                        if (nameMatcher.find()) {
                             label = nameMatcher.group(1);
                         }
                     }
                     opt_item = connector.getAttributes().getNamedItem("expand-group");
                     if (opt_item != null) {
                         nameMatcher = attrExtractor.matcher(opt_item.toString());
-                        if (nameMatcher.find()) //will be true
-                        {
+                        if (nameMatcher.find()) {
                             expandGroup = nameMatcher.group(1);
                         }
                     }
@@ -588,8 +563,7 @@ public class BlockGenus {
                         if (defarg.getNodeName().equals("DefaultArg")) {
                             if (defarg.getAttributes().getLength() > 0) {
                                 nameMatcher = attrExtractor.matcher(defarg.getAttributes().getNamedItem("genus-name").toString());
-                                if (nameMatcher.find()) //will be true
-                                {
+                                if (nameMatcher.find()) {
                                     defargname = nameMatcher.group(1);
                                 }
                                 assert BlockGenus.nameToGenus.get(defargname) != null : "Unknown BlockGenus: " + defargname;
@@ -598,8 +572,7 @@ public class BlockGenus {
                                 opt_item = defarg.getAttributes().getNamedItem("label");
                                 if (opt_item != null) {
                                     nameMatcher = attrExtractor.matcher(opt_item.toString());
-                                    if (nameMatcher.find()) //will be true
-                                    {
+                                    if (nameMatcher.find()) {
                                         defarglabel = nameMatcher.group(1);
                                     }
                                 }
@@ -609,7 +582,7 @@ public class BlockGenus {
                     }
                 }
 
-                BlockConnector socket;
+                final BlockConnector socket;
                 //set the position type for this new connector, by default its set to single
                 if (positionType.equals("mirror")) {
                     socket = new BlockConnector(connectorType, BlockConnector.PositionType.MIRROR, label, isLabelEditable, isExpandable, expandGroup, Block.NULL);
@@ -631,11 +604,9 @@ public class BlockGenus {
                     genus.plug = socket;
                     assert (!socket.isExpandable()) : genus.genusName + " can not have an expandable plug.  Every block has at most one plug.";
                 }
-
                 if (socket.isExpandable()) {
                     genus.areSocketsExpandable = true;
                 }
-
                 if (expandGroup.length() > 0) {
                     addToExpandGroup(genus.expandGroups, socket);
                 }
@@ -643,30 +614,12 @@ public class BlockGenus {
         }
     }
 
-//    /**
-//     * Load the description of the specified genus
-//     * @param description NodeList of description information to load from
-//     * @param genus BlockGenus to load description information onto
-//     */
-//    private static void loadGenusDescription(NodeList description, BlockGenus genus){
-//        Pattern attrExtractor=Pattern.compile("\"(.*)\"");
-//        Matcher nameMatcher;
-//        Node argDescChild;
-//        for (int k = 0; k < description.getLength(); k++) {
-//            argDescChild=description.item(k);
-//            //TODO
-//        }
-//    }
     /**
      * Loads the images to be drawn on the visible block instances of this
      * @param images NodeList of image information to load from
      * @param genus BlockGenus instance to load images onto
      */
     private static void loadBlockImages(NodeList images, BlockGenus genus) {
-        //the current working directory of this
-       /* String workingDirectory = ((System.getProperty("application.home") != null) ?
-        System.getProperty("application.home") :
-        System.getProperty("user.dir"));*/
         Pattern attrExtractor = Pattern.compile("\"(.*)\"");
         Matcher nameMatcher;
         Node imageNode;
@@ -679,18 +632,15 @@ public class BlockGenus {
                 if (imageNode.getAttributes().getLength() > 0) {
                     //load image properties
                     nameMatcher = attrExtractor.matcher(imageNode.getAttributes().getNamedItem("block-location").toString());
-                    if (nameMatcher.find()) //will be true
-                    {
+                    if (nameMatcher.find()) {
                         location = nameMatcher.group(1);
                     }
                     nameMatcher = attrExtractor.matcher(imageNode.getAttributes().getNamedItem("image-editable").toString());
-                    if (nameMatcher.find()) //will be true
-                    {
+                    if (nameMatcher.find()) {
                         isEditable = nameMatcher.group(1).equals("yes") ? true : false;
                     }
                     nameMatcher = attrExtractor.matcher(imageNode.getAttributes().getNamedItem("wrap-text").toString());
-                    if (nameMatcher.find()) //will be true
-                    {
+                    if (nameMatcher.find()) {
                         textWrap = nameMatcher.group(1).equals("yes") ? true : false;
                     }
                     int width = -1;
@@ -698,16 +648,14 @@ public class BlockGenus {
                     Node opt_item = imageNode.getAttributes().getNamedItem("width");
                     if (opt_item != null) {
                         nameMatcher = attrExtractor.matcher(opt_item.toString());
-                        if (nameMatcher.find()) //will be true
-                        {
+                        if (nameMatcher.find()) {
                             width = Integer.parseInt(nameMatcher.group(1));
                         }
                     }
                     opt_item = imageNode.getAttributes().getNamedItem("height");
                     if (opt_item != null) {
                         nameMatcher = attrExtractor.matcher(opt_item.toString());
-                        if (nameMatcher.find()) //will be true
-                        {
+                        if (nameMatcher.find()) {
                             height = Integer.parseInt(nameMatcher.group(1));
                         }
                     }
@@ -757,15 +705,13 @@ public class BlockGenus {
             if (prop.getNodeName().equals("LangSpecProperty")) {
                 if (prop.getAttributes().getLength() > 0) {
                     nameMatcher = attrExtractor.matcher(prop.getAttributes().getNamedItem("key").toString());
-                    if (nameMatcher.find()) //will be true
-                    {
+                    if (nameMatcher.find()) {
                         key = nameMatcher.group(1);
                     }
                     Node opt_item = prop.getAttributes().getNamedItem("value");
                     if (opt_item != null) {
                         nameMatcher = attrExtractor.matcher(opt_item.toString());
-                        if (nameMatcher.find()) //will be true
-                        {
+                        if (nameMatcher.find()) {
                             value = nameMatcher.group(1);
                         }
                     } else {
@@ -794,8 +740,7 @@ public class BlockGenus {
             if (stub.getNodeName().equals("Stub")) {
                 if (stub.getAttributes().getLength() > 0) {
                     nameMatcher = attrExtractor.matcher(stub.getAttributes().getNamedItem("stub-genus").toString());
-                    if (nameMatcher.find()) //will be true
-                    {
+                    if (nameMatcher.find()) {
                         stubGenus = nameMatcher.group(1);
                     }
                     if (stub.hasChildNodes()) {
@@ -994,10 +939,7 @@ public class BlockGenus {
                 }
             }
             famList.clear();
-
         }
-
-
     }
 
     /**
@@ -1042,31 +984,6 @@ public class BlockGenus {
             out.append("\n");
         }
         return out.toString();
-    }
-
-    public static void main(String[] args) {
-        String blockdocLocation = ((System.getProperty("application.home") != null)
-                ? System.getProperty("application.home")
-                : System.getProperty("user.dir")) + "/support/lang_def.xml";
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder;
-        Document doc;
-        Element langDefRoot;
-        try {
-            builder = factory.newDocumentBuilder();
-            doc = builder.parse(new File(blockdocLocation));
-            langDefRoot = doc.getDocumentElement();
-            if (langDefRoot.getNodeName().equals("BlockLangDef")) {
-
-                BlockGenus.loadBlockGenera(langDefRoot);
-            }
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
 }
