@@ -106,9 +106,6 @@ public class WorkspaceController {
         BlockLinkChecker.reset();
     }
 
-    ////////////////////////
-    // SAVING AND LOADING //
-    ////////////////////////
     /**
      * Returns the save string for the entire workspace.  This includes the block workspace, any 
      * custom factories, canvas view state and position, pages
@@ -306,4 +303,3 @@ public class WorkspaceController {
     }
 
 }
-3
