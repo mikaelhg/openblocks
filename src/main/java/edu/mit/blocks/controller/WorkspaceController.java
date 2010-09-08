@@ -28,6 +28,8 @@ import edu.mit.blocks.codeblocks.CommandRule;
 import edu.mit.blocks.codeblocks.SocketRule;
 
 /**
+ * Example entry point to OpenBlock application creation.
+ * 
  * @author Ricarose Roque
  */
 public class WorkspaceController {
@@ -37,8 +39,10 @@ public class WorkspaceController {
     protected JPanel workspacePanel;
     protected Workspace workspace;
     protected SearchBar searchBar;
+
     //flag to indicate if a new lang definition file has been set
     private boolean langDefDirty = true;
+
     //flag to indicate if a workspace has been loaded/initialized 
     private boolean workspaceLoaded = false;
 
@@ -280,7 +284,7 @@ public class WorkspaceController {
         frame.setBounds(100, 100, 500, 500);
         final SearchBar sb = new SearchBar("Search blocks",
                 "Search for blocks in the drawers and workspace", workspace);
-        for (final SearchableContainer con : this.getAllSearchableContainers()) {
+        for (final SearchableContainer con : getAllSearchableContainers()) {
             sb.addSearchableContainer(con);
         }
         final JPanel topPane = new JPanel();

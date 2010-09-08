@@ -16,13 +16,15 @@ import edu.mit.blocks.codeblocks.rendering.BlockShapeUtil;
 
 
 /**
- * BlockConnectionShape defines and draws the connectors between the blocks.  This includes
- * the different (command/data) (sockets/plugs).  The standard sockets/plugs have varying styles.
+ * BlockConnectionShape defines and draws the connectors between the blocks.
+ * This includes the different (command/data) (sockets/plugs).
+ * The standard sockets/plugs have varying styles.
  * 
- * BlockConnectionShape doesn't care about the layout of the connectors on the blocks, that is the
- * job of BlockShape.
+ * BlockConnectionShape doesn't care about the layout of the connectors on 
+ * the blocks, that is the job of BlockShape.
  * 
- * BlockConnectionShape is extendable to allow for 3rd party (command/data) (sockets/plugs) shapes.
+ * BlockConnectionShape is extendable to allow for 3rd party (command/data)
+ * (sockets/plugs) shapes.
  * 
  * @author bwarne
  */
