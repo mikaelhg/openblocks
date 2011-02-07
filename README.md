@@ -6,6 +6,14 @@ This is a fork of [MIT OpenBlocks](http://education.mit.edu/drupal/openblocks)
 
 The principal objective of the fork is to make the code more amenable to inclusion to other projects.
 
+Getting Started:
+------
+$ mvn validate # only need to run once to setup TableLayout jar
+$ mvn clean package
+
+$ cd support 
+$ ./run.sh lang_def.xml
+
 To do:
 ------
 
@@ -19,3 +27,4 @@ Done:
 -----
 
 * move the various project packages from the main namespace to under the ``edu.mit.blocks`` package
+
