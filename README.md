@@ -8,11 +8,11 @@ The principal objective of the fork is to make the code more amenable to inclusi
 
 Getting Started:
 ------
-$ mvn validate # only need to run once to setup TableLayout jar
-$ mvn clean package
+	$ mvn validate # only need to run once to setup TableLayout jar
+	$ mvn clean package
 
-$ cd support 
-$ ./run.sh lang_def.xml
+	$ cd support 
+	$ ./run.sh lang_def.xml
 
 To do:
 ------
