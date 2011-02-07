@@ -75,8 +75,8 @@ public class JComponentDragHandler implements MouseListener, MouseMotionListener
     }
 
     private static void initHandCursors() {
-        openHandCursor = createHandCursor("/open_hand.png", "openHandCursor");
-        closedHandCursor = createHandCursor("/closed_hand.png", "closedHandCursor");
+        openHandCursor = createHandCursor("/edu/mit/blocks/codeblocks/open_hand.png", "openHandCursor");
+        closedHandCursor = createHandCursor("/edu/mit/blocks/codeblocks/closed_hand.png", "closedHandCursor");
     }
 
     private static Cursor createHandCursor(String location, String cursorName) {
