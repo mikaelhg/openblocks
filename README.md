@@ -11,8 +11,7 @@ Getting Started:
 	$ mvn validate # only need to run once to setup TableLayout jar
 	$ mvn clean package
 
-	$ cd support 
-	$ ./run.sh lang_def.xml
+	$ mvn exec:java -Dexec.mainClass="edu.mit.blocks.controller.WorkspaceController" -Dexec.args="support/lang_def.xml"
 
 To do:
 ------
