@@ -19,11 +19,11 @@ To do:
 * upgrade code maintainability from the academic baseline to the commercial baseline
 * remove dependency to TableLayout, which doesn't appear to be actively maintained,
   and really not even used in a very complex manner
-* possibly refactor out functionality such as network communication
 * replace static singletons with contexts and instances
 
 Done:
 -----
 
 * move the various project packages from the main namespace to under the ``edu.mit.blocks`` package
+* refactor out functionality such as network communication
 
