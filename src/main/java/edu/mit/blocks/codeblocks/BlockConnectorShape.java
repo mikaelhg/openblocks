@@ -32,30 +32,33 @@ public class BlockConnectorShape {
 
     /** height of horizontal-plug/socket */
     public static final float DATA_PLUG_HEIGHT = 24.0f;
+
     /** Width of most plug shapes */
     public static final float NORMAL_DATA_PLUG_WIDTH = 8.0f;
+
     /** Width of polymorphic plug shape */
     public static final float POLYMORPHIC_DATA_PLUG_WIDTH = 8.0f;
+
     /** width of vertical control connection */
     public static final float CONTROL_PLUG_WIDTH = 14.0f;
+
     /** height of vertical control connection */
     public static final float CONTROL_PLUG_HEIGHT = 4.0f;
 
-
     /** width of command input bar */
     public static final float COMMAND_INPUT_BAR_WIDTH = BlockShape.COMMAND_PORT_OFFSET + 2f;
+
     /** height of command input bar */
     public static final float COMMAND_INPUT_BAR_HEIGHT = 5f;
+
     /** default height of command input */
     public static final float DEFAULT_COMMAND_INPUT_HEIGHT = DATA_PLUG_HEIGHT;
     
-    
-    
     /** The starting point of the current connection begin drawn */
     private Point2D startPoint;
+
     /** The path of the current connection begin drawn */
     private GeneralPath currentConnectorPath;
-    
     
     /** A hashmap mapping the application specific string of connection shapes to a shape identifying integer */
     private static HashMap<String, Integer> SHAPE_MAPPINGS = new HashMap<String, Integer>();
