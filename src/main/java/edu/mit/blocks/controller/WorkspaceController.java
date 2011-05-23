@@ -3,7 +3,9 @@ package edu.mit.blocks.controller;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 
 import javax.swing.JComponent;
@@ -60,12 +62,24 @@ public class WorkspaceController {
      * language definition file is located in
      */
     public void setLangDefFilePath(final String filePath) {
+        try {
+        	setLangDefStream(new FileInputStream(filePath));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    /**
+     * Sets language definition file from the given input stream
+     * @param in input stream to read
+     */
+    public void setLangDefStream(InputStream in) {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         final DocumentBuilder builder;
         final Document doc;
         try {
             builder = factory.newDocumentBuilder();
-            doc = builder.parse(new File(filePath));
+            doc = builder.parse(in);
             langDefRoot = doc.getDocumentElement();
             langDefDirty = true;
         } catch (ParserConfigurationException e) {
@@ -117,7 +131,7 @@ public class WorkspaceController {
      */
     public String getSaveString() {
         final StringBuilder saveString = new StringBuilder();
-        saveString.append("<?xml version=\"1.0\" encoding=\"ISO-8859\"?>");
+        saveString.append("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>");
         saveString.append("\r\n");
         saveString.append("<CODEBLOCKS>");
         saveString.append(workspace.getSaveString());
