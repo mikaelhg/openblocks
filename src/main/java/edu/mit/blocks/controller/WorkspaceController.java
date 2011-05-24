@@ -62,10 +62,22 @@ public class WorkspaceController {
      * language definition file is located in
      */
     public void setLangDefFilePath(final String filePath) {
+    	InputStream in = null;
         try {
-        	setLangDefStream(new FileInputStream(filePath));
+        	in = new FileInputStream(filePath);
+        	setLangDefStream(in);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+        finally {
+        	if (in != null) {
+        		try {
+					in.close();
+				}
+				catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+        	}
         }
     }
     
