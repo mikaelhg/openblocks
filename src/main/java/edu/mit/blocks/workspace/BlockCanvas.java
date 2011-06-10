@@ -18,13 +18,15 @@ import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 import javax.swing.SwingUtilities;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
-import edu.mit.blocks.renderable.RenderableBlock;
 import edu.mit.blocks.codeblockutil.CGraphite;
 import edu.mit.blocks.codeblockutil.CHoverScrollPane;
 import edu.mit.blocks.codeblockutil.CScrollPane;
 import edu.mit.blocks.codeblockutil.CScrollPane.ScrollPolicy;
+import edu.mit.blocks.renderable.RenderableBlock;
 
 /**
  * A BlockCanvas is a container of Pages and is a scrollable 
@@ -428,21 +430,27 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
     //Saving and Loading		//
     //////////////////////////////
     /**
-     * Returns an XML String describing all the blocks and pages within 
+     * Returns an XML node describing all the blocks and pages within 
      * the BlockCanvas
+     * @return Node or {@code null} if there are no pages
      */
-    public String getSaveString() {
-        StringBuffer saveString = new StringBuffer();
-
-        //get save string of all pages
-        if (pages.size() > 0) {  //TODO ria just do BLOCKS, CHECK OUT HOW SAVING WILL BE LIKE WITH REFACTORING
-            saveString.append("<Pages>"); //should we include drawer-with-page flag?
-            for (Page page : pages) {
-                saveString.append(page.getSaveString());
-            }
-            saveString.append("</Pages>");
-        }
-        return saveString.toString();
+    public Node getSaveNode(Document document) {
+    	if (pages.size() > 0) {
+    		// TODO ria just do BLOCKS, CHECK OUT HOW SAVING WILL BE LIKE WITH REFACTORING
+    		Element pageElement = document.createElement("Pages");
+    		if (Workspace.everyPageHasDrawer) {
+    			pageElement.setAttribute("drawer-with-page", "yes");
+    		}
+    		
+    		for (Page page: pages) {
+    			Node pageNode = page.getSaveNode(document);
+    			pageElement.appendChild(pageNode);
+    		}
+    		
+    		return pageElement;
+    	}
+    	
+    	return null;
     }
 
     /**

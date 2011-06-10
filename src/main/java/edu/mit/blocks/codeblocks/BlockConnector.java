@@ -3,6 +3,9 @@ package edu.mit.blocks.codeblocks;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import edu.mit.blocks.workspace.ISupportMemento;
@@ -29,9 +32,6 @@ public class BlockConnector implements ISupportMemento {
     private boolean isLabelEditable = false;
     private String expandGroup = "";
 
-    private static final String EQ_OPEN_QUOTE = "=\"";
-    private static final String CLOSE_QUOTE = "\" ";
-    
     //Specifies the PositionType of connector:
     //Single is the default connector that appears on only one side (left/right) of a block.
     //Mirror is creates a connectors with locations mirrored on both left and right side of a block.
@@ -390,60 +390,42 @@ public class BlockConnector implements ISupportMemento {
     }
     
     /**
-     * Returns an escaped (safe) version of string.
-     */
-    private static String escape(String s) {
-        return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-    }
-    
-    /**
-     * Returns the save string of this.  save string only includes 
+     * Returns the node of this.  Node only includes 
      * information that was modifiable and modified 
      * @param conKind String containing if this is a socket or plug
-     * @return the save string of this
+     * @return the node of this
      */
-    public String getSaveString(String conKind) {
-        StringBuffer saveString = new StringBuffer();
-
-        saveString.append("<BlockConnector ");
-        appendAttribute("connector-kind", conKind, saveString);
-        appendAttribute("connector-type", kind, saveString);
-        appendAttribute("init-type", initKind, saveString);
-        appendAttribute("label", label, saveString);
-        if (expandGroup.length() > 0) {
-            appendAttribute("expand-group", expandGroup, saveString);
-        }
-        if (isExpandable) {
-            appendAttribute("is-expandable", "yes", saveString);
-        }
+    public Node getSaveNode(Document document, String conKind) {
+    	Element connectorElement = document.createElement("BlockConnector");
+    	connectorElement.setAttribute("connector-kind", conKind);
+    	connectorElement.setAttribute("connector-type", kind);
+    	connectorElement.setAttribute("init-type", initKind);
+    	connectorElement.setAttribute("label", label);
+    	if (expandGroup.length() > 0) {
+    		connectorElement.setAttribute("expand-group", expandGroup);
+    	}
+    	if (isExpandable) {
+    		connectorElement.setAttribute("is-expandable", "yes");
+    	}
         if (this.positionType.equals(PositionType.SINGLE)) {
-            appendAttribute("position-type", "single", saveString);
+        	connectorElement.setAttribute("position-type", "single");
         } else if (this.positionType.equals(PositionType.MIRROR)) {
-            appendAttribute("position-type", "mirror", saveString);
+        	connectorElement.setAttribute("position-type", "mirror");
         } else if (this.positionType.equals(PositionType.BOTTOM)) {
-            appendAttribute("position-type", "bottom", saveString);
+        	connectorElement.setAttribute("position-type", "bottom");
         } else if (this.positionType.equals(PositionType.TOP)) {
-            appendAttribute("position-type", "top", saveString);
+        	connectorElement.setAttribute("position-type", "top");
         }
-
+        
         if (this.isLabelEditable) {
-            appendAttribute("label-editable", "true", saveString);
+        	connectorElement.setAttribute("label-editable", "true");
         }
 
         if (!this.connBlockID.equals(Block.NULL)) {
-            appendAttribute("con-block-id", this.connBlockID.toString(), saveString);
+            connectorElement.setAttribute("con-block-id", Long.toString(connBlockID));
         }
-
-        saveString.append("></BlockConnector>");
-
-        return saveString.toString();
-    }
-    
-    private void appendAttribute(String att, String value, StringBuffer buf) {
-        buf.append(att);
-        buf.append(EQ_OPEN_QUOTE);
-        buf.append(escape(value));
-        buf.append(CLOSE_QUOTE);
+    	
+    	return connectorElement;
     }
     
     /***********************************

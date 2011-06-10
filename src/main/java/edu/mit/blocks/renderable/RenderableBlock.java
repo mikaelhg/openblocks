@@ -32,6 +32,7 @@ import javax.swing.JToolTip;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -1733,17 +1734,13 @@ public class RenderableBlock extends JComponent implements SearchableElement, Mo
     //SAVING AND LOADING
     ////////////////
     /**
-     * Returns the save string of this
-     * @return the save string of this
+     * Returns the node of this
+     * @return the node of this
      */
-    public String getSaveString() {
-        if (comment != null) {
-            return getBlock().getSaveString(descale(this.getX()), descale(this.getY()),
-                    this.comment.getSaveString(), isCollapsed());
-        } else {
-            return getBlock().getSaveString(descale(this.getX()), descale(this.getY()),
-                    null, isCollapsed());
-        }
+    public Node getSaveNode(Document document) {
+    	// XXX seems strange that comment is kept here but saved in the block
+    	return getBlock().getSaveNode(document, descale(this.getX()), descale(this.getY()),
+                    comment != null ? comment.getSaveNode(document) : null, isCollapsed());
     }
 
     /**
