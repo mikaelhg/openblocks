@@ -28,17 +28,17 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
+import edu.mit.blocks.codeblocks.JComponentDragHandler;
+import edu.mit.blocks.codeblockutil.CScrollPane.ScrollPolicy;
+import edu.mit.blocks.codeblockutil.CTracklessScrollPane;
 import edu.mit.blocks.workspace.Workspace;
 import edu.mit.blocks.workspace.WorkspaceEvent;
-
-
-import edu.mit.blocks.codeblocks.Block;
-import edu.mit.blocks.codeblocks.JComponentDragHandler;
-import edu.mit.blocks.codeblockutil.CTracklessScrollPane;
-import edu.mit.blocks.codeblockutil.CScrollPane.ScrollPolicy;
 
 /**
  * Comment stores and displays user-generated text that
@@ -316,36 +316,49 @@ public class Comment extends JPanel {
     }
 
     /**
-     * Returns the save String for this comment.
+     * Returns the node for this comment.
      * @return
      */
-    public String getSaveString() {
-        StringBuffer saveString = new StringBuffer();
-        saveString.append("<Comment>");
-        saveString.append("<Text>");
-        saveString.append(Block.escape(this.getText()).replaceAll("`", "'"));
-        saveString.append("</Text>");
-        saveString.append("<Location>");
-        saveString.append("<X>");
-        saveString.append(descale(getLocation().getX()));
-        saveString.append("</X>");
-        saveString.append("<Y>");
-        saveString.append(descale(getLocation().getY()));
-        saveString.append("</Y>");
-        saveString.append("</Location>");
-        saveString.append("<BoxSize>");
-        saveString.append("<Width>");
-        saveString.append(descale(getWidth()));
-        saveString.append("</Width>");
-        saveString.append("<Height>");
-        saveString.append(descale(getHeight()));
-        saveString.append("</Height>");
-        saveString.append("</BoxSize>");
-        if (!commentLabel.isActive()) {
-            saveString.append("<Collapsed/>");
-        }
-        saveString.append("</Comment>");
-        return saveString.toString();
+    public Node getSaveNode(Document document) {
+    	Element commentElement = document.createElement("Comment");
+    	
+    	// Text
+    	Element textElement = document.createElement("Text");
+    	Text text = document.createTextNode(this.getText().replaceAll("`", "'"));
+    	textElement.appendChild(text);
+    	commentElement.appendChild(textElement);
+    	
+    	// Location
+    	Element locationElement = document.createElement("Location");
+    	Element xElement = document.createElement("X");
+    	xElement.appendChild(document.createTextNode(String.valueOf(descale(getLocation().getX()))));
+    	locationElement.appendChild(xElement);
+    	
+    	Element yElement = document.createElement("Y");
+    	yElement.appendChild(document.createTextNode(String.valueOf(descale(getLocation().getY()))));
+    	locationElement.appendChild(yElement);
+    	
+    	commentElement.appendChild(locationElement);
+    	
+    	// Box size
+    	Element boxSizeElement = document.createElement("BoxSize");
+    	Element widthElement = document.createElement("Width");
+    	widthElement.appendChild(document.createTextNode(String.valueOf(descale(getWidth()))));
+    	boxSizeElement.appendChild(widthElement);
+    	
+    	Element heightElement = document.createElement("Height");
+    	heightElement.appendChild(document.createTextNode(String.valueOf(descale(getHeight()))));
+    	boxSizeElement.appendChild(heightElement);
+    	
+    	commentElement.appendChild(boxSizeElement);
+    	
+    	// Collapse
+    	if (!commentLabel.isActive()) {
+    		Element collapsedElement = document.createElement("Collapsed");
+    		commentElement.appendChild(collapsedElement);
+    	}
+    	
+    	return commentElement;
     }
 
     /**

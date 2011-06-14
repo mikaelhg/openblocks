@@ -6,6 +6,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
 import edu.mit.blocks.codeblocks.BlockConnector.PositionType;
 
 import edu.mit.blocks.renderable.RenderableBlock;
@@ -539,17 +543,21 @@ public class BlockStub extends Block {
     ////////////////////////
     // SAVING AND LOADING //
     ////////////////////////
-    public String getSaveString(int x, int y, String commentSaveString, boolean collapsed) {
-        StringBuffer buf = new StringBuffer();
-        buf.append("<BlockStub>");
-        buf.append("<StubParentName>");
-        buf.append(parentName);
-        buf.append("</StubParentName>");
-        buf.append("<StubParentGenus>");
-        buf.append(parentGenus);
-        buf.append("</StubParentGenus>");
-        buf.append(super.getSaveString(x, y, commentSaveString, collapsed));
-        buf.append("</BlockStub>");
-        return buf.toString();
+    public Node getSaveNode(Document document, int x, int y, Node commentNode, boolean collapsed) {
+    	Element stubElement = document.createElement("BlockStub");
+    	
+    	Element parentNameElement = document.createElement("StubParentName");
+    	parentNameElement.appendChild(document.createTextNode(parentName));
+    	stubElement.appendChild(parentNameElement);
+    	
+    	Element parentGenusElement = document.createElement("StubParentGenus");
+    	parentGenusElement.appendChild(document.createTextNode(parentGenus));
+    	stubElement.appendChild(parentGenusElement);
+    	
+    	Node blockNode = super.getSaveNode(document, x, y, commentNode, collapsed);
+    	stubElement.appendChild(blockNode);
+    	
+    	return stubElement;
     }
+    
 }
