@@ -2,7 +2,7 @@ package edu.mit.blocks.codeblocks;
 
 /**
  * Definitions of constants.
- * @author Philippe Cadé
+ * @author Philippe CadÃ©
  */
 public interface Constants {
 	
