@@ -71,11 +71,11 @@ public class WorkspaceController {
     //flag to indicate if a workspace has been loaded/initialized 
     private boolean workspaceLoaded = false;
     // last directory that was selected with open or save action
-	private File lastDirectory;
-	// file currently loaded in workspace
-	private File selectedFile;
-	// Reference kept to be able to update frame title with current loaded file
-	private JFrame frame;
+    private File lastDirectory;
+    // file currently loaded in workspace
+    private File selectedFile;
+    // Reference kept to be able to update frame title with current loaded file
+    private JFrame frame;
 
     /**
      * Constructs a WorkspaceController instance that manages the
@@ -91,22 +91,22 @@ public class WorkspaceController {
      * language definition file is located in
      */
     public void setLangDefFilePath(final String filePath) {
-    	InputStream in = null;
+        InputStream in = null;
         try {
-        	in = new FileInputStream(filePath);
-        	setLangDefStream(in);
+            in = new FileInputStream(filePath);
+            setLangDefStream(in);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         finally {
-        	if (in != null) {
-        		try {
-					in.close();
-				}
-				catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-        	}
+            if (in != null) {
+                try {
+                    in.close();
+                }
+                catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
     
@@ -171,22 +171,22 @@ public class WorkspaceController {
      * @return the save string for the entire workspace.
      */
     public String getSaveString() {
-    	try {
-        	Node node = getSaveNode();
-        	
-        	StringWriter writer = new StringWriter();
-        	TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			Transformer transformer = transformerFactory.newTransformer();
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.transform(new DOMSource(node), new StreamResult(writer));
-			return writer.toString();
-		}
-		catch (TransformerConfigurationException e) {
-			throw new RuntimeException(e);
-		}
-		catch (TransformerException e) {
-			throw new RuntimeException(e);
-		}
+        try {
+            Node node = getSaveNode();
+            
+            StringWriter writer = new StringWriter();
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.transform(new DOMSource(node), new StreamResult(writer));
+            return writer.toString();
+        }
+        catch (TransformerConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+        catch (TransformerException e) {
+            throw new RuntimeException(e);
+        }
     }
     
     /**
@@ -195,30 +195,30 @@ public class WorkspaceController {
      * @return the DOM node for the entire workspace.
      */
     public Node getSaveNode() {
-    	try {
-    		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    		factory.setNamespaceAware(true);
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setNamespaceAware(true);
 
-    		DocumentBuilder builder = factory.newDocumentBuilder();
-    		Document document = builder.newDocument();
-    		
-    		Element documentElement = document.createElementNS(Constants.XML_CODEBLOCKS_NS, "cb:CODEBLOCKS");
-			// schema reference
-			documentElement.setAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "xsi:schemaLocation", Constants.XML_CODEBLOCKS_NS+" "+Constants.XML_CODEBLOCKS_SCHEMA_URI);
-   		
-    		Node workspaceNode = workspace.getSaveNode(document);
-    		if (workspaceNode != null) {
-    			documentElement.appendChild(workspaceNode);
-    		}
-    		
-    		document.appendChild(documentElement);
-    		validate(document);
-    		
-    		return document;
-    	}
-		catch (ParserConfigurationException e) {
-			throw new RuntimeException(e);
-		}
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.newDocument();
+
+            Element documentElement = document.createElementNS(Constants.XML_CODEBLOCKS_NS, "cb:CODEBLOCKS");
+            // schema reference
+            documentElement.setAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "xsi:schemaLocation", Constants.XML_CODEBLOCKS_NS+" "+Constants.XML_CODEBLOCKS_SCHEMA_URI);
+
+            Node workspaceNode = workspace.getSaveNode(document);
+            if (workspaceNode != null) {
+                documentElement.appendChild(workspaceNode);
+            }
+
+            document.appendChild(documentElement);
+            validate(document);
+
+            return document;
+        }
+        catch (ParserConfigurationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -227,25 +227,25 @@ public class WorkspaceController {
      * @throws RuntimeException If the validation failed
      */
     private void validate(Document document) {
-		try {
-			SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			URL schemaUrl = ClassLoader.getSystemResource("edu/mit/blocks/codeblocks/codeblocks.xsd");
-			Schema schema = schemaFactory.newSchema(schemaUrl);
-			Validator validator = schema.newValidator();
-			validator.validate(new DOMSource(document));
-		}
-		catch (MalformedURLException e) {
-			throw new RuntimeException(e);
-		}
-		catch (SAXException e) {
-			throw new RuntimeException(e);
-		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
+        try {
+            SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            URL schemaUrl = ClassLoader.getSystemResource("edu/mit/blocks/codeblocks/codeblocks.xsd");
+            Schema schema = schemaFactory.newSchema(schemaUrl);
+            Validator validator = schema.newValidator();
+            validator.validate(new DOMSource(document));
+        }
+        catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+        catch (SAXException e) {
+            throw new RuntimeException(e);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	/**
+    /**
      * Loads a fresh workspace based on the default specifications in the language 
      * definition file.  The block canvas will have no live blocks.   
      */
@@ -382,71 +382,71 @@ public class WorkspaceController {
      */
     private class OpenAction extends AbstractAction {
 
-		private static final long serialVersionUID = -2119679269613495704L;
+        private static final long serialVersionUID = -2119679269613495704L;
 
-		OpenAction() {
-			super("Open");
-		}
-		
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			JFileChooser fileChooser = new JFileChooser(lastDirectory);
-			if (fileChooser.showOpenDialog((Component)e.getSource()) == JFileChooser.APPROVE_OPTION) {
-				setSelectedFile(fileChooser.getSelectedFile());
-				lastDirectory = selectedFile.getParentFile();
-				String selectedPath = selectedFile.getPath();
-				loadFreshWorkspace();
-				loadProjectFromPath(selectedPath);
-			}
-		}
+        OpenAction() {
+            super("Open");
+        }
+        
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser fileChooser = new JFileChooser(lastDirectory);
+            if (fileChooser.showOpenDialog((Component)e.getSource()) == JFileChooser.APPROVE_OPTION) {
+                setSelectedFile(fileChooser.getSelectedFile());
+                lastDirectory = selectedFile.getParentFile();
+                String selectedPath = selectedFile.getPath();
+                loadFreshWorkspace();
+                loadProjectFromPath(selectedPath);
+            }
+        }
     }
 
     /**
      * Action bound to "Save" button.
      */
     private class SaveAction extends AbstractAction {
-		private static final long serialVersionUID = -5540588250535739852L;
-		SaveAction() {
-    		super("Save");
-    	}
+        private static final long serialVersionUID = -5540588250535739852L;
+        SaveAction() {
+            super("Save");
+        }
 
-		@Override
-		public void actionPerformed(ActionEvent evt) {
-			if (selectedFile == null) {
-				JFileChooser fileChooser = new JFileChooser(lastDirectory);
-				if (fileChooser.showSaveDialog((Component) evt.getSource()) == JFileChooser.APPROVE_OPTION) {
-					setSelectedFile(fileChooser.getSelectedFile());
-					lastDirectory = selectedFile.getParentFile();
-				}
-			}
-			try {
-				saveToFile(selectedFile);
-			}
-			catch (IOException e) {
-				JOptionPane.showMessageDialog((Component) evt.getSource(),
-						e.getMessage());
-			}
-		}
+        @Override
+        public void actionPerformed(ActionEvent evt) {
+            if (selectedFile == null) {
+                JFileChooser fileChooser = new JFileChooser(lastDirectory);
+                if (fileChooser.showSaveDialog((Component) evt.getSource()) == JFileChooser.APPROVE_OPTION) {
+                    setSelectedFile(fileChooser.getSelectedFile());
+                    lastDirectory = selectedFile.getParentFile();
+                }
+            }
+            try {
+                saveToFile(selectedFile);
+            }
+            catch (IOException e) {
+                JOptionPane.showMessageDialog((Component) evt.getSource(),
+                        e.getMessage());
+            }
+        }
     }
     
     /**
      * Action bound to "Save As..." button.
      */
     private class SaveAsAction extends AbstractAction {
- 		private static final long serialVersionUID = 3981294764824307472L;
-		private final SaveAction saveAction;
+         private static final long serialVersionUID = 3981294764824307472L;
+        private final SaveAction saveAction;
 
-		SaveAsAction(SaveAction saveAction) {
-    		super("Save As...");
-			this.saveAction = saveAction;
-    	}
+        SaveAsAction(SaveAction saveAction) {
+            super("Save As...");
+            this.saveAction = saveAction;
+        }
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			selectedFile = null;
-			// delegate to save action
-			saveAction.actionPerformed(e);
-		}
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            selectedFile = null;
+            // delegate to save action
+            saveAction.actionPerformed(e);
+        }
     }
     
     /**
@@ -454,39 +454,39 @@ public class WorkspaceController {
      * @param file Destination file 
      * @throws IOException If save failed
      */
-	private void saveToFile(File file) throws IOException {
-		FileWriter fileWriter = null;
-		try {
-			fileWriter = new FileWriter(file);
-			fileWriter.write(getSaveString());
-		}
-		finally {
-			if (fileWriter != null) {
-				fileWriter.close();
-			}
-		}
-	}
-	
-	public void setSelectedFile(File selectedFile) {
-		this.selectedFile = selectedFile;
-		frame.setTitle("WorkspaceDemo - "+selectedFile.getPath());
-	}
+    private void saveToFile(File file) throws IOException {
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter(file);
+            fileWriter.write(getSaveString());
+        }
+        finally {
+            if (fileWriter != null) {
+                fileWriter.close();
+            }
+        }
+    }
+    
+    public void setSelectedFile(File selectedFile) {
+        this.selectedFile = selectedFile;
+        frame.setTitle("WorkspaceDemo - "+selectedFile.getPath());
+    }
 
-	/**
-	 * Return the lower button panel.
-	 */
+    /**
+     * Return the lower button panel.
+     */
     private JComponent getButtonPanel() {
-    	JPanel buttonPanel = new JPanel();
-    	// Open
-    	OpenAction openAction = new OpenAction();
-    	buttonPanel.add(new JButton(openAction));
-    	// Save
-    	SaveAction saveAction = new SaveAction();
-		buttonPanel.add(new JButton(saveAction));
-		// Save as
-		SaveAsAction saveAsAction = new SaveAsAction(saveAction);
-		buttonPanel.add(new JButton(saveAsAction));
-    	return buttonPanel;
+        JPanel buttonPanel = new JPanel();
+        // Open
+        OpenAction openAction = new OpenAction();
+        buttonPanel.add(new JButton(openAction));
+        // Save
+        SaveAction saveAction = new SaveAction();
+        buttonPanel.add(new JButton(saveAction));
+        // Save as
+        SaveAsAction saveAsAction = new SaveAsAction(saveAction);
+        buttonPanel.add(new JButton(saveAsAction));
+        return buttonPanel;
     }
 
     /**
@@ -533,10 +533,10 @@ public class WorkspaceController {
     }
 
     public static void main(final String[] args) {
-    	if (args.length < 1) {
-    		System.err.println("usage: WorkspaceController lang_def.xml");
-    		System.exit(1);
-    	}
+        if (args.length < 1) {
+            System.err.println("usage: WorkspaceController lang_def.xml");
+            System.exit(1);
+        }
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             @Override public void run() {
                 final WorkspaceController wc = new WorkspaceController();
