@@ -1,11 +1,10 @@
 package edu.mit.blocks.codeblockutil;
 
-import info.clearthought.layout.TableLayout;
-import info.clearthought.layout.TableLayoutConstants;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -33,6 +32,8 @@ public class TabbedExplorer extends JPanel implements Explorer, MouseListener, A
     private static final long serialVersionUID = 328149080307L;
     /** the total VISIBLE height of each tab */
     private static final int BUTTON_HEIGHT = 28;
+    /** Size of the left, right and down buttons */
+    private static final Dimension BUTTON_DIMENSION = new Dimension(BUTTON_HEIGHT, BUTTON_HEIGHT);
     /** The set of drawers that wraps each canvas */
     private final List<TabCard> drawerCards;
     /** Teh canvas portion */
@@ -77,22 +78,48 @@ public class TabbedExplorer extends JPanel implements Explorer, MouseListener, A
         this.timer = new Timer(300, this);
         menu = new JPopupMenu();
         wheeler = new CWheeler(new ArrayList<JComponent>(), false, Color.black);
-
+        wheeler.setPreferredSize(new Dimension(wheeler.getPreferredSize().width, BUTTON_HEIGHT));
+        
         left = new CTabButton("<<");
+        left.setPreferredSize(BUTTON_DIMENSION);
         left.addMouseListener(this);
         right = new CTabButton(">>");
+        right.setPreferredSize(BUTTON_DIMENSION);
         right.addMouseListener(this);
         down = new CTabButton("V");
+        down.setPreferredSize(BUTTON_DIMENSION);
         down.addMouseListener(this);
 
-        double[][] constraints = {{BUTTON_HEIGHT, TableLayoutConstants.FILL, BUTTON_HEIGHT, BUTTON_HEIGHT},
-            {BUTTON_HEIGHT, TableLayoutConstants.FILL}};
-        this.setLayout(new TableLayout(constraints));
-        this.add(left, "0, 0");
-        this.add(wheeler, "1, 0");
-        this.add(right, "2, 0");
-        this.add(down, "3, 0");
-        this.add(canvasPane, "0, 1, 3, 1");
+        setLayout(new GridBagLayout());
+        
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0;
+        gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        add(left, gbc);
+        
+        gbc.gridx++;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        add(wheeler, gbc);
+        
+        gbc.gridx++;
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        add(right, gbc);
+        
+        gbc.gridx++;
+        add(down, gbc);
+        
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 4;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        add(canvasPane, gbc);
     }
 
     public boolean anyCanvasSelected() {
