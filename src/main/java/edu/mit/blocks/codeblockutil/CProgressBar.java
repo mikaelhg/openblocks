@@ -13,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
-import javax.swing.UIManager;
 
 public class CProgressBar extends JFrame implements ActionListener {
 
@@ -41,6 +40,7 @@ public class CProgressBar extends JFrame implements ActionListener {
         timer.start();
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (bar.getValue() > bar.getMaximum() * 0.75) {
             this.setVisible(false);
@@ -51,13 +51,4 @@ public class CProgressBar extends JFrame implements ActionListener {
         }
     }
 
-    public static void main(String[] arguments) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            System.out.println(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            System.out.println("Error setting native LAF: " + e);
-        }
-        new CProgressBar("MyBarGraph");
-    }
 }

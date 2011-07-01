@@ -1,6 +1,5 @@
 package edu.mit.blocks.codeblockutil;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ComponentEvent;
@@ -17,7 +16,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -63,20 +61,28 @@ import javax.swing.SwingConstants;
 public class CSliderPane extends JPanel implements ComponentListener {
 
     private static final long serialVersionUID = 328149080253L;
+
     /** Property name of the event thrown by this widget */
     public static final String VALUE_CHANGED = "VALUE_CHANGED";
+
     /** ratio conversion form raw (int) value to real (float) value */
     private static float ratio = 1000;
+
     /** the margin of this widget */
     private static int margin = 10;
+
     /** the header height of this widget */
     private static int header = 20;
+
     /** the slider that graphcally displays thhe abstract model*/
     private CSlider slider;
+
     /** the value text field that graphically displays the abstract value */
     private JTextField valueLabel;
+
     /** the left text field that graphically displays either the min or max */
     private JTextField leftLabel;
+
     /** the right text field that graphically displays either the min or max */
     private JTextField rightLabel;
 
@@ -98,15 +104,14 @@ public class CSliderPane extends JPanel implements ComponentListener {
         //constructs internal Swing components of this widget
         slider = new CSlider((int) (min * ratio), (int) (max * ratio), (int) (value * ratio));
         slider.addPropertyChangeListener(new PropertyChangeListener() {
-
+            @Override
             public void propertyChange(PropertyChangeEvent e) {
                 sliderValueChanged(e);
             }
         });
         valueLabel = new CNumberTextField(String.valueOf(value)) {
-
             private static final long serialVersionUID = 328149080254L;
-
+            @Override
             public void evaluateTextFieldData() {
                 try {
                     int newvalue = Math.round(Float.parseFloat(this.getText()) * ratio);
@@ -118,9 +123,8 @@ public class CSliderPane extends JPanel implements ComponentListener {
         };
         valueLabel.setHorizontalAlignment(SwingConstants.TRAILING);
         leftLabel = new CNumberTextField(String.valueOf(min)) {
-
             private static final long serialVersionUID = 328149080256L;
-
+            @Override
             public void evaluateTextFieldData() {
                 try {
                     int newvalue = Math.round(Float.parseFloat(this.getText()) * ratio);
@@ -132,9 +136,8 @@ public class CSliderPane extends JPanel implements ComponentListener {
         };
         leftLabel.setHorizontalAlignment(SwingConstants.LEADING);
         rightLabel = new CNumberTextField(String.valueOf(max)) {
-
             private static final long serialVersionUID = 328149080255L;
-
+            @Override
             public void evaluateTextFieldData() {
                 try {
                     int newvalue = Math.round(Float.parseFloat(this.getText()) * ratio);
@@ -155,13 +158,13 @@ public class CSliderPane extends JPanel implements ComponentListener {
         //add listeners
         this.addComponentListener(this);
         slider.addMouseListener(new MouseAdapter() {
-
+            @Override
             public void mousePressed(MouseEvent e) {
                 notifyValueChanged();
             }
         });
         slider.addMouseMotionListener(new MouseMotionAdapter() {
-
+            @Override
             public void mouseDragged(MouseEvent e) {
                 notifyValueChanged();
             }
@@ -306,18 +309,22 @@ public class CSliderPane extends JPanel implements ComponentListener {
     }
 
     /** Do nothing when this widget is hidden */
+    @Override
     public void componentHidden(ComponentEvent e) {
     }
 
     /** Do nothing when this widget is moved */
+    @Override
     public void componentMoved(ComponentEvent e) {
     }
 
     /** Do nothing when this widget is shown */
+    @Override
     public void componentShown(ComponentEvent e) {
     }
 
     /** Reposition text fields and slider when this widget is resized */
+    @Override
     public void componentResized(ComponentEvent e) {
         repositionComponent();
         revalidate();
@@ -355,27 +362,32 @@ public class CSliderPane extends JPanel implements ComponentListener {
         public abstract void evaluateTextFieldData();
         //autoselect text when clicked on
 
+        @Override
         public void mouseClicked(MouseEvent e) {
             this.setSelectionStart(0);
             this.setSelectionEnd(this.getText().length());
         }
         //add white border when mouse enters
 
+        @Override
         public void mouseEntered(MouseEvent e) {
             this.setBorder(BorderFactory.createLineBorder(Color.white));
         }
         //remove white border when mouse leaves
 
+        @Override
         public void mouseExited(MouseEvent e) {
             this.setBorder(null);
         }
 
+        @Override
         public void mousePressed(MouseEvent e) {
         }
 
         public void mouseDragged(MouseEvent e) {
         }
 
+        @Override
         public void mouseReleased(MouseEvent e) {
         }
 
@@ -384,30 +396,36 @@ public class CSliderPane extends JPanel implements ComponentListener {
         //revaluate text widget abstract model and GUI displays
         //whever users moves focus to different component
 
+        @Override
         public void focusLost(FocusEvent e) {
             evaluateTextFieldData();
         }
 
+        @Override
         public void focusGained(FocusEvent e) {
         }
         //reposition this text field's size and location when user enters in text
 
+        @Override
         public void keyPressed(KeyEvent e) {
             repositionComponent();
         }
         //reposition this text field's size and location when user enters in text
 
+        @Override
         public void keyReleased(KeyEvent e) {
             repositionComponent();
         }
         //reposition this text field's size and location when user enters in text
 
+        @Override
         public void keyTyped(KeyEvent e) {
             repositionComponent();
         }
         //only allow numerically logical text to be entered
         //re-evaluate abstract model and update GUI when user presses enter or escapse
 
+        @Override
         protected boolean processKeyBinding(KeyStroke ks, KeyEvent e, int condition, boolean pressed) {
             for (int validKeyCode : validKeyCodes) {
                 if (e.getKeyCode() == validKeyCode) {
@@ -436,18 +454,4 @@ public class CSliderPane extends JPanel implements ComponentListener {
         }
     }
 
-    public static void main(String[] args) {
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setSize(400, 400);
-        f.setLayout(new BorderLayout());
-        JPanel p = new JPanel(new BorderLayout());
-        p.setBackground(Color.red);
-        p.setBounds(0, 0, 400, 50);
-        CSliderPane s = new CSliderPane(0f, 10f, 1f);
-        s.setBounds(0, 0, 200, 60);
-        p.add(s);
-        f.add(p);
-        f.setVisible(true);
-    }
 }

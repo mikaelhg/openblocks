@@ -6,16 +6,12 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -62,6 +58,7 @@ public class CTable extends JPanel {
         this.add(scroll, BorderLayout.CENTER);
     }
 
+    @Override
     public void addMouseListener(MouseListener l) {
         this.view.addMouseListener(l);
     }
@@ -165,33 +162,4 @@ public class CTable extends JPanel {
         return new Insets(10, 10, 35, 10);
     }
 
-    public static void main(String[] args) {
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setLayout(new BorderLayout());
-        f.setSize(300, 200);
-        final CTable c = new CTable();
-        c.setColumns(new String[]{"a", "b", "c"});
-        //c.setPreferredSize(new Dimension(400,50));
-        f.add(c, BorderLayout.CENTER);
-        JButton button = new JButton("add data");
-        button.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                c.addRow(new double[]{1, 2, 3});
-            }
-        });
-        f.add(button, BorderLayout.SOUTH);
-        JButton button2 = new JButton("save data");
-        button2.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                System.out.println(c.getCSV());
-            }
-        });
-        f.add(button2, BorderLayout.NORTH);
-        f.setVisible(true);
-        f.repaint();
-
-    }
 }

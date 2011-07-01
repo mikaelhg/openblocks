@@ -39,7 +39,6 @@ public class CGlassScrollPane extends CScrollPane implements KeyListener {
     private ScrollPolicy hpolicy;
     private int thumbWidth;
 
-//	private CGlassScrollPane(){}
     /**
      * Constructs a custom CHoverScrollPane with the view port set to "view",
      * with both scroll bar policies set to "ALWAYS" (see
@@ -201,7 +200,7 @@ public class CGlassScrollPane extends CScrollPane implements KeyListener {
             add(horizontalbar, JLayeredPane.PALETTE_LAYER);
         }
         this.addComponentListener(new ComponentAdapter() {
-
+            @Override
             public void componentResized(ComponentEvent e) {
                 repositionComponents();
             }
@@ -237,6 +236,7 @@ public class CGlassScrollPane extends CScrollPane implements KeyListener {
     /**
      * @ovverride CScrollPane.getVerticalModel
      */
+    @Override
     public BoundedRangeModel getVerticalModel() {
         return scrollviewport.getVerticalScrollBar().getModel();
     }
@@ -244,6 +244,7 @@ public class CGlassScrollPane extends CScrollPane implements KeyListener {
     /**
      * @ovverride CScrollPane.getHorizontalModel
      */
+    @Override
     public BoundedRangeModel getHorizontalModel() {
         return scrollviewport.getHorizontalScrollBar().getModel();
     }
@@ -251,6 +252,7 @@ public class CGlassScrollPane extends CScrollPane implements KeyListener {
     /**
      * @ovverride CScrollPane.scrollRectToVisible
      */
+    @Override
     public void scrollRectToVisible(Rectangle contentRect) {
         scrollviewport.getViewport().scrollRectToVisible(contentRect);
     }
@@ -258,6 +260,7 @@ public class CGlassScrollPane extends CScrollPane implements KeyListener {
     /**
      * @ovverride CScrollPane.setScrollingUnit
      */
+    @Override
     public void setScrollingUnit(int x) {
         this.SCROLLINGUNIT = x;
         this.verticalbar.setScrollingUnit(x);
@@ -273,6 +276,7 @@ public class CGlassScrollPane extends CScrollPane implements KeyListener {
      * content view horizontally, along with Shift key modifier events.
      * For WINDOWs: Manually press Shift while scrolling to scroll horizantally
      */
+    @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         if (e.isShiftDown()) {
             scrollviewport.getHorizontalScrollBar().getModel().setValue(
@@ -291,6 +295,7 @@ public class CGlassScrollPane extends CScrollPane implements KeyListener {
      * KeyListeners: Should repaint the scrollbar
      * everytime the user presses a key
      */
+    @Override
     public void keyPressed(KeyEvent e) {
         verticalbar.repaint();
         horizontalbar.repaint();
@@ -300,6 +305,7 @@ public class CGlassScrollPane extends CScrollPane implements KeyListener {
      * KeyListeners: Should repaint the scrollbar
      * everytime the user presses a key
      */
+    @Override
     public void keyReleased(KeyEvent e) {
         verticalbar.repaint();
         horizontalbar.repaint();
@@ -309,33 +315,12 @@ public class CGlassScrollPane extends CScrollPane implements KeyListener {
      * KeyListeners: Should repaint the scrollbar
      * everytime the user presses a key
      */
+    @Override
     public void keyTyped(KeyEvent e) {
         verticalbar.repaint();
         horizontalbar.repaint();
     }
 
-    public static void main(String[] args) {
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setLayout(new BorderLayout());
-        f.setSize(400, 400);
-        JTextArea b = new JTextArea(20, 30);
-        final CHoverScrollPane c = new CHoverScrollPane(
-                b,
-                ScrollPolicy.VERTICAL_BAR_ALWAYS,
-                ScrollPolicy.HORIZONTAL_BAR_ALWAYS,
-                20,
-                Color.red,
-                Color.blue);
-        f.getContentPane().add(c);
-        f.setVisible(true);
-        f.addComponentListener(new ComponentAdapter() {
-
-            public void componentResized(ComponentEvent e) {
-                c.repositionComponents();
-            }
-        });
-    }
 }
 
 /**
@@ -357,16 +342,22 @@ class GlassVerticalBar extends JPanel implements MouseListener, MouseMotionListe
      * to render the corect size and location of the thumb.
      */
     private final BoundedRangeModel modelrange;
+
     /** The thumb color of this vertical scroll bar*/
     private final Color thumbColor;
+    
     /** The track color of this vertical scroll bar */
     private final Color trackColor;
+    
     /** Rendering hints of the thumb border */
     private final RenderingHints renderingHints;
+    
     /** Last location of the mouse press */
     private int pressLocation;
+    
     /** Amount by which the mouse wheel scrolls */
     private int SCROLLINGUNIT = 3;
+    
     /** Vertical Scroll Bar Policy of this */
     private CScrollPane.ScrollPolicy vpolicy;
 
@@ -400,6 +391,7 @@ class GlassVerticalBar extends JPanel implements MouseListener, MouseMotionListe
     /**
      * paints scrollbar
      */
+    @Override
     public void paint(Graphics g) {
         //paint super
         super.paint(g);
@@ -460,6 +452,7 @@ class GlassVerticalBar extends JPanel implements MouseListener, MouseMotionListe
      * directly to the location of the mouse press and THEN
      * scroll by some drag distance.
      */
+    @Override
     public void mousePressed(MouseEvent e) {
         double viewValue = modelToView(modelrange.getValue());
         double viewExtent = modelToView(modelrange.getExtent());
@@ -475,6 +468,7 @@ class GlassVerticalBar extends JPanel implements MouseListener, MouseMotionListe
     /**
      * Drag scroll bar by same drag distance as mouse drag
      */
+    @Override
     public void mouseDragged(MouseEvent e) {
         modelrange.setValue((int) viewToModel(e.getY() - this.pressLocation));
         this.repaint();
@@ -483,25 +477,31 @@ class GlassVerticalBar extends JPanel implements MouseListener, MouseMotionListe
     /**
      * Drops the thumb
      */
+    @Override
     public void mouseReleased(MouseEvent e) {
         this.pressLocation = 0;
     }
 
+    @Override
     public void mouseMoved(MouseEvent e) {
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
     }
 
     /**
      * Translate the viewport by same amount of wheel scroll
      */
+    @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         modelrange.setValue(modelrange.getValue() + e.getUnitsToScroll() * e.getScrollAmount() * SCROLLINGUNIT);
         this.repaint();
@@ -531,12 +531,16 @@ class GlassHorizontalBar extends JPanel implements MouseListener, MouseMotionLis
      * to render the corect size and location of the thumb.
      */
     private final BoundedRangeModel modelrange;
+    
     /** The thumb color of this vertical scroll bar*/
     private final Color thumbColor;
+    
     /** The track color os thif vertical scroll bar */
     private final Color trackColor;
+    
     /** Rendering hints of the thumb border */
     private final RenderingHints renderingHints;
+    
     /** First Location of a mouse press */
     private int pressLocation;
 
@@ -569,6 +573,7 @@ class GlassHorizontalBar extends JPanel implements MouseListener, MouseMotionLis
     /**
      * paints scrollbar
      */
+    @Override
     public void paint(Graphics g) {
         //paint super
         super.paint(g);
@@ -626,6 +631,7 @@ class GlassHorizontalBar extends JPanel implements MouseListener, MouseMotionLis
      * directly to the location of the mouse press and THEN
      * scroll by some drag distance.
      */
+    @Override
     public void mousePressed(MouseEvent e) {
         double viewValue = modelToView(modelrange.getValue());
         double viewExtent = modelToView(modelrange.getExtent());
@@ -641,6 +647,7 @@ class GlassHorizontalBar extends JPanel implements MouseListener, MouseMotionLis
     /**
      * Drag scroll bar by same drag distance as mouse drag
      */
+    @Override
     public void mouseDragged(MouseEvent e) {
         modelrange.setValue((int) viewToModel(e.getX() - this.pressLocation));
         this.repaint();
@@ -649,19 +656,24 @@ class GlassHorizontalBar extends JPanel implements MouseListener, MouseMotionLis
     /**
      * Drops the thumb
      */
+    @Override
     public void mouseReleased(MouseEvent e) {
         this.pressLocation = 0;
     }
 
+    @Override
     public void mouseMoved(MouseEvent e) {
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
     }
 }

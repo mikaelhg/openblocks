@@ -1,8 +1,6 @@
 package edu.mit.blocks.codeblockutil;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.GradientPaint;
@@ -10,8 +8,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
-
-import javax.swing.JFrame;
 
 /**
  * A CButton is a swing-compatible widget that allows clients
@@ -31,6 +27,7 @@ public class CGraphiteButton extends CButton {
     /**
      * re paints this
      */
+    @Override
     public void paint(Graphics g) {
         // Set up graphics and buffer
         //super.paintComponent(g);
@@ -110,17 +107,4 @@ public class CGraphiteButton extends CButton {
         }
     }
 
-    public static void main(String[] args) {
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setLayout(new FlowLayout());
-        f.setSize(500, 300);
-        CButton c = new CGraphiteButton("hi");
-        c.setPreferredSize(new Dimension(400, 200));
-
-        f.add(c);
-        f.setVisible(true);
-        f.repaint();
-
-    }
 }

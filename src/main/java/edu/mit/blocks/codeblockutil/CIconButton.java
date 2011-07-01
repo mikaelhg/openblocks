@@ -34,11 +34,12 @@ public class CIconButton extends CButton {
 
     /** Icon choices */
     public static enum Icon {
-
         PLAY, PAUSE, STEP, STOP
     };
+
     /** icon inset of this button */
     private static final int ICON_INSET = 12;
+    
     /** Button icon */
     private Icon icon;
 
@@ -92,6 +93,7 @@ public class CIconButton extends CButton {
     /**
      * @return selected fag
      */
+    @Override
     public boolean isSelected() {
         return this.selected;
     }
@@ -144,6 +146,7 @@ public class CIconButton extends CButton {
     }
 
     /** Paints this */
+    @Override
     public void paint(Graphics g) {
         //selected color
         Color backgroundColor;
@@ -201,14 +204,4 @@ public class CIconButton extends CButton {
 
     }
 
-    /** debugging */
-    public static void main(String[] args) {
-        JFrame f = new JFrame();
-        f.setLayout(new FlowLayout());
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setSize(300, 100);
-        f.getContentPane().add(new CIconButton(CIconButton.Icon.PAUSE));
-        f.setVisible(true);
-
-    }
 }

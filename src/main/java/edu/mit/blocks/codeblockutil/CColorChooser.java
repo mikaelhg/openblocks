@@ -7,7 +7,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 
-import javax.swing.JFrame;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
@@ -50,6 +49,7 @@ public class CColorChooser extends CButton implements MouseListener, MouseMotion
 
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
         popup.setVisible(false);
         String colorText = "RGB = " + buttonColor.getRed() + ", " + buttonColor.getGreen() + ", " + buttonColor.getBlue();
@@ -57,6 +57,7 @@ public class CColorChooser extends CButton implements MouseListener, MouseMotion
         this.firePropertyChange(COLOR_CHANGE, previousColor, buttonColor);
     }
 
+    @Override
     public void mouseDragged(MouseEvent e) {
         popup.mouseDragged(SwingUtilities.convertMouseEvent(this, e, popup));
         this.previousColor = buttonColor;
@@ -64,18 +65,23 @@ public class CColorChooser extends CButton implements MouseListener, MouseMotion
         this.repaint();
     }
 
+    @Override
     public void mouseMoved(MouseEvent e) {
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
         popup.show(this, e.getX(), e.getY());
     }
@@ -124,14 +130,14 @@ public class CColorChooser extends CButton implements MouseListener, MouseMotion
             this.color = color;
         }
 
+        @Override
         public void paint(Graphics g) {
             if (buffImg == null) {
                 buffImg = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
                 Graphics gb = buffImg.getGraphics();
                 for (int i = 0; i <= WIDTH; i++) {
                     for (int j = 0; j <= HEIGHT; j++) {
-                        int color = Color.HSBtoRGB(i / WIDTH, j / HEIGHT, hue);
-                        gb.setColor(new Color(color));
+                        gb.setColor(new Color(Color.HSBtoRGB(i / WIDTH, j / HEIGHT, hue)));
                         gb.fillRect(i, j, 1, 1);
                     }
                 }
@@ -143,6 +149,7 @@ public class CColorChooser extends CButton implements MouseListener, MouseMotion
             g.drawOval(mx - 3, my - 3, 3, 3);
         }
 
+        @Override
         public void mouseDragged(MouseEvent e) {
             if (e.getX() < 0) {
                 mx = 0;
@@ -163,30 +170,29 @@ public class CColorChooser extends CButton implements MouseListener, MouseMotion
             this.repaint();
         }
 
+        @Override
         public void mouseMoved(MouseEvent e) {
         }
 
+        @Override
         public void mouseClicked(MouseEvent e) {
         }
 
+        @Override
         public void mouseEntered(MouseEvent e) {
         }
 
+        @Override
         public void mouseExited(MouseEvent e) {
         }
 
+        @Override
         public void mousePressed(MouseEvent e) {
         }
 
+        @Override
         public void mouseReleased(MouseEvent e) {
         }
     }
 
-    public static void main(String[] arguments) {
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.add(new CColorChooser(Color.blue));
-        f.setBounds(100, 100, 500, 500);
-        f.setVisible(true);
-    }
 }

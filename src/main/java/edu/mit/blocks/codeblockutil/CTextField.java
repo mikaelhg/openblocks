@@ -1,7 +1,6 @@
 package edu.mit.blocks.codeblockutil;
 
 import java.awt.BasicStroke;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -17,7 +16,6 @@ import java.awt.geom.GeneralPath;
 import java.text.Format;
 
 import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
 import javax.swing.event.DocumentListener;
 
 public class CTextField extends JFormattedTextField implements MouseListener, MouseMotionListener {
@@ -54,6 +52,7 @@ public class CTextField extends JFormattedTextField implements MouseListener, Mo
         this.repaint();
     }
 
+    @Override
     public Insets getInsets() {
         int h = this.getHeight();
         return new Insets(h / 6, h / 2, h / 6, h);
@@ -73,6 +72,7 @@ public class CTextField extends JFormattedTextField implements MouseListener, Mo
         return box;
     }
 
+    @Override
     public void paint(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         int w = this.getWidth();
@@ -107,17 +107,21 @@ public class CTextField extends JFormattedTextField implements MouseListener, Mo
         this.getDocument().addDocumentListener(l);
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
         mouseover = false;
         this.repaint();
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
         if (e.getX() > this.getWidth() - this.getHeight() * 5 / 6) {
             pressed = true;
@@ -125,6 +129,7 @@ public class CTextField extends JFormattedTextField implements MouseListener, Mo
         }
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
         if (e.getX() > this.getWidth() - this.getHeight() * 5 / 6) {
             this.setText("");
@@ -133,6 +138,7 @@ public class CTextField extends JFormattedTextField implements MouseListener, Mo
         }
     }
 
+    @Override
     public void mouseMoved(MouseEvent e) {
         if (e.getX() > this.getWidth() - this.getHeight() * 5 / 6) {
             if (mouseover == false) {
@@ -147,16 +153,8 @@ public class CTextField extends JFormattedTextField implements MouseListener, Mo
         }
     }
 
+    @Override
     public void mouseDragged(MouseEvent e) {
     }
 
-    public static void main(String[] args) {
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setLayout(new BorderLayout());
-        f.setSize(400, 100);
-        f.add(new CTextField());
-
-        f.setVisible(true);
-    }
 }

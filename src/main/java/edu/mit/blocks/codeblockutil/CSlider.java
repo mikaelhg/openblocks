@@ -1,6 +1,5 @@
 package edu.mit.blocks.codeblockutil;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
@@ -8,43 +7,46 @@ import java.awt.FontMetrics;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridLayout;
 import java.awt.RenderingHints;
 import java.awt.Shape;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class CSlider extends JPanel implements MouseListener, MouseMotionListener {
 
     private static final long serialVersionUID = 328149080257L;
+
     /** Property name of the event thrown by this widget */
     public static String VALUE_CHANGED = "VALUE_CHANGED";
+
     /** Rendering Hints of this */
     static final RenderingHints renderingHints = new RenderingHints(
             RenderingHints.KEY_ANTIALIASING,
             RenderingHints.VALUE_ANTIALIAS_ON);
+
     /** this.value */
     private int value;
+
     /** The value representing the left side of slider */
     private int left;
+
     /** The value representing the right side of the slider */
     private int right;
+
     /** track color from min to value */
     private final Color leadingColor;
+
     /** track color from value to max */
     private final Color trailingColor;
+
     /** color of thumb */
     private final Color thumbColor;
+
     private final SliderBlueprint blueprint;
     private final float trackThickness;//a floating point number between 0 and 1
     private int offset = 0;
@@ -333,6 +335,7 @@ public class CSlider extends JPanel implements MouseListener, MouseMotionListene
     /**
      * Paints the CSlider
      */
+    @Override
     public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         g2.addRenderingHints(renderingHints);
@@ -429,6 +432,7 @@ public class CSlider extends JPanel implements MouseListener, MouseMotionListene
                 + (int) Math.round((value - this.left) * (blueprint.closeTrackEdgeRight - blueprint.closeTrackEdgeLeft) / (i == 0 ? 1 : i));
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
         int thumbX = getThumbX();
         // offset is if the mouse clicked on the thumb
@@ -441,11 +445,13 @@ public class CSlider extends JPanel implements MouseListener, MouseMotionListene
         this.repaint();
     }
 
+    @Override
     public void mouseDragged(MouseEvent e) {
         this.setValue(convertToAbstract(e.getX() - offset));
         this.repaint();
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
         int xPos = convertToAbstract(e.getX() - offset);
         // checks if the sticky ticks are on
@@ -458,15 +464,19 @@ public class CSlider extends JPanel implements MouseListener, MouseMotionListene
         this.repaint();
     }
 
+    @Override
     public void mouseMoved(MouseEvent e) {
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
     }
 
@@ -515,47 +525,6 @@ public class CSlider extends JPanel implements MouseListener, MouseMotionListene
         this.setValue(xPos);
     }
 
-    /** debugging */
-    public static void main(String[] args) {
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setLayout(new GridLayout(0, 1));
-        f.setSize(400, 200);
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        final CSlider c1 = new CSlider(0, 200, 105, true, 10);
-        panel.add(c1, BorderLayout.CENTER);
-        panel.add(new JLabel("label:"), BorderLayout.WEST);
-        CSlider c2 = new CSlider(0, 200, 100);
-        CSlider c3 = new CSlider(-5, 5, 0);
-        CSlider c4 = new CSlider(2, 0, 1);
-        CSlider c5 = new CSlider(0, 2, 1);
-        CSlider c6 = new CSlider(0, 0, 0);
-        CSlider c7 = new CSlider(0, 200, 100);
-        f.add(panel);
-        f.add(c2);
-        f.add(c3);
-        f.add(c4);
-        f.add(c5);
-        f.add(c6);
-        f.add(c7);
-
-        JButton b = new JButton();
-        b.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                System.out.println(c1.getValue());
-                c1.setRight(175);
-                //c.setValue(125);
-                c1.revalidate();
-                c1.repaint();
-                System.out.println(c1.getValue());
-            }
-        });
-        f.add(b);
-        f.setVisible(true);
-        f.repaint();
-    }
 }
 
 /**
