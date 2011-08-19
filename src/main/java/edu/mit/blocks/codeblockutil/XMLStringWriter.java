@@ -175,25 +175,9 @@ public class XMLStringWriter {
     /**
      * Returns XML String representation of what was appended/written on this
      */
+    @Override
     public String toString() {
         return contents.toString();
     }
 
-    public static void main(String[] args) {
-        XMLStringWriter x = new XMLStringWriter(4);
-
-        x.beginXMLString("CODEBLOCKS");
-        x.beginElement("PAGES", false);
-        x.beginElement("PAGE", true);
-        x.addAttribute("page-name", "ricarose");
-        x.endAttributes();
-        x.addDataElement("RICAROSE", "text");
-        x.beginElement("Connectors", false);
-        x.endElement("Connectors");
-        x.endElement("PAGE");
-        x.endElement("PAGES");
-        x.endXMLString();
-
-        System.out.println("produced xml: " + x);
-    }
 }

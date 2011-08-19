@@ -26,6 +26,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -763,14 +764,12 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
     // SAVING AND LOADING //
     ////////////////////////
     /**
-     * Returns the save String of this.  Currently returns the BlockCanvas 
-     * save String only.
-     * @return the save String of this.
+     * Returns the node of this.  Currently returns the BlockCanvas 
+     * node only.
+     * @return the node of this.
      */
-    public String getSaveString() {
-        StringBuffer saveString = new StringBuffer();
-        saveString.append(blockCanvas.getSaveString());
-        return saveString.toString();
+    public Node getSaveNode(Document document) {
+    	return blockCanvas.getSaveNode(document);
     }
 
     /**

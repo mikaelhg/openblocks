@@ -2,23 +2,24 @@ package edu.mit.blocks.codeblocks;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import edu.mit.blocks.renderable.BlockImageIcon;
-import edu.mit.blocks.renderable.RenderableBlock;
-import edu.mit.blocks.renderable.BlockImageIcon.ImageLocation;
-
-import edu.mit.blocks.workspace.ISupportMemento;
-
 import edu.mit.blocks.codeblocks.BlockConnector.PositionType;
+import edu.mit.blocks.renderable.BlockImageIcon;
+import edu.mit.blocks.renderable.BlockImageIcon.ImageLocation;
+import edu.mit.blocks.renderable.RenderableBlock;
+import edu.mit.blocks.workspace.ISupportMemento;
 
 /**
  * Block holds the mutable prop (data) of a particular block.  These mutable 
@@ -1268,97 +1269,89 @@ public class Block implements ISupportMemento {
     //////////////////////// 
     // SAVING AND LOADING //
     ////////////////////////
-    private final String EQ_OPEN_QUOTE = "=\"";
-    private final String CLOSE_QUOTE = "\" ";
-    
     /**
-     * Returns an escaped (safe) version of string.
-     */
-    public static String escape(String s) {
-        return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-    }
-    
-    /**
-     * Returns the save string of this using additional location information 
+     * Returns the node of this using additional location information 
      * specified in x and y and comment text .  
      * NOTE: in the future will not send these coordinates and instead will have renderable
      * block insert them.  
      * @param x 
      * @param y
-     * @return the save string of this
+     * @return the node of this
      */
-    public String getSaveString(int x, int y, String commentSaveString, boolean isCollapsed) {
-        StringBuffer saveString = new StringBuffer();
-        
-        saveString.append("<Block ");
-        appendAttribute("id", this.blockID.toString(), saveString);
-        appendAttribute("genus-name", this.getGenusName(), saveString);
-        if (this.hasFocus) {
-            appendAttribute("has-focus", "yes", saveString);
-        }
-        saveString.append(">");
-        
+    public Node getSaveNode(Document document, int x, int y, Node commentNode, boolean isCollapsed) {
+    	Element blockElement = document.createElement("Block");
+    	
+    	blockElement.setAttribute("id", Long.toString(blockID));
+    	blockElement.setAttribute("genus-name", getGenusName());
+    	if (hasFocus) {
+    		blockElement.setAttribute("has-focus", "yes");
+    	}
+    	
         if (!this.label.equals(this.getInitialLabel())) {
-            saveString.append("<Label>");
-            saveString.append(escape(label));
-            saveString.append("</Label>");
-        }
-
+    		Element labelElement = document.createElement("Label");
+    		labelElement.appendChild(document.createTextNode(label));
+    		blockElement.appendChild(labelElement);
+    	}
+    	
         if (pageLabel != null && !pageLabel.equals("")) {
-            saveString.append("<PageLabel>");
-            saveString.append(escape(pageLabel));
-            saveString.append("</PageLabel>");
-        }
-
-        if (this.isBad) {
-            saveString.append("<CompilerErrorMsg>");
-            saveString.append(escape(pageLabel));
-            saveString.append("</CompilerErrorMsg>");
+        	Element pageLabelElement = document.createElement("PageLabel");
+        	pageLabelElement.appendChild(document.createTextNode(pageLabel));
+        	blockElement.appendChild(pageLabelElement);
         }
         
-        saveString.append("<Location>");
-        saveString.append("<X>");
-        saveString.append(x);
-        saveString.append("</X>");
-        saveString.append("<Y>");
-        saveString.append(y);
-        saveString.append("</Y>");
-        saveString.append("</Location>");
-
-        if (isCollapsed) {
-            saveString.append("<Collapsed/>");
+        if (this.isBad) {
+        	Element msgElement = document.createElement("CompilerErrorMsg");
+        	msgElement.appendChild(document.createTextNode(badMsg));
+        	blockElement.appendChild(msgElement);
         }
-
-        if (commentSaveString != null) {
-            saveString.append(commentSaveString);
+        
+        // Location
+        Element locationElement = document.createElement("Location");
+        Element xElement = document.createElement("X");
+        xElement.appendChild(document.createTextNode(String.valueOf(x)));
+        locationElement.appendChild(xElement);
+        
+        Element yElement = document.createElement("Y");
+        yElement.appendChild(document.createTextNode(String.valueOf(y)));
+        locationElement.appendChild(yElement);
+        blockElement.appendChild(locationElement);
+        
+        if (isCollapsed) {
+        	Element collapsedElement = document.createElement("Collapsed");
+        	blockElement.appendChild(collapsedElement);
+        }
+        
+        if (commentNode != null) {
+        	blockElement.appendChild(commentNode);
         }
         
         if (this.hasBeforeConnector() && !this.getBeforeBlockID().equals(Block.NULL)) {
-            saveString.append("<BeforeBlockId>");
-            saveString.append(this.getBeforeBlockID());
-            saveString.append("</BeforeBlockId>");
+        	Element blockIdElement = document.createElement("BeforeBlockId");
+        	blockIdElement.appendChild(document.createTextNode(String.valueOf(getBeforeBlockID())));
+        	blockElement.appendChild(blockIdElement);
         }
-        
+    	
         if (this.hasAfterConnector() && !this.getAfterBlockID().equals(Block.NULL)) {
-            saveString.append("<AfterBlockId>");
-            saveString.append(this.getAfterBlockID());
-            saveString.append("</AfterBlockId>");
+        	Element blockIdElement = document.createElement("AfterBlockId");
+        	blockIdElement.appendChild(document.createTextNode(String.valueOf(getAfterBlockID())));
+        	blockElement.appendChild(blockIdElement);
         }
         
         if (plug != null) {
-            saveString.append("<Plug>");
-            saveString.append(plug.getSaveString("plug"));
-            saveString.append("</Plug>");
+        	Element plugElement = document.createElement("Plug");
+        	Node blockConnectorNode = plug.getSaveNode(document, "plug");
+        	plugElement.appendChild(blockConnectorNode);
+        	blockElement.appendChild(plugElement);
         }
         
         if (sockets.size() > 0) {
-            saveString.append("<Sockets ");
-            appendAttribute("num-sockets", "" + this.getNumSockets(), saveString);
-            saveString.append(">");
-            for (BlockConnector con : getSockets()) {
-                saveString.append(con.getSaveString("socket"));
-            }
-            saveString.append("</Sockets>");
+        	Element socketsElement = document.createElement("Sockets");
+        	socketsElement.setAttribute("num-sockets", String.valueOf(getNumSockets()));
+        	for (BlockConnector con : getSockets()) {
+        		Node blockConnectorNode = con.getSaveNode(document, "socket");
+        		socketsElement.appendChild(blockConnectorNode);
+        	}
+        	blockElement.appendChild(socketsElement);
             //sockets tricky... because what if
             //one of the sockets is expanded?  should the socket keep a reference
             //to their genus socket?  and so should the expanded one?
@@ -1366,29 +1359,20 @@ public class Block implements ISupportMemento {
         
         //save block properties that are not specified within genus
         //i.e. properties that were created/specified during runtime
-        
+
         if (!properties.isEmpty()) {
-            saveString.append("<LangSpecProperties>");
-            for (String property : properties.keySet()) {
-                saveString.append("<LangSpecProperty ");
-                appendAttribute("key", property, saveString);
-                appendAttribute("value", properties.get(property), saveString);
-                saveString.append("></LangSpecProperty>");
-            }
-            saveString.append("</LangSpecProperties>");
+        	Element propertiesElement = document.createElement("LangSpecProperties");
+        	for (Entry<String, String> property : properties.entrySet()) {
+        		Element propertyElement = document.createElement("LangSpecProperty");
+        		propertyElement.setAttribute("key", property.getKey());
+        		propertyElement.setAttribute("value", property.getValue());
+        		
+        		propertiesElement.appendChild(propertyElement);
+        	}
+        	blockElement.appendChild(propertiesElement);
         }
-
-
-        saveString.append("</Block>");
-        return saveString.toString();
-    }
-    
-    //TODO may put this in a separate XML writing utility class
-    private void appendAttribute(String att, String value, StringBuffer buf) {
-        buf.append(att);
-        buf.append(EQ_OPEN_QUOTE);
-        buf.append(escape(value));
-        buf.append(CLOSE_QUOTE);
+        
+    	return blockElement;
     }
     
     /**

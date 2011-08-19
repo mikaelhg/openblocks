@@ -3,8 +3,6 @@ package edu.mit.blocks.codeblockutil;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.GradientPaint;
@@ -17,8 +15,6 @@ import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
-
-import javax.swing.JFrame;
 
 public class CRadioactiveButton extends CButton {
 
@@ -41,6 +37,7 @@ public class CRadioactiveButton extends CButton {
         super(buttonColor, selectedColor, text);
     }
 
+    @Override
     public void paint(Graphics g) {
         // Set up graphics and buffer
         Graphics2D g2 = (Graphics2D) g;
@@ -116,17 +113,4 @@ public class CRadioactiveButton extends CButton {
         }
     }
 
-    public static void main(String[] args) {
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setLayout(new FlowLayout());
-        f.setSize(500, 300);
-        CButton c = new CRadioactiveButton(Color.cyan, Color.green.brighter().brighter().brighter(), "hi");
-        c.setPreferredSize(new Dimension(400, 200));
-
-        f.add(c);
-        f.setVisible(true);
-        f.repaint();
-
-    }
 }

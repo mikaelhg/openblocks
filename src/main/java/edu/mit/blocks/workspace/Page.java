@@ -26,6 +26,8 @@ import javax.swing.JPanel;
 import javax.swing.JToolTip;
 import javax.swing.SwingUtilities;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -94,10 +96,6 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
     private static final int DEFAULT_ABSTRACT_WIDTH = 700;
     /** The default abstract height */
     public static final int DEFAULT_ABSTRACT_HEIGHT = 1600;
-    /** an equals sign followed by a double quote character*/
-    private static final String EQ_OPEN_QUOTE = "=\"";
-    /** a double quote character */
-    private static final String CLOSE_QUOTE = "\" ";
     /** An empty string */
     private static final String emptyString = "";
     /** this.zoomLevel: zoom level state */
@@ -796,52 +794,36 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
         this.pageJComponent.repaint();
     }
 
-    /**
-     * Returns an escaped (safe) version of string.
-     */
-    private static String escape(String s) {
-        return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-    }
-
-    public String getSaveString() {
-        StringBuffer buf = new StringBuffer();
-
-        buf.append("<Page ");
-        appendAttribute("page-name", this.getPageName(), buf);
-        appendAttribute("page-color", this.getPageColor().getRed() + " " + this.getPageColor().getGreen() + " " + this.getPageColor().getBlue(), buf);
-        appendAttribute("page-width", (int) this.getAbstractWidth() + "", buf);
-        if (fullview) {
-            appendAttribute("page-infullview", "yes", buf);
-        } else {
-            appendAttribute("page-infullview", "no", buf);
-        }
-        if (pageDrawer != null) {
-            appendAttribute("page-drawer", pageDrawer, buf);
-        }
-        if (pageId != null) {
-            appendAttribute("page-id", pageId, buf);
-        }
-
-        buf.append(">");
+    public Node getSaveNode(Document document) {
+    	Element pageElement = document.createElement("Page");
+    	
+    	pageElement.setAttribute("page-name", getPageName());
+    	pageElement.setAttribute("page-color", getPageColor().getRed() + " " + getPageColor().getGreen() + " " + getPageColor().getBlue());
+    	pageElement.setAttribute("page-width", String.valueOf((int)getAbstractWidth()));
+    	if (fullview) {
+    		pageElement.setAttribute("page-infullview", "yes");
+    	}
+    	else {
+    		pageElement.setAttribute("page-infullview", "no");
+    	}
+    	if (pageDrawer != null) {
+    		pageElement.setAttribute("page-drawer", pageDrawer);
+    	}
+    	if (pageId != null) {
+    		pageElement.setAttribute("page-id", pageId);
+    	}
+    	
         //retrieve save strings of blocks within this Page
         Collection<RenderableBlock> blocks = this.getBlocks();
         if (blocks.size() > 0) {
-            buf.append("<PageBlocks>");
+        	Element pageBlocksElement = document.createElement("PageBlocks");
             for (RenderableBlock rb : blocks) {
-                buf.append(rb.getSaveString());
+            	pageBlocksElement.appendChild(rb.getSaveNode(document));
             }
-            buf.append("</PageBlocks>");
+            pageElement.appendChild(pageBlocksElement);
         }
-        buf.append("</Page>");
-
-        return buf.toString();
-    }
-
-    private void appendAttribute(String att, String value, StringBuffer buf) {
-        buf.append(att);
-        buf.append(EQ_OPEN_QUOTE);
-        buf.append(escape(value));
-        buf.append(CLOSE_QUOTE);
+    	
+    	return pageElement;
     }
 
     ////////////////////////////////////

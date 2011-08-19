@@ -40,9 +40,8 @@ public class CWheeler extends JPanel {
         this.elements = items;
         if (includeScrollbar) {
             CArrowButton left = new CArrowButton(CArrowButton.Direction.WEST) {
-
                 private static final long serialVersionUID = 328149080242L;
-
+                @Override
                 public void triggerAction() {
                     scrollLeft();
                 }
@@ -50,9 +49,8 @@ public class CWheeler extends JPanel {
             left.addActionListener(left);
             left.setPreferredSize(new Dimension(15, 15));
             CArrowButton right = new CArrowButton(CArrowButton.Direction.EAST) {
-
                 private static final long serialVersionUID = 328149080243L;
-
+                @Override
                 public void triggerAction() {
                     scrollRight();
                 }
@@ -147,19 +145,4 @@ public class CWheeler extends JPanel {
         scroll.getHorizontalModel().setValue(item.getX());
     }
 
-    public static void main(String[] args) {
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setLayout(new BorderLayout());
-        f.setSize(500, 200);
-        List<JComponent> items = new ArrayList<JComponent>();
-        for (int i = 0; i < 15; i++) {
-            CWheelItem item = new CWheelItem();
-            item.setBackground(Color.red);
-            items.add(item);
-        }
-        f.add(new CWheeler(items));
-        f.setVisible(true);
-        f.repaint();
-    }
 }
