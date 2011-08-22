@@ -75,6 +75,7 @@ BlockGenuses are first loaded.
 			</BlockConnectors>
 		</BlockGenus>
 		
+		
 		<!-- Basic -->
 		
 		<!-- 
@@ -86,6 +87,12 @@ BlockGenuses are first loaded.
 			</BlockConnectors>
 		</BlockGenus>
 		 -->
+		
+		<BlockGenus name="variable-name" kind="string" color="0 0 255" initlabel="string">
+			<BlockConnectors>
+				<BlockConnector connector-type="string" connector-kind="plug" position-type="mirror" />
+			</BlockConnectors>
+		</BlockGenus>
 		
 		<!-- 
 		<BlockGenus name="variable-getter" kind="command" color="0 0 255" initlabel="set">
@@ -195,7 +202,7 @@ BlockGenuses are first loaded.
 					<DefaultArg genus-name="number" label="1"/>
 				</BlockConnector>
 			</BlockConnectors>
-		</BlockGenus>	
+		</BlockGenus>
 		
 		<BlockGenus name="if" kind="command" initlabel="if" color="255 221 0">
 			<description>
@@ -486,6 +493,121 @@ BlockGenuses are first loaded.
 			</BlockConnectors>
 		</BlockGenus>
 		
+		
+		<!-- brick -->
+		<BlockGenus name="Tinker_LED" kind="command" color="255 255 255" initlabel="Tinker LED">
+			<description>
+				<text>TinkerKit LED</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-type="number" connector-kind="socket" label="pin#">
+					<DefaultArg genus-name="number" label="1"/>
+				</BlockConnector>
+				<BlockConnector connector-type="boolean" connector-kind="socket" label="status">
+					<DefaultArg genus-name="digital-high" label="ON"/>
+				</BlockConnector>
+			</BlockConnectors>
+			<Images>
+				<Image>
+					<FileLocation>edu/mit/blocks/codeblocks/brick.jpg</FileLocation>
+				</Image>
+			</Images>
+		</BlockGenus>
+		
+		<BlockGenus name="Tinker_Mosfet" kind="command" color="255 255 255" initlabel="Tinker Mosfet">
+			<description>
+				<text>TinkerKit Mosfet</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-type="number" connector-kind="socket" label="pin#">
+					<DefaultArg genus-name="number" label="1"/>
+				</BlockConnector>
+				<BlockConnector connector-type="boolean" connector-kind="socket" label="status">
+					<DefaultArg genus-name="digital-high" label="HIGH"/>
+				</BlockConnector>
+			</BlockConnectors>
+			<Images>
+				<Image>
+					<FileLocation>/home/heqichen/my/project/ardublock/20110820/ardublock/src/main/resources/com/ardublock/block/Tinker_Mosfet.jpg</FileLocation>
+				</Image>
+			</Images>
+		</BlockGenus>
+		
+		<BlockGenus name="Tinker_Relay" kind="command" color="255 255 255" initlabel="Tinker Relay">
+			<description>
+				<text>TinkerKit Relay</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-type="number" connector-kind="socket" label="pin#">
+					<DefaultArg genus-name="number" label="1"/>
+				</BlockConnector>
+				<BlockConnector connector-type="boolean" connector-kind="socket" label="status">
+					<DefaultArg genus-name="digital-high" label="HIGH"/>
+				</BlockConnector>
+			</BlockConnectors>
+			<Images>
+				<Image>
+					<FileLocation>/home/heqichen/my/project/ardublock/20110820/ardublock/src/main/resources/com/ardublock/block/Tinker_Relay.jpg</FileLocation>
+				</Image>
+			</Images>
+		</BlockGenus>
+		
+		<BlockGenus name="Tinker_Servo" kind="command" color="255 255 255" initlabel="Tinker Servo">
+			<description>
+				<text>TinkerKit Servo</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-type="number" connector-kind="socket" label="pin#">
+					<DefaultArg genus-name="number" label="1"/>
+				</BlockConnector>
+				<BlockConnector connector-type="number" connector-kind="socket" label="angle">
+					<DefaultArg genus-name="number" label="90"/>
+				</BlockConnector>
+			</BlockConnectors>
+			<Images>
+				<Image>
+					<FileLocation>/home/heqichen/my/project/ardublock/20110820/ardublock/src/main/resources/com/ardublock/block/Tinker_Servo.png</FileLocation>
+				</Image>
+			</Images>
+		</BlockGenus>
+		
+		<BlockGenus name="Tinker_Button" kind="number" color="255 255 255" initlabel="Tinker Button">
+			<description>
+				<text>TinkerKit Button</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-type="number" connector-kind="plug" />
+				<BlockConnector connector-type="number" connector-kind="socket" label="pin#">
+					<DefaultArg genus-name="number" label="1"/>
+				</BlockConnector>
+			</BlockConnectors>
+			<Images>
+				<Image>
+					<FileLocation>/home/heqichen/my/project/ardublock/20110820/ardublock/src/main/resources/com/ardublock/block/Tinker_Button.jpg</FileLocation>
+				</Image>
+			</Images>
+		</BlockGenus>
+		
+		
+		<BlockGenus name="Tinker_Accmeter" kind="number" color="255 255 255" initlabel="Tinker Accelerometer">
+			<description>
+				<text>TinkerKit Accelerometer</text>
+			</description>
+			<BlockConnectors>
+				<BlockConnector connector-type="number" connector-kind="plug" />
+				<BlockConnector connector-type="number" connector-kind="socket" label="pin#">
+					<DefaultArg genus-name="number" label="1"/>
+				</BlockConnector>
+			</BlockConnectors>
+			<Images>
+				<Image>
+					<FileLocation>/home/heqichen/my/project/ardublock/20110820/ardublock/src/main/resources/com/ardublock/block/Tinker_Button.jpg</FileLocation>
+				</Image>
+			</Images>
+		</BlockGenus>
+		
+		heqichen TODO
+		
 	</BlockGenuses>
 	
 	<BlockFamilies>
@@ -580,6 +702,10 @@ BlockGenuses are first loaded.
 				<BlockGenusMember>random</BlockGenusMember>
 				<BlockGenusMember>delayMicroseconds</BlockGenusMember>
 				<BlockGenusMember>millis</BlockGenusMember>
+			</BlockDrawer>
+			
+			<BlockDrawer button-color="255 255 255" name="brick" type="factory">
+				<BlockGenusMember>Tinker_LED</BlockGenusMember>
 			</BlockDrawer>
 			<!-- Shapes are automatically loaded as blocks in the Shapes drawer
 				 (see slcodeblocks.ShapeBlocksGenerator for details)  -->
