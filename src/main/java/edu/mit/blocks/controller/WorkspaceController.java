@@ -41,6 +41,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.EntityResolver;
 
 import edu.mit.blocks.codeblocks.BlockConnectorShape;
 import edu.mit.blocks.codeblocks.BlockGenus;
@@ -67,7 +68,8 @@ public class WorkspaceController {
 
     //flag to indicate if a new lang definition file has been set
     private boolean langDefDirty = true;
-
+    // handle the case of loading the DTD from jar file. 
+    private InputStream langDefDtd;
     //flag to indicate if a workspace has been loaded/initialized 
     private boolean workspaceLoaded = false;
     // last directory that was selected with open or save action
@@ -84,6 +86,10 @@ public class WorkspaceController {
      */
     public WorkspaceController() {
         workspace = Workspace.getInstance();
+    }
+    
+    public void setLangDefDtd(InputStream is) {
+    	langDefDtd = is;
     }
 
     /**
@@ -120,6 +126,13 @@ public class WorkspaceController {
         final Document doc;
         try {
             builder = factory.newDocumentBuilder();
+            if (langDefDtd != null) {
+            	builder.setEntityResolver(new EntityResolver () {
+            		public InputSource resolveEntity( String publicId, String systemId) throws SAXException, IOException {
+            			return new InputSource(langDefDtd);
+            		}
+            	});
+            }
             doc = builder.parse(in);
             langDefRoot = doc.getDocumentElement();
             langDefDirty = true;
