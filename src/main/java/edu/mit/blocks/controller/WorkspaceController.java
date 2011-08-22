@@ -229,7 +229,7 @@ public class WorkspaceController {
     private void validate(Document document) {
         try {
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            URL schemaUrl = ClassLoader.getSystemResource("edu/mit/blocks/codeblocks/codeblocks.xsd");
+            URL schemaUrl = this.getClass().getResource("/edu/mit/blocks/codeblocks/codeblocks.xsd");
             Schema schema = schemaFactory.newSchema(schemaUrl);
             Validator validator = schema.newValidator();
             validator.validate(new DOMSource(document));
