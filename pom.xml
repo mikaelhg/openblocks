@@ -9,7 +9,7 @@
     <groupId>edu.mit</groupId>
     <artifactId>openblocks</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0-20110819</version>
     <name>openblocks</name>
     <url>https://github.com/mikaelhg/openblocks</url>
     <build>
