@@ -109,10 +109,8 @@ public class FactoryManager implements WorkspaceWidget, ComponentListener, Works
 
     /**
      * Constucts new Factorymanager
-     * @param hasStatic
-     * @param hasDynamic
      */
-    public FactoryManager(boolean hasStatic, boolean hasDynamic) {
+    public FactoryManager() {
         this.navigator = new Navigator();
         this.navigator.getJComponent().setPreferredSize(new Dimension(160, 600));
         this.navigator.addExlorer(STATIC_NAME);
