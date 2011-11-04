@@ -11,10 +11,11 @@ import org.w3c.dom.Node;
 import edu.mit.blocks.workspace.ISupportMemento;
 
 /**
- * <code>BlockConnector</code> is a light class that describes the socket/plug information for each socket or plug of a particular Block.  
- * Each socket has a kind (i.e. number, String, boolean, etc.), a label, and the block id of the block at that socket (not to be 
- * confused with the block that hold the socket information - socket does not have a reference to that parent
- * block).
+ * <code>BlockConnector</code> is a light class that describes the socket/plug
+ * information for each socket or plug of a particular Block.  Each socket has
+ * a kind (i.e. number, String, boolean, etc.), a label, and the block id of
+ * the block at that socket (not to be confused with the block that hold the
+ * socket information - socket does not have a reference to that parent block).
  */
 public class BlockConnector implements ISupportMemento {
     
@@ -246,8 +247,9 @@ public class BlockConnector implements ISupportMemento {
         return Block.NULL;
     }
 
+    @Override
     public String toString() {
-        StringBuffer out = new StringBuffer();
+        StringBuilder out = new StringBuilder();
         out.append("Connector label: ");
         out.append(label);
         out.append(", Connector kind: ");
@@ -310,58 +312,50 @@ public class BlockConnector implements ISupportMemento {
         if (node.getNodeName().equals("BlockConnector")) {
             //load attributes
             nameMatcher = attrExtractor.matcher(node.getAttributes().getNamedItem("init-type").toString());
-            if (nameMatcher.find()) //will be true
-            {
+            if (nameMatcher.find()) {
                 initKind = nameMatcher.group(1);
             }
             nameMatcher = attrExtractor.matcher(node.getAttributes().getNamedItem("connector-type").toString());
-            if (nameMatcher.find()) //will be true
-            {
+            if (nameMatcher.find()) {
                 kind = nameMatcher.group(1);
             }
             nameMatcher = attrExtractor.matcher(node.getAttributes().getNamedItem("label").toString());
-            if (nameMatcher.find()) //will be true
-            {
+            if (nameMatcher.find()) {
                 label = nameMatcher.group(1);
             }
             //load optional items
             Node opt_item = node.getAttributes().getNamedItem("con-block-id");
             if (opt_item != null) {
                 nameMatcher = attrExtractor.matcher(opt_item.toString());
-                if (nameMatcher.find()) //will be true
-                {
+                if (nameMatcher.find()) {
                     idConnected = Block.translateLong(Long.parseLong(nameMatcher.group(1)), idMapping);
                 }
             }
             opt_item = node.getAttributes().getNamedItem("label-editable");
             if (opt_item != null) {
                 nameMatcher = attrExtractor.matcher(opt_item.toString());
-                if (nameMatcher.find()) //will be true
-                {
+                if (nameMatcher.find()) {
                     isLabelEditable = nameMatcher.group(1).equals("true");
                 }
             }
             opt_item = node.getAttributes().getNamedItem("is-expandable");
             if (opt_item != null) {
                 nameMatcher = attrExtractor.matcher(opt_item.toString());
-                if (nameMatcher.find()) //will be true
-                {
+                if (nameMatcher.find()) {
                     isExpandable = nameMatcher.group(1).equals("yes") ? true : false;
                 }
             }
             opt_item = node.getAttributes().getNamedItem("expand-group");
             if (opt_item != null) {
                 nameMatcher = attrExtractor.matcher(opt_item.toString());
-                if (nameMatcher.find()) //will be true
-                {
+                if (nameMatcher.find()) {
                     expandGroup = nameMatcher.group(1);
                 }
             }
             opt_item = node.getAttributes().getNamedItem("position-type");
             if (opt_item != null) {
                 nameMatcher = attrExtractor.matcher(opt_item.toString());
-                if (nameMatcher.find()) //will be true
-                {
+                if (nameMatcher.find()) {
                     positionType = nameMatcher.group(1);
                 }
             }
@@ -396,36 +390,36 @@ public class BlockConnector implements ISupportMemento {
      * @return the node of this
      */
     public Node getSaveNode(Document document, String conKind) {
-    	Element connectorElement = document.createElement("BlockConnector");
-    	connectorElement.setAttribute("connector-kind", conKind);
-    	connectorElement.setAttribute("connector-type", kind);
-    	connectorElement.setAttribute("init-type", initKind);
-    	connectorElement.setAttribute("label", label);
-    	if (expandGroup.length() > 0) {
-    		connectorElement.setAttribute("expand-group", expandGroup);
-    	}
-    	if (isExpandable) {
-    		connectorElement.setAttribute("is-expandable", "yes");
-    	}
-        if (this.positionType.equals(PositionType.SINGLE)) {
-        	connectorElement.setAttribute("position-type", "single");
-        } else if (this.positionType.equals(PositionType.MIRROR)) {
-        	connectorElement.setAttribute("position-type", "mirror");
-        } else if (this.positionType.equals(PositionType.BOTTOM)) {
-        	connectorElement.setAttribute("position-type", "bottom");
-        } else if (this.positionType.equals(PositionType.TOP)) {
-        	connectorElement.setAttribute("position-type", "top");
+        Element connectorElement = document.createElement("BlockConnector");
+        connectorElement.setAttribute("connector-kind", conKind);
+        connectorElement.setAttribute("connector-type", kind);
+        connectorElement.setAttribute("init-type", initKind);
+        connectorElement.setAttribute("label", label);
+        if (expandGroup.length() > 0) {
+            connectorElement.setAttribute("expand-group", expandGroup);
         }
-        
+        if (isExpandable) {
+            connectorElement.setAttribute("is-expandable", "yes");
+        }
+        if (this.positionType.equals(PositionType.SINGLE)) {
+            connectorElement.setAttribute("position-type", "single");
+        } else if (this.positionType.equals(PositionType.MIRROR)) {
+            connectorElement.setAttribute("position-type", "mirror");
+        } else if (this.positionType.equals(PositionType.BOTTOM)) {
+            connectorElement.setAttribute("position-type", "bottom");
+        } else if (this.positionType.equals(PositionType.TOP)) {
+            connectorElement.setAttribute("position-type", "top");
+        }
+
         if (this.isLabelEditable) {
-        	connectorElement.setAttribute("label-editable", "true");
+            connectorElement.setAttribute("label-editable", "true");
         }
 
         if (!this.connBlockID.equals(Block.NULL)) {
             connectorElement.setAttribute("con-block-id", Long.toString(connBlockID));
         }
-    	
-    	return connectorElement;
+
+        return connectorElement;
     }
     
     /***********************************
@@ -448,6 +442,7 @@ public class BlockConnector implements ISupportMemento {
         public boolean isLabelEditable;
     }
 
+    @Override
     public Object getState() {
         BlockConnectorState state = new BlockConnectorState();
 
@@ -473,6 +468,7 @@ public class BlockConnector implements ISupportMemento {
         return state;
     }
 
+    @Override
     public void loadState(Object memento) {
         if (memento instanceof BlockConnectorState) {
             BlockConnectorState state = (BlockConnectorState) memento;

@@ -15,7 +15,6 @@ import javax.swing.JPanel;
 /**
  * it's like a neon sign, only cooler
  * @author An Ho
- *
  */
 public class CSignLabel extends JPanel {
 
@@ -54,6 +53,7 @@ public class CSignLabel extends JPanel {
         }
     }
 
+    @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
@@ -74,18 +74,4 @@ public class CSignLabel extends JPanel {
         }
     }
 
-    public static void main(String[] args) {
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setLayout(new BorderLayout());
-        f.setSize(500, 75);
-        CSignLabel c = new CSignLabel();
-        c.setText("hello there");
-        c.setPreferredSize(new Dimension(400, 50));
-
-        f.add(c);
-        f.setVisible(true);
-        f.repaint();
-
-    }
 }

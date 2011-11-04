@@ -4,7 +4,6 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.GradientPaint;
@@ -22,7 +21,6 @@ import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 /**
@@ -35,24 +33,34 @@ import javax.swing.SwingUtilities;
 public class CButton extends JButton implements MouseListener {
 
     private static final long serialVersionUID = 328149080228L;
+
     /** blur lighting of this button */
     static float[] BLUR = {0.10f, 0.10f, 0.10f, 0.10f, 0.30f, 0.10f, 0.10f, 0.10f, 0.10f};
+
     /** the inset of this button */
     static final int INSET = 3;
+
     /** The highlighting inset */
     static final int HIGHLIGHT_INSET = 2;
+
     /** Focus Flag: true iff mouse is hovering over button */
     boolean focus = false;
+
     /** Press Flag: true iff button was pressed but has not been released */
     boolean pressed = false;
+
     /** Selected Flag: true iff button was toggled to selected */
     boolean selected = false;
+
     /** Color of this button when not pressed */
     Color buttonColor;
+
     /** Color of this button when pressed */
     Color selectedColor;
+
     /** Color of the foreground when not hovered */
     Color foregroundColor = Color.white;
+
     /** Color of the foreground whe hovered */
     Color hoveredColor = Color.red;
 
@@ -125,6 +133,7 @@ public class CButton extends JButton implements MouseListener {
      * Prevents textual label from display out of the bounds
      * of the this oval shaped button's edges
      */
+    @Override
     public Insets getInsets() {
         //top, left, bottom, right
         return new Insets(0, this.getHeight() / 2, 0, this.getHeight() / 2);
@@ -133,6 +142,7 @@ public class CButton extends JButton implements MouseListener {
     /**
      * re paints this
      */
+    @Override
     public void paint(Graphics g) {
         //super.paint(g);
 
@@ -209,48 +219,39 @@ public class CButton extends JButton implements MouseListener {
     //////////////////////
     //Mouse Listeners
     //////////////////////
+    @Override
     public void addMouseListener(MouseListener l) {
         super.addMouseListener(l);
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
         this.focus = true;
         repaint();
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
         this.focus = false;
         repaint();
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
             this.pressed = true;
         }
         repaint();
-
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
         this.pressed = false;
         repaint();
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
     }
 
-    /** debugging */
-    public static void main(String[] args) {
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setLayout(new FlowLayout());
-        f.setSize(500, 75);
-        CButton c = new CButton("hi");
-        c.setPreferredSize(new Dimension(400, 50));
-
-        f.add(c);
-        f.setVisible(true);
-        f.repaint();
-
-    }
 }

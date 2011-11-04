@@ -16,7 +16,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -48,6 +47,7 @@ public class CQueryField extends JPanel implements MouseListener, MouseMotionLis
         this.repaint();
     }
 
+    @Override
     public Insets getInsets() {
         int h = this.getHeight();
         return new Insets(h / 6, h, h / 6, h);
@@ -81,6 +81,7 @@ public class CQueryField extends JPanel implements MouseListener, MouseMotionLis
         return field;
     }
 
+    @Override
     public void paint(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         int w = this.getWidth();
@@ -123,17 +124,21 @@ public class CQueryField extends JPanel implements MouseListener, MouseMotionLis
         field.setText(text);
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
         mouseover = false;
         this.repaint();
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
         if (e.getX() > this.getWidth() - this.getHeight() * 5 / 6) {
             pressed = true;
@@ -141,6 +146,7 @@ public class CQueryField extends JPanel implements MouseListener, MouseMotionLis
         }
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
         if (e.getX() > this.getWidth() - this.getHeight() * 5 / 6) {
             field.setText("");
@@ -149,6 +155,7 @@ public class CQueryField extends JPanel implements MouseListener, MouseMotionLis
         }
     }
 
+    @Override
     public void mouseMoved(MouseEvent e) {
         if (e.getX() > this.getWidth() - this.getHeight() * 5 / 6) {
             if (mouseover == false) {
@@ -163,16 +170,8 @@ public class CQueryField extends JPanel implements MouseListener, MouseMotionLis
         }
     }
 
+    @Override
     public void mouseDragged(MouseEvent e) {
     }
 
-    public static void main(String[] args) {
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setLayout(new BorderLayout());
-        f.setSize(400, 100);
-        f.add(new CQueryField());
-
-        f.setVisible(true);
-    }
 }

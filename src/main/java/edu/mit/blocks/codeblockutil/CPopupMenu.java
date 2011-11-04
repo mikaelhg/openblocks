@@ -3,7 +3,6 @@ package edu.mit.blocks.codeblockutil;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -11,7 +10,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
@@ -44,6 +42,7 @@ public class CPopupMenu extends JPopupMenu implements ActionListener {
         this.add(scroll);
     }
 
+    @Override
     public Insets getInsets() {
         return new Insets(5, 5, 5, 5);
     }
@@ -61,43 +60,11 @@ public class CPopupMenu extends JPopupMenu implements ActionListener {
         this.setPopupSize((int) (100 * this.zoom), (int) (Math.min(items * ITEM_HEIGHT + 10, 100) * this.zoom));
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (this.isVisible()) {
             this.setVisible(false);
         }
     }
 
-    public static void main(String[] args) {
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setLayout(new FlowLayout());
-        f.setSize(500, 300);
-        f.getContentPane().setBackground(Color.red);
-        final CButton c = new CGraphiteButton("hi");
-        f.add(c);
-        f.setVisible(true);
-        f.repaint();
-        final CPopupMenu menu = new CPopupMenu();
-        for (int i = 0; i < 17; i++) {
-            menu.add(new CMenuItem("hi"));
-        }
-        c.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                menu.show(c, 0, 0);
-            }
-        });
-        c.add(menu);
-        System.out.println(menu.getParent());
-    }
-    /*	protected void paintComponent(Graphics g){
-    super.paintComponent(g);
-    Graphics2D g2 = (Graphics2D)g;
-    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    g.setColor(background);
-    g.fillRoundRect(0,0,this.getWidth()-1, this.getHeight()-1, MARGIN, MARGIN);
-    g.setColor(CGraphite.milky);
-    g.drawRoundRect(0,0,this.getWidth()-1, this.getHeight()-1, MARGIN, MARGIN);
-
-    }*/
 }

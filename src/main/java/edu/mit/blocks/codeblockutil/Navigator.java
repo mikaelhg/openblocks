@@ -1,6 +1,5 @@
 package edu.mit.blocks.codeblockutil;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -8,14 +7,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -68,14 +63,19 @@ final public class Navigator {
 
     /** The index of the active explorer being viewed.  0<=position<explorers.size */
     private int position;
+
     /** Ordered set of explorers */
     private List<Explorer> explorers;
+
     /** The UI used to navigate between explorers */
     private JScrollPane scroll;
+
     /** The viewport that holds all the explorers. Explorers should be lined up in order within this "view" */
     private JComponent view;
+
     /** The UI used to switch between different explorers */
     private ExplorerSwitcher switcher;
+
     /** Displays the sliding action when moving from one explorer to the next */
     private NavigationAnimator animator;
 
@@ -338,9 +338,8 @@ final public class Navigator {
             leftLabel.setForeground(Color.white);
             leftLabel.setFont(new Font("Arial", Font.PLAIN, LABEL_HEIGHT));
             leftArrow = new CArrowButton(CArrowButton.Direction.WEST) {
-
                 private static final long serialVersionUID = 328149080296L;
-
+                @Override
                 public void triggerAction() {
                     setView(position - 1);
                 }
@@ -351,9 +350,8 @@ final public class Navigator {
             rightLabel.setForeground(Color.white);
             rightLabel.setFont(new Font("Arial", Font.PLAIN, LABEL_HEIGHT));
             rightArrow = new CArrowButton(CArrowButton.Direction.EAST) {
-
                 private static final long serialVersionUID = 328149080297L;
-
+                @Override
                 public void triggerAction() {
                     setView(position + 1);
                 }
@@ -445,6 +443,7 @@ final public class Navigator {
         }
 
         /** Keep scrolling until be get to x */
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (count < 0) {
                 timer.stop();
@@ -461,42 +460,4 @@ final public class Navigator {
         }
     }
 
-    /** Testing purposes */
-    public static void main(String[] args) {
-        class CC extends DefaultCanvas {
-
-            private static final long serialVersionUID = 328149080298L;
-
-            public CC(String label) {
-                super();
-                super.setName(label);
-            }
-
-            public JComponent getJComponent() {
-                return new JButton(this.getName());
-            }
-        }
-        final Navigator n = new Navigator();
-        for (int i = 0; i < 8; i++) {
-            List<Canvas> c1 = new ArrayList<Canvas>();
-            for (int j = 0; j < 10; j++) {
-                c1.add(new CC("# " + j));
-            }
-            n.addExlorer("Ex" + i);
-            n.setCanvas(c1, "Ex" + i);
-        }
-        JFrame f = new JFrame();
-        f.addComponentListener(new ComponentAdapter() {
-
-            public void componentResized(ComponentEvent e) {
-                n.reformView();
-            }
-        });
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setLayout(new BorderLayout());
-        f.setSize(400, 600);
-        f.add(n.getJComponent(), BorderLayout.CENTER);
-        f.add(n.getSwitcher(), BorderLayout.NORTH);
-        f.setVisible(true);
-    }
 }

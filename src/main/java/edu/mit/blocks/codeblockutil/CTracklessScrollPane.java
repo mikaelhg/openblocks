@@ -222,6 +222,7 @@ public class CTracklessScrollPane extends CScrollPane implements KeyListener {
     /**
      * @returns vertical scroll bar bounding range model.  May be null
      */
+    @Override
     public BoundedRangeModel getVerticalModel() {
         return scrollviewport.getVerticalScrollBar().getModel();
     }
@@ -229,6 +230,7 @@ public class CTracklessScrollPane extends CScrollPane implements KeyListener {
     /**
      * @returns horizontal scroll bar bounding range model.  May be null
      */
+    @Override
     public BoundedRangeModel getHorizontalModel() {
         return scrollviewport.getHorizontalScrollBar().getModel();
     }
@@ -242,6 +244,7 @@ public class CTracklessScrollPane extends CScrollPane implements KeyListener {
     /**
      * @ovverride CScrollPane.scrollRectToVisible
      */
+    @Override
     public void scrollRectToVisible(Rectangle contentRect) {
         scrollviewport.getViewport().scrollRectToVisible(contentRect);
     }
@@ -252,6 +255,7 @@ public class CTracklessScrollPane extends CScrollPane implements KeyListener {
      * @modifies this.SCROLLINGUNIT
      * @effects set this.scrollingunit to x
      */
+    @Override
     public void setScrollingUnit(int x) {
         this.SCROLLINGUNIT = x;
         this.verticalbar.setScrollingUnit(x);
@@ -267,6 +271,7 @@ public class CTracklessScrollPane extends CScrollPane implements KeyListener {
      * content view horizontally, along with Shift key modifier events.
      * For WINDOWs: Manually press Shift while scrolling to scroll horizontally
      */
+    @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         if (e.isShiftDown()) {
             scrollviewport.getHorizontalScrollBar().getModel().setValue(
@@ -285,6 +290,7 @@ public class CTracklessScrollPane extends CScrollPane implements KeyListener {
      * KeyListeners: Should repaint the scrollbar
      * everytime the user presses a key
      */
+    @Override
     public void keyPressed(KeyEvent e) {
         verticalbar.repaint();
         horizontalbar.repaint();
@@ -294,6 +300,7 @@ public class CTracklessScrollPane extends CScrollPane implements KeyListener {
      * KeyListeners: Should repaint the scrollbar
      * everytime the user presses a key
      */
+    @Override
     public void keyReleased(KeyEvent e) {
         verticalbar.repaint();
         horizontalbar.repaint();
@@ -303,26 +310,12 @@ public class CTracklessScrollPane extends CScrollPane implements KeyListener {
      * KeyListeners: Should repaint the scrollbar
      * everytime the user presses a key
      */
+    @Override
     public void keyTyped(KeyEvent e) {
         verticalbar.repaint();
         horizontalbar.repaint();
     }
 
-    public static void main(String[] args) {
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setLayout(new BorderLayout());
-        f.setSize(400, 400);
-        JTextArea b = new JTextArea(20, 30);
-        f.getContentPane().add(new CTracklessScrollPane(
-                b,
-                ScrollPolicy.VERTICAL_BAR_ALWAYS,
-                ScrollPolicy.HORIZONTAL_BAR_ALWAYS,
-                20,
-                Color.red,
-                Color.blue));
-        f.setVisible(true);
-    }
 }
 
 /**
@@ -382,6 +375,7 @@ class VerticalBar extends JPanel implements MouseListener, MouseMotionListener, 
     /**
      * paints scrollbar
      */
+    @Override
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2 = (Graphics2D) g;
@@ -466,6 +460,7 @@ class VerticalBar extends JPanel implements MouseListener, MouseMotionListener, 
     /**
      * Drag scroll bar by same drag distance as mouse drag
      */
+    @Override
     public void mouseDragged(MouseEvent e) {
         modelrange.setValue((int) viewToModel(e.getY() - this.pressLocation));
         this.repaint();
@@ -474,25 +469,31 @@ class VerticalBar extends JPanel implements MouseListener, MouseMotionListener, 
     /**
      * Drops the thumb
      */
+    @Override
     public void mouseReleased(MouseEvent e) {
         this.pressLocation = 0;
     }
 
+    @Override
     public void mouseMoved(MouseEvent e) {
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
     }
 
     /**
      * Translate the viewport by same amount of wheel scroll
      */
+    @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         modelrange.setValue(modelrange.getValue() + e.getUnitsToScroll() * e.getScrollAmount() * SCROLLINGUNIT);
         this.repaint();
@@ -557,6 +558,7 @@ class HorizontalBar extends JPanel implements MouseListener, MouseMotionListener
     /**
      * paints scrollbar
      */
+    @Override
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2 = (Graphics2D) g;
@@ -626,6 +628,7 @@ class HorizontalBar extends JPanel implements MouseListener, MouseMotionListener
      * directly to the location of the mouse press and THEN
      * scroll by some drag distance.
      */
+    @Override
     public void mousePressed(MouseEvent e) {
         double viewValue = modelToView(modelrange.getValue());
         double viewExtent = modelToView(modelrange.getExtent());
@@ -641,6 +644,7 @@ class HorizontalBar extends JPanel implements MouseListener, MouseMotionListener
     /**
      * Drag scroll bar by same drag distance as mouse drag
      */
+    @Override
     public void mouseDragged(MouseEvent e) {
         modelrange.setValue((int) viewToModel(e.getX() - this.pressLocation));
         this.repaint();
@@ -649,19 +653,24 @@ class HorizontalBar extends JPanel implements MouseListener, MouseMotionListener
     /**
      * Drops the thumb
      */
+    @Override
     public void mouseReleased(MouseEvent e) {
         this.pressLocation = 0;
     }
 
+    @Override
     public void mouseMoved(MouseEvent e) {
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
     }
 }

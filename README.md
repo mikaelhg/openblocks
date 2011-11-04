@@ -8,9 +8,7 @@ The principal objective of the fork is to make the code more amenable to inclusi
 
 Getting Started:
 ------
-	$ mvn validate
 	$ mvn clean package
-
 	$ mvn exec:java -Dexec.mainClass="edu.mit.blocks.controller.WorkspaceController" -Dexec.args="support/lang_def.xml"
 
 To do:

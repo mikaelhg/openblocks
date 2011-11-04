@@ -1,15 +1,12 @@
 package edu.mit.blocks.codeblockutil;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 public class CLabel extends JLabel {
@@ -33,6 +30,7 @@ public class CLabel extends JLabel {
         super(text);
     }
 
+    @Override
     public void paint(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         String text = this.getText();
@@ -58,17 +56,4 @@ public class CLabel extends JLabel {
         }
     }
 
-    public static void main(String[] args) {
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setLayout(new FlowLayout());
-        f.setSize(500, 75);
-        CLabel c = new CLabel("hi");
-        c.setPreferredSize(new Dimension(400, 50));
-
-        f.add(c);
-        f.setVisible(true);
-        f.repaint();
-
-    }
 }
