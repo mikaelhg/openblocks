@@ -54,8 +54,11 @@ public class PageDivider extends JComponent implements MouseListener, MouseMotio
     private boolean dragDone = false;
     /** The x corrdinate in pixel of the last mousePressed on this PageDivider */
     private int mPressedX;
+    /** The workspace in use */
+    private final Workspace workspace;
 
     /**
+     * @param workspace The workspace in use
      * @param left - the left page belonging to the this PageDivider
      *
      * @requires left != null
@@ -64,7 +67,8 @@ public class PageDivider extends JComponent implements MouseListener, MouseMotio
      * 			Any user-generated triggers will mutate the
      * 			"left" page.  This.color is set to Page.DIVIDER_COLOR.
      */
-    public PageDivider(Page left) {
+    public PageDivider(Workspace workspace, Page left) {
+        this.workspace = workspace;
         leftPage = left;
         setCursor(new Cursor(Cursor.E_RESIZE_CURSOR));
         addMouseListener(this);
@@ -106,7 +110,7 @@ public class PageDivider extends JComponent implements MouseListener, MouseMotio
      */
     public void mouseReleased(MouseEvent e) {
         if (dragDone) {
-            Workspace.getInstance().notifyListeners(new WorkspaceEvent(leftPage, WorkspaceEvent.PAGE_RESIZED, true));
+            workspace.notifyListeners(new WorkspaceEvent(workspace, leftPage, WorkspaceEvent.PAGE_RESIZED, true));
             dragDone = false;
         }
     }

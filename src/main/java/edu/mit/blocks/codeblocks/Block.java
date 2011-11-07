@@ -20,6 +20,7 @@ import edu.mit.blocks.renderable.BlockImageIcon;
 import edu.mit.blocks.renderable.BlockImageIcon.ImageLocation;
 import edu.mit.blocks.renderable.RenderableBlock;
 import edu.mit.blocks.workspace.ISupportMemento;
+import edu.mit.blocks.workspace.Workspace;
 
 /**
  * Block holds the mutable prop (data) of a particular block.  These mutable 
@@ -75,17 +76,21 @@ public class Block implements ISupportMemento {
     
     //argument descriptions
     private ArrayList<String> argumentDescriptions;
+
+    protected final Workspace workspace;
     
     /**
      * Constructs a new Block from the specified information.  This class constructor is 
      * protected as block loading from XML content or the (careful!) creation of its subclasses 
      * should override BlockID assignment.
+     * @param workspace The workspace in which this block should be created
      * @param id the Block ID of this
      * @param genusName the String name of this block's BlockGenus 
      * @param label the String label of this Block
      */
-    protected Block(Long id, String genusName, String label, boolean linkToStubs) {
+    protected Block(Workspace workspace, Long id, String genusName, String label, boolean linkToStubs) {
 
+        this.workspace = workspace;
         if (ALL_BLOCKS.containsKey(id)) {
             Block dup = ALL_BLOCKS.get(id);
             System.out.println("pre-existing block is: " + dup + " with genus " + dup.getGenusName() + " and label " + dup.getBlockLabel());
@@ -152,15 +157,16 @@ public class Block implements ISupportMemento {
      * Constructs a new <code>Block</code> instance.  Using the genusName specified 
      * of this Block's corresponding BlockGenus, this constructor populates this Block
      * with its genus information.  
+     * @param workspace The workspace in which this block should be created
      * @param genusName the name of its associated <code>BlockGenus</code> 
      * @param label the label of this Block.  
      * @param linkToStubs if true, this block can have stubs and be linked to them;
      * if false, then this block even though the genus specifies it will not be 
      * linked to stubs
      */
-    public Block(String genusName, String label, boolean linkToStubs) {
+    public Block(Workspace workspace, String genusName, String label, boolean linkToStubs) {
         //more will go into constructor;
-        this(NEXT_ID, genusName, label, linkToStubs);
+        this(workspace, NEXT_ID, genusName, label, linkToStubs);
 
         NEXT_ID++;
 
@@ -173,12 +179,13 @@ public class Block implements ISupportMemento {
      * Constructs a new <code>Block</code> instance.  Using the genusName specified 
      * of this Block's corresponding BlockGenus, this constructor populates this Block
      * with its genus information.  
+     * @param workspace The workspace in which this block should be created
      * @param genusName the name of its associated <code>BlockGenus</code> 
      * @param label the label of this Block.  
      */
-    public Block(String genusName, String label) {
+    public Block(Workspace workspace, String genusName, String label) {
         //more will go into constructor;
-        this(NEXT_ID, genusName, label, true);
+        this(workspace, NEXT_ID, genusName, label, true);
 
         NEXT_ID++;
 
@@ -191,23 +198,25 @@ public class Block implements ISupportMemento {
      * Constructs a new <code>Block</code> instance.  Using the genusName specified 
      * of this Block's corresponding BlockGenus, this constructor populates this Block
      * with its genus information.  
+     * @param workspace The workspace in which this block should be created
      * @param genusName the name of its associated <code>BlockGenus</code> 
      */
-    public Block(String genusName) {
-        this(genusName, BlockGenus.getGenusWithName(genusName).getInitialLabel());
+    public Block(Workspace workspace, String genusName) {
+        this(workspace, genusName, BlockGenus.getGenusWithName(genusName).getInitialLabel());
     }
     
     /**
      * Constructs a new <code>Block</code> instance.  Using the genusName specified 
      * of this Block's corresponding BlockGenus, this constructor populates this Block
      * with its genus information.  
+     * @param workspace The workspace in which this block should be created
      * @param genusName the name of its associated <code>BlockGenus</code> 
      * @param linkToStubs if true, this block can have stubs and be linked to them;
      * if false, then this block even though the genus specifies it will not be 
      * linked to stubs
      */
-    public Block(String genusName, boolean linkToStubs) {
-        this(genusName, BlockGenus.getGenusWithName(genusName).getInitialLabel(), linkToStubs);
+    public Block(Workspace workspace, String genusName, boolean linkToStubs) {
+        this(workspace, genusName, BlockGenus.getGenusWithName(genusName).getInitialLabel(), linkToStubs);
     }
     
     /**
@@ -230,6 +239,13 @@ public class Block implements ISupportMemento {
     ///////////////////
     //BLOCK prop
     ///////////////////
+    /**
+     * Returns the workspace that this block is living in
+     */
+    public Workspace getWorkspace() {
+        return workspace;
+    }
+    
     /**
      * Returns the block ID of this
      * @return the block ID of this
@@ -575,7 +591,7 @@ public class Block implements ISupportMemento {
      * @return true if socket successfully replaced
      */
     public boolean setSocketAt(int index, String kind, PositionType pos, String label, boolean isLabelEditable, boolean isExpandable, Long blockID) {
-        return sockets.set(index, new BlockConnector(kind, pos, label, isLabelEditable, isExpandable, blockID)) != null;
+        return sockets.set(index, new BlockConnector(workspace, kind, pos, label, isLabelEditable, isExpandable, blockID)) != null;
     }
     
     /**
@@ -605,7 +621,7 @@ public class Block implements ISupportMemento {
      * @param blockID the block id of the block attached to new socket
      */
     public void addSocket(String kind, PositionType positionType, String label, boolean isLabelEditable, boolean isExpandable, Long blockID) {
-        BlockConnector newSocket = new BlockConnector(kind, positionType, label, isLabelEditable, isExpandable, blockID);
+        BlockConnector newSocket = new BlockConnector(workspace, kind, positionType, label, isLabelEditable, isExpandable, blockID);
         sockets.add(newSocket);
     }
     
@@ -622,7 +638,7 @@ public class Block implements ISupportMemento {
      * @param blockID the block id of the block attached to new socket
      */
     public BlockConnector addSocket(int index, String kind, PositionType positionType, String label, boolean isLabelEditable, boolean isExpandable, Long blockID) {
-        BlockConnector newSocket = new BlockConnector(kind, positionType, label, isLabelEditable, isExpandable, blockID);
+        BlockConnector newSocket = new BlockConnector(workspace, kind, positionType, label, isLabelEditable, isExpandable, blockID);
         sockets.add(index, newSocket);
         return newSocket;
     }
@@ -676,7 +692,7 @@ public class Block implements ISupportMemento {
      * @param blockID the block id of the block attached to plug
      */
     public void setPlug(String kind, PositionType positionType, String label, boolean isLabelEditable, Long blockID) {
-        plug = new BlockConnector(kind, positionType, label, isLabelEditable, false, blockID);
+        plug = new BlockConnector(workspace, kind, positionType, label, isLabelEditable, false, blockID);
     }
     
     /**
@@ -874,7 +890,7 @@ public class Block implements ISupportMemento {
         if (this.linkToStubs && this.hasStubs()) {
             ArrayList<BlockStub> newStubBlocks = new ArrayList<BlockStub>();
             for (String stubGenus : getStubList()) {
-                newStubBlocks.add(new BlockStub(this.getBlockID(), this.getGenusName(), this.getBlockLabel(), stubGenus));
+                newStubBlocks.add(new BlockStub(workspace, this.getBlockID(), this.getGenusName(), this.getBlockLabel(), stubGenus));
             }
             return newStubBlocks;
         }
@@ -1378,10 +1394,11 @@ public class Block implements ISupportMemento {
     /**
      * Loads Block information from the specified node and return a Block 
      * instance with the loaded information
+     * @param workspace The workspace in use
      * @param node Node cantaining desired information
      * @return Block instance containing loaded information
      */
-    public static Block loadBlockFrom(Node node, HashMap<Long, Long> idMapping){
+    public static Block loadBlockFrom(Workspace workspace, Node node, HashMap<Long, Long> idMapping){
         Block block = null;
         Long id = null;
         String genusName = null;
@@ -1460,7 +1477,7 @@ public class Block implements ISupportMemento {
                     for (int j = 0; j < plugs.getLength(); j++) {
                         plugNode = plugs.item(j);
                         if (plugNode.getNodeName().equals("BlockConnector")) {
-                            plug = BlockConnector.loadBlockConnector(plugNode, idMapping);
+                            plug = BlockConnector.loadBlockConnector(workspace, plugNode, idMapping);
                         }
                     }
                 } else if (child.getNodeName().equals("Sockets")) {
@@ -1469,7 +1486,7 @@ public class Block implements ISupportMemento {
                     for (int k = 0; k < socketNodes.getLength(); k++) {
                         socketNode = socketNodes.item(k);
                         if (socketNode.getNodeName().equals("BlockConnector")) {
-                            sockets.add(BlockConnector.loadBlockConnector(socketNode, idMapping));
+                            sockets.add(BlockConnector.loadBlockConnector(workspace, socketNode, idMapping));
                         }
                     }
                 } else if (child.getNodeName().equals("LangSpecProperties")) {
@@ -1512,13 +1529,13 @@ public class Block implements ISupportMemento {
             //create block or block stub instance
             if (!isStubBlock) {
                 if (label == null) {
-                    block = new Block(id, genusName, BlockGenus.getGenusWithName(genusName).getInitialLabel(), true);
+                    block = new Block(workspace, id, genusName, BlockGenus.getGenusWithName(genusName).getInitialLabel(), true);
                 } else {
-                    block = new Block(id, genusName, label, true);
+                    block = new Block(workspace, id, genusName, label, true);
                 }
             } else {
                 assert label != null : "Loading a block stub, but has a null label!";
-                block = new BlockStub(id, genusName, label, stubParentName, stubParentGenus);
+                block = new BlockStub(workspace, id, genusName, label, stubParentName, stubParentGenus);
             }
             
             if (plug != null) {
@@ -1675,24 +1692,24 @@ public class Block implements ISupportMemento {
             if (state.plug == null) {
                 this.plug = null;
             } else {
-                this.plug = BlockConnector.instantiateFromState(state.plug);
+                this.plug = BlockConnector.instantiateFromState(workspace, state.plug);
             }
 
             if (state.before == null) {
                 this.before = null;
             } else {
-                this.before = BlockConnector.instantiateFromState(state.before);
+                this.before = BlockConnector.instantiateFromState(workspace, state.before);
             }
 
             if (state.after == null) {
                 this.after = null;
             } else {
-                this.after = BlockConnector.instantiateFromState(state.after);
+                this.after = BlockConnector.instantiateFromState(workspace, state.after);
             }
 
             for (int i = 0; i < state.numberOfSockets; i++) {
                 if (i >= this.getNumSockets()) {
-                    this.sockets.add(BlockConnector.instantiateFromState(state.sockets.get(i)));
+                    this.sockets.add(BlockConnector.instantiateFromState(workspace, state.sockets.get(i)));
                 } else {
                     this.sockets.get(i).loadState(state.sockets.get(i));
                 }

@@ -55,6 +55,8 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
     private JComponent canvas;
     /** The scrollable JComponent representing the graphical part of this BlockCanvas */
     private CScrollPane scrollPane;
+    /** The workspace in use */
+    private final Workspace workspace;
 
     //////////////////////////////
     //Constructor/Destructor	//
@@ -63,7 +65,8 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
      * Constructs BlockCanvas and subscribes
      * this BlockCanvas to PageChange events
      */
-    public BlockCanvas() {
+    public BlockCanvas(Workspace workspace) {
+        this.workspace = workspace;
         this.canvas = new Canvas();
         this.scrollPane = new CHoverScrollPane(canvas,
                 ScrollPolicy.VERTICAL_BAR_ALWAYS,
@@ -294,7 +297,7 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
         }
         pages.add(position, page);
         canvas.add(page.getJComponent(), 0);
-        PageDivider pd = new PageDivider(page);
+        PageDivider pd = new PageDivider(workspace, page);
         dividers.add(pd);
         canvas.add(pd, 0);
         PageChangeEventManager.notifyListeners();
@@ -467,7 +470,7 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
 
         //load pages, page drawers, and their blocks from save file
         //PageDrawerManager.loadPagesAndDrawers(root);
-        PageDrawerLoadingUtils.loadPagesAndDrawers(root, Workspace.getInstance().getFactoryManager());
+        PageDrawerLoadingUtils.loadPagesAndDrawers(workspace, root, workspace.getFactoryManager());
         int screenWidth = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width;
         int canvasWidth = canvas.getPreferredSize().width;
         if (canvasWidth < screenWidth) {
@@ -525,7 +528,7 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
 
             //Finally, add all the remaining pages that weren't there before
             for (String newPageName : unloadedPages) {
-                Page newPage = new Page(newPageName);
+                Page newPage = new Page(workspace, newPageName);
                 newPage.loadState(pageStates.get(newPageName));
                 pages.add(newPage);
             }

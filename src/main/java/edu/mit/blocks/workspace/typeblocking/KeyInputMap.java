@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.mit.blocks.workspace.Workspace;
 import edu.mit.blocks.workspace.typeblocking.TypeBlockManager.Direction;
 
 /**
@@ -69,11 +70,12 @@ public class KeyInputMap {
      * 			appropriate block as well as make the needed
      * 			connections.
      * @requires key!=null
+     * @param workspace The workspace in use
      * @param key
      * @assumptions	Both Key_Pressed and Kep_Types events
      * must pass through here
      */
-    public static void processKeyChar(KeyEvent key) {
+    public static void processKeyChar(Workspace workspace, KeyEvent key) {
 
 //=====================================================================
 //======Process COUPLED Virtual Key Modifers + ALPHANUMERIC character
@@ -175,6 +177,7 @@ public class KeyInputMap {
             for (Character keyChar : KeyInputMap.defaultInputMap.keySet()) {
                 if (keyChar.equals(key.getKeyChar())) {
                     TypeBlockManager.automateBlockInsertion(
+                            workspace,
                             KeyInputMap.defaultInputMap.get(keyChar)[0],
                             KeyInputMap.defaultInputMap.get(keyChar)[1]);
                     return;
@@ -188,6 +191,7 @@ public class KeyInputMap {
         for (Character keyChar : KeyInputMap.customInputMap.keySet()) {
             if (keyChar.equals(key.getKeyChar())) {
                 TypeBlockManager.automateBlockInsertion(
+                        workspace,
                         KeyInputMap.customInputMap.get(keyChar)[0],
                         KeyInputMap.customInputMap.get(keyChar)[1]);
                 return;

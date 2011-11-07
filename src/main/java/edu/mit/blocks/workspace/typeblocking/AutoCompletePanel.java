@@ -58,11 +58,14 @@ public class AutoCompletePanel extends JPanel implements MouseListener, MouseMot
     private final JTextField editor;
     /**menu that displays set of possibilities from user-input patter**/
     private final JList menu;
+    /** The workspace in use */
+    private final Workspace workspace;
 
     /**Constructs AutoCompletePanel*/
     @SuppressWarnings("serial")
-    public AutoCompletePanel() {
+    public AutoCompletePanel(Workspace workspace) {
         super(new BorderLayout());
+        this.workspace = workspace;
         font = new Font("Ariel", Font.BOLD, 12);
 
         //set up editor (text field)
@@ -209,12 +212,12 @@ public class AutoCompletePanel extends JPanel implements MouseListener, MouseMot
         // two "+" blocks, otherwise get the blocks matching the input text
         try {
             Float.valueOf(text);
-            matchingBlocks = BlockUtilities.getDigits(text);
+            matchingBlocks = BlockUtilities.getDigits(workspace, text);
         } catch (NumberFormatException e) {
             if (text.equals(TypeBlockManager.PLUS_OPERATION_LABEL)) {
-                matchingBlocks = BlockUtilities.getPlusBlocks(text);
+                matchingBlocks = BlockUtilities.getPlusBlocks(workspace, text);
             } else {
-                matchingBlocks = BlockUtilities.getAllMatchingBlocks(text);
+                matchingBlocks = BlockUtilities.getAllMatchingBlocks(workspace, text);
             }
         }
         //update menu and repaint
@@ -335,7 +338,7 @@ public class AutoCompletePanel extends JPanel implements MouseListener, MouseMot
                 repaint();
                 //TODO: AutoCompletePane should not know about
                 //the Workspace.  Need to design a better system for this.
-                Workspace.getInstance().getBlockCanvas().getCanvas().requestFocus();
+                workspace.getBlockCanvas().getCanvas().requestFocus();
             }
         }
     }
@@ -383,7 +386,7 @@ public class AutoCompletePanel extends JPanel implements MouseListener, MouseMot
                 repaint();
                 //TODO: AutoCompletePane should not know about
                 //the Workspace.  Need to design a better system for this.
-                Workspace.getInstance().getBlockCanvas().getCanvas().requestFocus();
+                workspace.getBlockCanvas().getCanvas().requestFocus();
             }
         }
 

@@ -16,14 +16,14 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import edu.mit.blocks.renderable.FactoryRenderableBlock;
-import edu.mit.blocks.renderable.RenderableBlock;
 import edu.mit.blocks.codeblocks.Block;
 import edu.mit.blocks.codeblocks.BlockStub;
 import edu.mit.blocks.codeblockutil.CBorderlessButton;
 import edu.mit.blocks.codeblockutil.CLabel;
 import edu.mit.blocks.codeblockutil.Canvas;
 import edu.mit.blocks.codeblockutil.Navigator;
+import edu.mit.blocks.renderable.FactoryRenderableBlock;
+import edu.mit.blocks.renderable.RenderableBlock;
 
 /**
  * ***********************OVERVIEW**************************
@@ -106,12 +106,15 @@ public class FactoryManager implements WorkspaceWidget, ComponentListener, Works
     private List<FactoryCanvas> dynamicCanvases;
     /** The set of subset drawers */
     private List<FactoryCanvas> subsetCanvases;
+    /** The workspace in use */
+    private final Workspace workspace;
 
     /**
      * Constucts new Factorymanager
      */
-    public FactoryManager() {
-        this.navigator = new Navigator();
+    public FactoryManager(Workspace workspace) {
+        this.workspace = workspace;
+        this.navigator = new Navigator(workspace);
         this.navigator.getJComponent().setPreferredSize(new Dimension(160, 600));
         this.navigator.addExlorer(STATIC_NAME);
         this.navigator.addExlorer(DYNAMIC_NAME);
@@ -154,7 +157,7 @@ public class FactoryManager implements WorkspaceWidget, ComponentListener, Works
                 FactoryCanvas canvas = new FactoryCanvas(subset.getName(), subset.getColor());
                 for (RenderableBlock frb : subset.getBlocks()) {
                     canvas.addBlock(frb);
-                    Workspace.getInstance().notifyListeners(new WorkspaceEvent(this, frb.getBlockID(), WorkspaceEvent.BLOCK_ADDED));
+                    workspace.notifyListeners(new WorkspaceEvent(workspace, this, frb.getBlockID(), WorkspaceEvent.BLOCK_ADDED));
                 }
                 canvas.layoutBlocks();
                 this.subsetCanvases.add(canvas);
@@ -615,7 +618,7 @@ public class FactoryManager implements WorkspaceWidget, ComponentListener, Works
                     return;
                 } else {
                     canvas.addBlock(block);
-                    Workspace.getInstance().notifyListeners(new WorkspaceEvent(this, block.getBlockID(), WorkspaceEvent.BLOCK_ADDED));
+                    workspace.notifyListeners(new WorkspaceEvent(workspace, this, block.getBlockID(), WorkspaceEvent.BLOCK_ADDED));
                     canvas.layoutBlocks();
                     return;
                 }
@@ -633,7 +636,7 @@ public class FactoryManager implements WorkspaceWidget, ComponentListener, Works
                     return;
                 } else {
                     canvas.addBlock(block);
-                    Workspace.getInstance().notifyListeners(new WorkspaceEvent(this, block.getBlockID(), WorkspaceEvent.BLOCK_ADDED));
+                    workspace.notifyListeners(new WorkspaceEvent(workspace, this, block.getBlockID(), WorkspaceEvent.BLOCK_ADDED));
                     canvas.layoutBlocks();
                     return;
                 }
@@ -660,7 +663,7 @@ public class FactoryManager implements WorkspaceWidget, ComponentListener, Works
                         continue;
                     }
                     canvas.addBlock(block);
-                    Workspace.getInstance().notifyListeners(new WorkspaceEvent(this, block.getBlockID(), WorkspaceEvent.BLOCK_ADDED));
+                    workspace.notifyListeners(new WorkspaceEvent(workspace, this, block.getBlockID(), WorkspaceEvent.BLOCK_ADDED));
 
                 }
                 canvas.layoutBlocks();
@@ -680,7 +683,7 @@ public class FactoryManager implements WorkspaceWidget, ComponentListener, Works
                         continue;
                     }
                     canvas.addBlock(block);
-                    Workspace.getInstance().notifyListeners(new WorkspaceEvent(this, block.getBlockID(), WorkspaceEvent.BLOCK_ADDED));
+                    workspace.notifyListeners(new WorkspaceEvent(workspace, this, block.getBlockID(), WorkspaceEvent.BLOCK_ADDED));
 
                 }
                 canvas.layoutBlocks();
@@ -706,7 +709,7 @@ public class FactoryManager implements WorkspaceWidget, ComponentListener, Works
                         continue;
                     }
                     canvas.addBlock(block);
-                    Workspace.getInstance().notifyListeners(new WorkspaceEvent(this, block.getBlockID(), WorkspaceEvent.BLOCK_ADDED));
+                    workspace.notifyListeners(new WorkspaceEvent(workspace, this, block.getBlockID(), WorkspaceEvent.BLOCK_ADDED));
 
                 }
                 canvas.layoutBlocks();
@@ -793,7 +796,7 @@ public class FactoryManager implements WorkspaceWidget, ComponentListener, Works
         //fire to workspace that block was removed
         //DO FIRE AN EVENT IF BLOCK IS REMOVED BY USER!!!!
         //NOTE however that we do not throw na event for adding internally
-        Workspace.getInstance().notifyListeners(new WorkspaceEvent(this, block.getBlockID(), WorkspaceEvent.BLOCK_REMOVED));
+        workspace.notifyListeners(new WorkspaceEvent(workspace, this, block.getBlockID(), WorkspaceEvent.BLOCK_REMOVED));
     }
 
     public JComponent getJComponent() {
@@ -820,7 +823,7 @@ public class FactoryManager implements WorkspaceWidget, ComponentListener, Works
                 if (block.hasStubs()) {
                     for (BlockStub stub : block.getFreshStubs()) {
                         this.addDynamicBlock(
-                                new FactoryRenderableBlock(this, stub.getBlockID()),
+                                new FactoryRenderableBlock(event.getWorkspace(), this, stub.getBlockID()),
                                 page.getPageDrawer());
                     }
                 }

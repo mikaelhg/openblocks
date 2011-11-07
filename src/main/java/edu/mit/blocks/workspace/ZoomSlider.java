@@ -25,12 +25,14 @@ public class ZoomSlider extends JComponent implements PropertyChangeListener {
     private static final long serialVersionUID = 328149080276L;
     /**JSlider that interfaces with the user**/
     private CSlider slider;
+    private final Workspace workspace;
 
     /**
      * Constructs a new ZoomSlider
      */
-    public ZoomSlider() {
+    public ZoomSlider(Workspace workspace) {
         super();
+        this.workspace = workspace;
         this.setLayout(new BorderLayout());
         this.setPreferredSize(new Dimension(200, 24));
         slider = new CSlider(34, 200, 100, true, 10, true, "100%");
@@ -44,7 +46,7 @@ public class ZoomSlider extends JComponent implements PropertyChangeListener {
 
     public void propertyChange(PropertyChangeEvent e) {
         if (e.getPropertyName().equals(CSlider.VALUE_CHANGED)) {
-            Workspace.getInstance().setWorkspaceZoom(slider.getValue() / 100.0);
+            workspace.setWorkspaceZoom(slider.getValue() / 100.0);
         } else {
             slider.setValue(slider.getValue());
         }

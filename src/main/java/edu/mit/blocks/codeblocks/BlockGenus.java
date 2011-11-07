@@ -21,6 +21,7 @@ import org.w3c.dom.NodeList;
 
 import edu.mit.blocks.renderable.BlockImageIcon;
 import edu.mit.blocks.renderable.BlockImageIcon.ImageLocation;
+import edu.mit.blocks.workspace.Workspace;
 
 /**
  * A genus describes the properties that define a block.  For example, fd is a block genus 
@@ -495,10 +496,11 @@ public class BlockGenus {
 
     /**
      * Loads the BlockConnector information of the specified genus
+     * @param workspace The workspace in use
      * @param connectors NodeList of connector information to load from
      * @param genus BlockGenus to load block connector information onto
      */
-    private static void loadBlockConnectorInformation(NodeList connectors, BlockGenus genus) {
+    private static void loadBlockConnectorInformation(Workspace workspace, NodeList connectors, BlockGenus genus) {
         Pattern attrExtractor = Pattern.compile("\"(.*)\"");
         Matcher nameMatcher;
         Node opt_item;
@@ -585,11 +587,11 @@ public class BlockGenus {
                 final BlockConnector socket;
                 //set the position type for this new connector, by default its set to single
                 if (positionType.equals("mirror")) {
-                    socket = new BlockConnector(connectorType, BlockConnector.PositionType.MIRROR, label, isLabelEditable, isExpandable, expandGroup, Block.NULL);
+                    socket = new BlockConnector(workspace, connectorType, BlockConnector.PositionType.MIRROR, label, isLabelEditable, isExpandable, expandGroup, Block.NULL);
                 } else if (positionType.equals("bottom")) {
-                    socket = new BlockConnector(connectorType, BlockConnector.PositionType.BOTTOM, label, isLabelEditable, isExpandable, expandGroup, Block.NULL);
+                    socket = new BlockConnector(workspace, connectorType, BlockConnector.PositionType.BOTTOM, label, isLabelEditable, isExpandable, expandGroup, Block.NULL);
                 } else {
-                    socket = new BlockConnector(connectorType, BlockConnector.PositionType.SINGLE, label, isLabelEditable, isExpandable, expandGroup, Block.NULL);
+                    socket = new BlockConnector(workspace, connectorType, BlockConnector.PositionType.SINGLE, label, isLabelEditable, isExpandable, expandGroup, Block.NULL);
                 }
 
                 //add def args if any
@@ -769,9 +771,10 @@ public class BlockGenus {
 
     /**
      * Loads the all the initial BlockGenuses and BlockGenus families of this language
+     * @param workspace The workspace in use
      * @param root the Element carrying the specifications of the BlockGenuses
      */
-    public static void loadBlockGenera(Element root) {
+    public static void loadBlockGenera(Workspace workspace, Element root) {
         Pattern attrExtractor = Pattern.compile("\"(.*)\"");
         Matcher nameMatcher;
         NodeList genusNodes = root.getElementsByTagName("BlockGenus"); //look for genus
@@ -876,7 +879,7 @@ public class BlockGenus {
                         loadGenusDescription(genusChild.getChildNodes(), newGenus);
                     } else if (genusChild.getNodeName().equals("BlockConnectors")) {
                         /// LOAD BLOCK CONNECTOR INFORMATION ///
-                        loadBlockConnectorInformation(genusChild.getChildNodes(), newGenus);
+                        loadBlockConnectorInformation(workspace, genusChild.getChildNodes(), newGenus);
                         //if genus has two connectors both of bottom position type than this block is an infix operator
                         if (newGenus.sockets != null && newGenus.sockets.size() == 2
                                 && newGenus.sockets.get(0).getPositionType() == BlockConnector.PositionType.BOTTOM
@@ -898,10 +901,10 @@ public class BlockGenus {
 
                 // John's code to add command sockets... probably in the wrong place
                 if (!newGenus.isStarter) {
-                    newGenus.before = new BlockConnector(BlockConnectorShape.getCommandShapeName(), BlockConnector.PositionType.TOP, "", false, false, Block.NULL);
+                    newGenus.before = new BlockConnector(workspace, BlockConnectorShape.getCommandShapeName(), BlockConnector.PositionType.TOP, "", false, false, Block.NULL);
                 }
                 if (!newGenus.isTerminator) {
-                    newGenus.after = new BlockConnector(BlockConnectorShape.getCommandShapeName(), BlockConnector.PositionType.BOTTOM, "", false, false, Block.NULL);
+                    newGenus.after = new BlockConnector(workspace, BlockConnectorShape.getCommandShapeName(), BlockConnector.PositionType.BOTTOM, "", false, false, Block.NULL);
                 }
 
                 //System.out.println("Added "+newGenus.toString());

@@ -4,6 +4,7 @@ import edu.mit.blocks.codeblocks.Block;
 import edu.mit.blocks.codeblocks.BlockConnector;
 import edu.mit.blocks.codeblocks.BlockLink;
 import edu.mit.blocks.codeblocks.BlockLinkChecker;
+import edu.mit.blocks.workspace.Workspace;
 
 /**
  * Utilities class to find links between two blocks
@@ -13,10 +14,11 @@ public class LinkFinderUtil {
     /**
      * Handles the Connecting of blocks once they are dropped
      * onto the canvas and are waiting to be linked if posible.
+     * @param workspace The workspace in use
      * @param child
      * @param parent
      */
-    protected static BlockLink connectBlocks(Block child, Block parent) {
+    protected static BlockLink connectBlocks(Workspace workspace, Block child, Block parent) {
         //child must exist for there to be a link (no links to null instances allowed)
         if (invalidBlock(child)) {
             return null;
@@ -36,7 +38,7 @@ public class LinkFinderUtil {
                     continue;
                 }
                 //if valid, then get link
-                BlockLink link = BlockLinkChecker.canLink(child, parent, socket, parent.getPlug());
+                BlockLink link = BlockLinkChecker.canLink(workspace, child, parent, socket, parent.getPlug());
                 //if link is invalid, continue
                 if (link == null) {
                     continue;
@@ -66,7 +68,7 @@ public class LinkFinderUtil {
                         continue;
                     }
                     //if valid, the get link
-                    BlockLink link = BlockLinkChecker.canLink(parent, child, socket, child.getPlug());
+                    BlockLink link = BlockLinkChecker.canLink(workspace, parent, child, socket, child.getPlug());
                     //if link is invalid, continue
                     if (link == null) {
                         continue;
@@ -76,7 +78,7 @@ public class LinkFinderUtil {
                 } else {
                     //Don't NEED TO RECURSE for non-infix blocks
                     //if valid, the get link
-                    BlockLink link = BlockLinkChecker.canLink(parent, child, socket, child.getPlug());
+                    BlockLink link = BlockLinkChecker.canLink(workspace, parent, child, socket, child.getPlug());
                     //if link is invalid, continue
                     if (link == null) {
                         continue;
@@ -97,7 +99,7 @@ public class LinkFinderUtil {
                     continue;
                 }
                 //if valid, the get link
-                BlockLink link = BlockLinkChecker.canLink(parent, child, socket, child.getBeforeConnector());
+                BlockLink link = BlockLinkChecker.canLink(workspace, parent, child, socket, child.getBeforeConnector());
                 //if link is invalid, continue
                 if (link == null) {
                     continue;
@@ -114,7 +116,7 @@ public class LinkFinderUtil {
         if (child.hasBeforeConnector()) {
             if (parent.hasAfterConnector()) {
                 //before and after connectors exists
-                BlockLink link = BlockLinkChecker.canLink(parent, child, parent.getAfterConnector(), child.getBeforeConnector());
+                BlockLink link = BlockLinkChecker.canLink(workspace, parent, child, parent.getAfterConnector(), child.getBeforeConnector());
                 //if link is invalid, continue
                 if (link == null) {
                     //continue;
@@ -132,7 +134,7 @@ public class LinkFinderUtil {
         if (child.hasAfterConnector()) {
             if (parent.hasBeforeConnector()) {
                 //before and after connectors exists
-                BlockLink link = BlockLinkChecker.canLink(child, parent, child.getAfterConnector(), parent.getBeforeConnector());
+                BlockLink link = BlockLinkChecker.canLink(workspace, child, parent, child.getAfterConnector(), parent.getBeforeConnector());
                 //if link is invalid, continue
                 if (link == null) {
                     //continue;
@@ -145,7 +147,7 @@ public class LinkFinderUtil {
 
         //if the parent has no sockets, try its parent
         if (parent.hasPlug()) {
-            return LinkFinderUtil.connectBlocks(child, Block.getBlock(parent.getPlugBlockID()));
+            return LinkFinderUtil.connectBlocks(workspace, child, Block.getBlock(parent.getPlugBlockID()));
         }
 
         return null;

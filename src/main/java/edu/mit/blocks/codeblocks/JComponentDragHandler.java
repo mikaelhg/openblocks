@@ -58,15 +58,18 @@ public class JComponentDragHandler implements MouseListener, MouseMotionListener
      */
     public Point myLoc = new Point();
     private JComponent myComponent;
+    private final Workspace workspace;
 
     /**
      * Creates a new instance of a JComponentDragHandler with a pointer to the
      * given JComponent.  Remember to register this JComponentDragHandler as the
      * listener for mouse events in the JComponent in order for this class to
      * be allowed to handle those events.
+     * @param workspace The workspace in use
      * @param jc the JComponent whose mouse events will be handled by this JComponentDragHandler
      */
-    public JComponentDragHandler(JComponent jc) {
+    public JComponentDragHandler(Workspace workspace, JComponent jc) {
+        this.workspace = workspace;
         // this is the JComponent whose mouse events will be handled in this class
         myComponent = jc;
         if (openHandCursor == null || closedHandCursor == null) {
@@ -159,9 +162,9 @@ public class JComponentDragHandler implements MouseListener, MouseMotionListener
         /*
          * Prevent dragging outside of the canvas (keep the mouse-down point inside the canvas)
          */
-        Workspace.getInstance().scrollToComponent(myComponent);
-        Point p = SwingUtilities.convertPoint(myComponent, newX + mPressedX, newY + mPressedY, Workspace.getInstance());
-        if (Workspace.getInstance().getWidgetAt(p) == null && !Workspace.getInstance().contains(p)) {
+        workspace.scrollToComponent(myComponent);
+        Point p = SwingUtilities.convertPoint(myComponent, newX + mPressedX, newY + mPressedY, workspace);
+        if (workspace.getWidgetAt(p) == null && !workspace.contains(p)) {
             // how is this not working?  if it's in the window, shouldn't it be dragging?
             // I guess the drawer cards aren't widgets, so it's getting confused...
             //...should add them as widgets but pass calls to the drawer.
