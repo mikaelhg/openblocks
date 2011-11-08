@@ -93,7 +93,7 @@ public class KeyInputMap {
                     //TypeBlockManager.automatePasteBlock();
                     return;
                 case KeyEvent.VK_A:
-                    TypeBlockManager.automateCopyAll();
+                    TypeBlockManager.automateCopyAll(workspace);
                     return;
                 default:  //ALL OTHER COMMANDS RETURN
                     return;
@@ -109,7 +109,7 @@ public class KeyInputMap {
         //handle virtual modifers: SHIFT DOWN
         if (key.isShiftDown()) {
             if (key.getKeyCode() == KeyEvent.VK_TAB) {
-                TypeBlockManager.automateFocusTraversal(Direction.LEFT);
+                TypeBlockManager.automateFocusTraversal(workspace, Direction.LEFT);
                 return;
             }
         }
@@ -120,35 +120,35 @@ public class KeyInputMap {
 //=====================================================================
         switch (key.getKeyCode()) {
             case KeyEvent.VK_DELETE:
-                TypeBlockManager.automateBlockDeletion();
+                TypeBlockManager.automateBlockDeletion(workspace);
                 return;
             case KeyEvent.VK_BACK_SPACE:
-                TypeBlockManager.automateBlockDeletion();
+                TypeBlockManager.automateBlockDeletion(workspace);
                 return;
             case KeyEvent.VK_DOWN:
-                TypeBlockManager.automateFocusTraversal(Direction.DOWN);
+                TypeBlockManager.automateFocusTraversal(workspace, Direction.DOWN);
                 return;
             case KeyEvent.VK_UP:
-                TypeBlockManager.automateFocusTraversal(Direction.UP);
+                TypeBlockManager.automateFocusTraversal(workspace, Direction.UP);
                 return;
             case KeyEvent.VK_LEFT:
-                TypeBlockManager.automateFocusTraversal(Direction.LEFT);
+                TypeBlockManager.automateFocusTraversal(workspace, Direction.LEFT);
                 return;
             case KeyEvent.VK_RIGHT:
-                TypeBlockManager.automateFocusTraversal(Direction.RIGHT);
+                TypeBlockManager.automateFocusTraversal(workspace, Direction.RIGHT);
                 return;
             case KeyEvent.VK_ESCAPE:
-                TypeBlockManager.automateFocusTraversal(Direction.ESCAPE);
+                TypeBlockManager.automateFocusTraversal(workspace, Direction.ESCAPE);
                 return;
             case KeyEvent.VK_ENTER:
-                TypeBlockManager.automateFocusTraversal(Direction.ENTER);
+                TypeBlockManager.automateFocusTraversal(workspace, Direction.ENTER);
                 return;
             case KeyEvent.VK_SHIFT:
                 return;
             case KeyEvent.VK_CONTROL:
                 return;
             case KeyEvent.VK_TAB:
-                TypeBlockManager.automateFocusTraversal(Direction.RIGHT);
+                TypeBlockManager.automateFocusTraversal(workspace, Direction.RIGHT);
                 return;
             default:
                 break;
@@ -162,15 +162,15 @@ public class KeyInputMap {
         if (KeyInputMap.DEFAULT_ENABLED) {
             //for the special negative sign
             if (key.getKeyChar() == '-') {
-                TypeBlockManager.automateNegationInsertion();
+                TypeBlockManager.automateNegationInsertion(workspace);
                 return;
             }
             if (key.getKeyChar() == 'x' || key.getKeyChar() == 'X') {
-                TypeBlockManager.automateMultiplication(key.getKeyChar());
+                TypeBlockManager.automateMultiplication(workspace, key.getKeyChar());
                 return;
             }
             if (key.getKeyChar() == '+') {
-                TypeBlockManager.automateAddition(key.getKeyChar());
+                TypeBlockManager.automateAddition(workspace, key.getKeyChar());
                 return;
             }
             //For all other special default input mappings
@@ -202,10 +202,10 @@ public class KeyInputMap {
 //======Process AlphaNumeric Key Inputs
 //=====================================================================
         if (Character.isLetterOrDigit(key.getKeyChar())) {
-            TypeBlockManager.automateAutoComplete(key.getKeyChar());
+            TypeBlockManager.automateAutoComplete(workspace, key.getKeyChar());
         } // takes care of the +, -, = ... when not set to automated block placements
         else {
-            TypeBlockManager.automateAutoComplete(key.getKeyChar());
+            TypeBlockManager.automateAutoComplete(workspace, key.getKeyChar());
         }
     }
 }

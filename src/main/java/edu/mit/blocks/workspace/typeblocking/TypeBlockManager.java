@@ -31,15 +31,12 @@ import edu.mit.blocks.workspace.WorkspaceWidget;
 public class TypeBlockManager {
     
     private final Workspace workspace;
-
+    
     /**Directional Pad values*/
     protected static enum Direction {
 
         UP, DOWN, LEFT, RIGHT, ESCAPE, ENTER
     };
-    /**Singleton instance of TypeBlockManager*/
-    // FIXME: need to remove this one
-    private static TypeBlockManager manager;
     /**TypeBlockmanager graphical view*/
     private final AutoCompletePanel autoCompletePanel;
     /**Helper Controller that manages the transition between blocks D-PAD*/
@@ -55,33 +52,14 @@ public class TypeBlockManager {
     /**quote string for string blocks**/
     static final String QUOTE_LABEL = "\"";
     JFrame frame;
-
-    /**
-     * Enables singleton instance of TypeBLockManager.  If manager
-     * is enabled, computation is done over user-generated input.
-     */
-    // XXX: remove this singleton also
-    public static TypeBlockManager enableTypeBlockManager(Workspace workspace, BlockCanvas component) {
-        if (TypeBlockManager.manager == null) {
-            TypeBlockManager.manager = new TypeBlockManager(workspace, component);
-        }
-        return TypeBlockManager.manager;
-    }
-
-    /**
-     * Disables the TypeBlockManager.  When disabled, TypeBlockManager
-     * still consumes key inputs but never proceeds to Phase 2.
-     * That is, the user-generated pattern is never parsed.
-     *
-     */
-    public static void disableTypeBlockManager() {
-        TypeBlockManager.manager = null;
-    }
+    
+    /** Whether keyboard support is enabled or not */
+    private boolean enabled = false;
 
     /**
      * TypeBlockManager Constructor
      */
-    private TypeBlockManager(Workspace workspace, BlockCanvas component) {
+    public TypeBlockManager(Workspace workspace, BlockCanvas component) {
         this.workspace = workspace;
         
         // turned off the automated block placements
@@ -92,6 +70,22 @@ public class TypeBlockManager {
         blockCanvas.getCanvas().addMouseListener(focusManager);
         blockCanvas.getCanvas().addKeyListener(focusManager);
         workspace.addWorkspaceListener(this.focusManager);
+    }
+    
+    /**
+     * Enables/disables the keyboard support
+     * @param enabled
+     */
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+    
+    /**
+     * Whether keyboard support is enabled or not
+     * @return {@code true}/{@code false}
+     */
+    public boolean isEnabled() {
+        return enabled;
     }
 
     /*----------------------------------------------------------*
@@ -144,15 +138,15 @@ public class TypeBlockManager {
      * 			 between the block with focus and it's parent
      * 			 block if one exists
      */
-    protected static void automateBlockDeletion() {
-        if (TypeBlockManager.manager == null) {
+    protected static void automateBlockDeletion(Workspace workspace) {
+        TypeBlockManager typeBlockManager = workspace.getTypeBlockManager();
+        if (!typeBlockManager.isEnabled()) {
             System.err.println("AutoMateBlockDeletion invoked but typeBlockManager is disabled.");
             return;
-        } else {
-            if (!isNullBlockInstance(TypeBlockManager.manager.focusManager.getFocusBlockID())) {
-                TypeBlockManager.manager.deleteBlockAndChildren();
-                PageChangeEventManager.notifyListeners();
-            }
+        }
+        if (!isNullBlockInstance(typeBlockManager.focusManager.getFocusBlockID())) {
+            typeBlockManager.deleteBlockAndChildren();
+            PageChangeEventManager.notifyListeners();
         }
     }
 
@@ -410,43 +404,47 @@ public class TypeBlockManager {
      */
     private BlockNode bufferedBlock = null;
 
-    public static void copyBlock() {
-        TypeBlockManager.automateCopyBlock();
+    public static void copyBlock(Workspace workspace) {
+        TypeBlockManager.automateCopyBlock(workspace);
     }
 
-    public static void pasteBlock() {
-        TypeBlockManager.automatePasteBlock();
+    public static void pasteBlock(Workspace workspace) {
+        TypeBlockManager.automatePasteBlock(workspace);
     }
 
-    protected static void automateCopyBlock() {
-        if (TypeBlockManager.manager == null) {
+    protected static void automateCopyBlock(Workspace workspace) {
+        TypeBlockManager typeBlockManager = workspace.getTypeBlockManager();
+        if (!typeBlockManager.isEnabled()) {
             System.err.println("AutoMateCopyBlock invoked but typeBlockManager is disabled.");
             return;
         }
-        TypeBlockManager.manager.bufferedBlock =
-                BlockUtilities.makeNodeWithChildren(TypeBlockManager.manager.focusManager.getFocusBlockID());
+        typeBlockManager.bufferedBlock =
+                BlockUtilities.makeNodeWithChildren(typeBlockManager.focusManager.getFocusBlockID());
     }
 
-    protected static void automateCopyAll() {
-        if (TypeBlockManager.manager == null) {
+    protected static void automateCopyAll(Workspace workspace) {
+        TypeBlockManager typeBlockManager = workspace.getTypeBlockManager();
+        if (!typeBlockManager.isEnabled()) {
             System.err.println("AutoMatePasteBlock invoked but typeBlockManager is disabled.");
             return;
         }
-        TypeBlockManager.manager.bufferedBlock =
-                BlockUtilities.makeNodeWithStack(TypeBlockManager.manager.focusManager.getFocusBlockID());
+        typeBlockManager.bufferedBlock =
+                BlockUtilities.makeNodeWithStack(typeBlockManager.focusManager.getFocusBlockID());
     }
 
     /**
-     * @requies whatever is requires for AutomatedBlockInsertion
+     * @param workspace 
+     * @requires whatever is requires for AutomatedBlockInsertion
      *
      */
-    protected static void automatePasteBlock() {
-        if (TypeBlockManager.manager == null) {
+    protected static void automatePasteBlock(Workspace workspace) {
+        TypeBlockManager typeBlockManager = workspace.getTypeBlockManager();
+        if (!typeBlockManager.isEnabled()) {
             System.err.println("AutoMatePasteBlock invoked but typeBlockManager is disabled.");
             return;
         }
 
-        TypeBlockManager.manager.pasteStack(TypeBlockManager.manager.bufferedBlock);
+        typeBlockManager.pasteStack(typeBlockManager.bufferedBlock);
     }
 
     private void pasteStack(BlockNode node) {
@@ -478,7 +476,7 @@ public class TypeBlockManager {
 
         if (widget == null) {
             // TODO: To be examined and fixed, occurs on macs
-            JOptionPane.showMessageDialog(TypeBlockManager.manager.frame, "Please click somewhere on the canvas first.",
+            JOptionPane.showMessageDialog(frame, "Please click somewhere on the canvas first.",
                     "Error", JOptionPane.PLAIN_MESSAGE);
             //throw new RuntimeException("Why are we adding a block to a null widget?");
         } else {
@@ -491,7 +489,7 @@ public class TypeBlockManager {
                 mirror.moveConnectedBlocks(); // make sure the childrens are placed correctly
             } else {
                 //TODO: future version, allow them to paste
-                JOptionPane.showMessageDialog(TypeBlockManager.manager.frame, "You cannot paste blocks that are currently NOT on the canvas."
+                JOptionPane.showMessageDialog(frame, "You cannot paste blocks that are currently NOT on the canvas."
                         + "\nThis function will be available in a future version.\n", "Error", JOptionPane.PLAIN_MESSAGE);
             }
 
@@ -501,15 +499,16 @@ public class TypeBlockManager {
     /**
      * Traverses the block tree structure to move
      * in the direction of the input argument.
+     * @param workspace 
      * @param dir
      */
-    protected static void automateFocusTraversal(Direction dir) {
-        if (TypeBlockManager.manager == null) {
+    protected static void automateFocusTraversal(Workspace workspace, Direction dir) {
+        TypeBlockManager typeBlockManager = workspace.getTypeBlockManager();
+        if (!typeBlockManager.isEnabled()) {
             System.err.println("AutoMateFocusTraversal invoked but typeBlockManager is disabled.");
             return;
-        } else {
-            manager.traverseFocus(dir);
         }
+        typeBlockManager.traverseFocus(dir);
     }
 
     private void traverseFocus(Direction dir) {
@@ -551,15 +550,16 @@ public class TypeBlockManager {
 
     /**
      * Displays an assisting AutoCompletePanel.
+     * @param workspace 
      * @param character
      */
-    protected static void automateAutoComplete(char character) {
-        if (TypeBlockManager.manager == null) {
+    protected static void automateAutoComplete(Workspace workspace, char character) {
+        TypeBlockManager typeBlockManager = workspace.getTypeBlockManager();
+        if (!typeBlockManager.isEnabled()) {
             System.err.println("AutoMateAutoComplete invoked but typeBlockManager is disabled.");
             return;
-        } else {
-            manager.displayAutoCompletePanel(character);
         }
+        typeBlockManager.displayAutoCompletePanel(character);
     }
 
     /**
@@ -595,8 +595,9 @@ public class TypeBlockManager {
     /**
      * assumes number and differen genus exist and number genus has ediitabel lable
      */
-    protected static void automateNegationInsertion() {
-        if (TypeBlockManager.manager == null) {
+    protected static void automateNegationInsertion(Workspace workspace) {
+        TypeBlockManager typeBlockManager = workspace.getTypeBlockManager();
+        if (!typeBlockManager.isEnabled()) {
             System.err.println("AutoMateNegationInsertion invoked but typeBlockManager is disabled.");
             return;
         }
@@ -606,60 +607,62 @@ public class TypeBlockManager {
 //		====================>>>>>>>>>>>>>>>>>>>>>>>>>
 
         //get focus block
-        Long parentBlockID = TypeBlockManager.manager.focusManager.getFocusBlockID();
+        Long parentBlockID = typeBlockManager.focusManager.getFocusBlockID();
         if (isNullBlockInstance(parentBlockID)) {
             //focus on canvas
-            TypeBlockManager.automateBlockInsertion(TypeBlockManager.manager.workspace, "number", "-");
+            TypeBlockManager.automateBlockInsertion(workspace, "number", "-");
 
         } else {
             Block parentBlock = Block.getBlock(parentBlockID);
             if (parentBlock.isDataBlock()) {
                 //focus on a data block
-                TypeBlockManager.automateBlockInsertion(TypeBlockManager.manager.workspace, "difference", null);
+                TypeBlockManager.automateBlockInsertion(workspace, "difference", null);
             } else {
                 //focus on a non-data block
-                TypeBlockManager.automateBlockInsertion(TypeBlockManager.manager.workspace, "number", "-");
+                TypeBlockManager.automateBlockInsertion(workspace, "number", "-");
             }
         }
     }
 
-    protected static void automateMultiplication(char character) {
-        if (TypeBlockManager.manager == null) {
+    protected static void automateMultiplication(Workspace workspace, char character) {
+        TypeBlockManager typeBlockManager = workspace.getTypeBlockManager();
+        if (!typeBlockManager.isEnabled()) {
             System.err.println("AutoMateMultiplication invoked but typeBlockManager is disabled.");
             return;
         }
-        if (!isNullBlockInstance(TypeBlockManager.manager.focusManager.getFocusBlockID())) {
-            Block parentBlock = Block.getBlock(TypeBlockManager.manager.focusManager.getFocusBlockID());
+        if (!isNullBlockInstance(typeBlockManager.focusManager.getFocusBlockID())) {
+            Block parentBlock = Block.getBlock(typeBlockManager.focusManager.getFocusBlockID());
             if (parentBlock.getGenusName().equals("number")) {
-                TypeBlockManager.automateBlockInsertion(TypeBlockManager.manager.workspace, "product", null);
+                TypeBlockManager.automateBlockInsertion(workspace, "product", null);
                 return;
             }
         }
-        TypeBlockManager.automateAutoComplete(character);
+        TypeBlockManager.automateAutoComplete(workspace, character);
         return;
     }
 
-    protected static void automateAddition(char character) {
-        if (TypeBlockManager.manager == null) {
+    protected static void automateAddition(Workspace workspace, char character) {
+        TypeBlockManager typeBlockManager = workspace.getTypeBlockManager();
+        if (!typeBlockManager.isEnabled()) {
             System.err.println("AutoMateMultiplication invoked but typeBlockManager is disabled.");
             return;
         }
         //get focus block
-        Long parentBlockID = TypeBlockManager.manager.focusManager.getFocusBlockID();
+        Long parentBlockID = typeBlockManager.focusManager.getFocusBlockID();
         if (isNullBlockInstance(parentBlockID)) {
             //focus on canvas
-            TypeBlockManager.automateBlockInsertion(TypeBlockManager.manager.workspace, "sum", null);
+            TypeBlockManager.automateBlockInsertion(workspace, "sum", null);
         } else {
             Block parentBlock = Block.getBlock(parentBlockID);
             if (parentBlock.getGenusName().equals("string")) {
                 //focus on string block
-                TypeBlockManager.automateBlockInsertion(TypeBlockManager.manager.workspace, "string-append", null);
+                TypeBlockManager.automateBlockInsertion(workspace, "string-append", null);
             } else if (parentBlock.getGenusName().equals("string-append")) {
                 //focus on string append block
-                TypeBlockManager.automateBlockInsertion(TypeBlockManager.manager.workspace, "string-append", null);
+                TypeBlockManager.automateBlockInsertion(workspace, "string-append", null);
             } else {
                 //focus on any other block
-                TypeBlockManager.automateBlockInsertion(TypeBlockManager.manager.workspace, "sum", null);
+                TypeBlockManager.automateBlockInsertion(workspace, "sum", null);
             }
         }
     }
@@ -684,7 +687,8 @@ public class TypeBlockManager {
      * 			Then update any focus and block connections.
      */
     protected static void automateBlockInsertion(Workspace workspace, String genusName, String label) {
-        if (TypeBlockManager.manager == null) {
+        TypeBlockManager typeBlockManager = workspace.getTypeBlockManager();
+        if (!typeBlockManager.isEnabled()) {
             System.err.println("AutoMateBlockInsertion invoked but typeBlockManager is disabled.");
             return;
         }
@@ -704,7 +708,7 @@ public class TypeBlockManager {
                 Block.getBlock(createdRB.getBlockID()).setBlockLabel(label);
             }
             //add block
-            manager.addBlock(createdRB);
+            typeBlockManager.addBlock(createdRB);
         }
     }
 
@@ -723,10 +727,10 @@ public class TypeBlockManager {
      * 				3. the canvas at the last mouse click point.
      * 			Then update any focus and block connections.
      */
-    protected static void automateBlockInsertion(TextualFactoryBlock block) {
+    protected static void automateBlockInsertion(Workspace workspace, TextualFactoryBlock block) {
         /*Passing in an empty label name means that the block should already have
         a predetermined label name that does not need to be altered to the user's preference*/
-        automateBlockInsertion(block, EMPTY_LABEL_NAME);
+        automateBlockInsertion(workspace, block, EMPTY_LABEL_NAME);
     }
 
     /**
@@ -746,8 +750,9 @@ public class TypeBlockManager {
      * 			to that string.
      * 			Then update any focus and block connections.
      */
-    protected static void automateBlockInsertion(TextualFactoryBlock block, String label) {
-        if (TypeBlockManager.manager == null) {
+    protected static void automateBlockInsertion(Workspace workspace, TextualFactoryBlock block, String label) {
+        TypeBlockManager typeBlockManager = workspace.getTypeBlockManager();
+        if (!typeBlockManager.isEnabled()) {
             System.err.println("AutoMateBlockInsertion invoked but typeBlockManager is disabled.");
             return;
         }
@@ -767,7 +772,7 @@ public class TypeBlockManager {
         if (createdRB == null) {
             return;
         } else {
-            manager.addBlock(createdRB);
+            typeBlockManager.addBlock(createdRB);
         }
     }
 

@@ -111,6 +111,8 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
     private MiniMap miniMap;
     private FactoryManager factory;
     private FocusTraversalManager focusManager;
+    
+    private final TypeBlockManager typeBlockManager;
 
     /// RENDERING LAYERS ///
     public final static Integer PAGE_LAYER = new Integer(0);
@@ -155,6 +157,8 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
         this.workspaceWidgets.add(factory);
 
         this.focusManager = new FocusTraversalManager(this);
+        
+        this.typeBlockManager = new TypeBlockManager(this, blockCanvas);
     }
 
     /*
@@ -451,14 +455,14 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
      * calls TypeBlockManager to copy the highlighted blocks on the canvas
      */
     public void copyBlocks() {
-        TypeBlockManager.copyBlock();
+        TypeBlockManager.copyBlock(this);
     }
 
     /**
      * calls TypeBlockManager to pastes the highlighted blocks on the canvas
      */
     public void pasteBlocks() {
-        TypeBlockManager.pasteBlock();
+        TypeBlockManager.pasteBlock(this);
     }
 
     //////////////////////////
@@ -496,18 +500,24 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
     }
 
     ////////////////////
-    //TypeBLockManaging
+    //TypeBlockManaging
     ////////////////////
     /**
      * Enables TypeBLocking if and only if enabled == true
      */
     public void enableTypeBlocking(boolean enabled) {
-        if (enabled) {
-            TypeBlockManager.enableTypeBlockManager(this, blockCanvas);
-        } else {
-            TypeBlockManager.disableTypeBlockManager();
-        }
+        typeBlockManager.setEnabled(enabled);
     }
+    
+    /**
+     * The type block manager, if defined.
+     * @return The manager.
+     * @see {@link #enableTypeBlocking(boolean)}
+     */
+    public TypeBlockManager getTypeBlockManager() {
+        return typeBlockManager;
+    }
+    
     ///////////////////
     // WORKSPACE ZOOM
     ///////////////////
