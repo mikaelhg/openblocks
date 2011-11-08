@@ -7,8 +7,7 @@ import javax.swing.SwingUtilities;
 
 import edu.mit.blocks.codeblocks.Block;
 import edu.mit.blocks.codeblocks.JComponentDragHandler;
-
-
+import edu.mit.blocks.workspace.Workspace;
 import edu.mit.blocks.workspace.WorkspaceWidget;
 
 /**
@@ -34,13 +33,14 @@ public class FactoryRenderableBlock extends RenderableBlock {
 
     /**
      * Constructs a new FactoryRenderableBlock instance.
+     * @param workspace The workspace in use
      * @param widget the parent widget of this
      * @param blockID the Long ID of its associated Block instance
      */
-    public FactoryRenderableBlock(WorkspaceWidget widget, Long blockID) {
-        super(widget, blockID);
+    public FactoryRenderableBlock(Workspace workspace, WorkspaceWidget widget, Long blockID) {
+        super(workspace, widget, blockID);
         this.setBlockLabelUneditable();
-        dragHandler = new JComponentDragHandler(this);
+        dragHandler = new JComponentDragHandler(workspace, this);
     }
 
     /**

@@ -53,18 +53,20 @@ public class BlockLabel implements MouseListener, MouseMotionListener, KeyListen
     private Long blockID;
     private BlockLabel.Type labelType;
     private double zoom = 1.0;
+    private final Workspace workspace;
 
     /**
      * BlockLabel Constructor
      * NOTE: A true boolean passed into the isEditable parameter does not necessarily make the label
      * editable, but a false boolean will make the label uneditable.
      */
-    public BlockLabel(String initLabelText, BlockLabel.Type labelType, boolean isEditable, Color tooltipBackground) {
+    public BlockLabel(Workspace workspace, String initLabelText, BlockLabel.Type labelType, boolean isEditable, Color tooltipBackground) {
         //call other constructor
-        this(initLabelText, labelType, isEditable, -1, false, tooltipBackground);
+        this(workspace, initLabelText, labelType, isEditable, -1, false, tooltipBackground);
     }
 
-    public BlockLabel(String initLabelText, BlockLabel.Type labelType, boolean isEditable, long blockID, boolean hasComboPopup, Color tooltipBackground) {
+    public BlockLabel(Workspace workspace, String initLabelText, BlockLabel.Type labelType, boolean isEditable, long blockID, boolean hasComboPopup, Color tooltipBackground) {
+        this.workspace = workspace;
         if (Block.NULL.equals(blockID)) {
             throw new RuntimeException("May not pass a null block instance as the parent of a block label");
         }
@@ -253,7 +255,7 @@ public class BlockLabel implements MouseListener, MouseMotionListener, KeyListen
             }
             RenderableBlock rb = RenderableBlock.getRenderableBlock(blockID);
             if (rb != null) {
-                Workspace.getInstance().notifyListeners(new WorkspaceEvent(rb.getParentWidget(), blockID, WorkspaceEvent.BLOCK_RENAMED));
+                workspace.notifyListeners(new WorkspaceEvent(workspace, rb.getParentWidget(), blockID, WorkspaceEvent.BLOCK_RENAMED));
             }
         }
     }
@@ -264,7 +266,7 @@ public class BlockLabel implements MouseListener, MouseMotionListener, KeyListen
             oldBlock.changeGenusTo(genus);
             RenderableBlock rb = RenderableBlock.getRenderableBlock(blockID);
             rb.repaintBlock();
-            Workspace.getInstance().notifyListeners(new WorkspaceEvent(rb.getParentWidget(), blockID, WorkspaceEvent.BLOCK_GENUS_CHANGED));
+            workspace.notifyListeners(new WorkspaceEvent(workspace, rb.getParentWidget(), blockID, WorkspaceEvent.BLOCK_GENUS_CHANGED));
         }
     }
 

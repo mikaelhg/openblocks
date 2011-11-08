@@ -3,6 +3,7 @@ package edu.mit.blocks.renderable;
 import java.awt.Color;
 
 import edu.mit.blocks.codeblocks.BlockConnectorShape;
+import edu.mit.blocks.workspace.Workspace;
 
 /**
  * 
@@ -13,8 +14,8 @@ class NameLabel extends BlockLabel {
 
     private long blockID;
 
-    public NameLabel(String initLabelText, BlockLabel.Type labelType, boolean isEditable, long blockID) {
-        super(initLabelText, labelType, isEditable, blockID, true, new Color(255, 255, 225));
+    public NameLabel(Workspace workspace, String initLabelText, BlockLabel.Type labelType, boolean isEditable, long blockID) {
+        super(workspace, initLabelText, labelType, isEditable, blockID, true, new Color(255, 255, 225));
         this.blockID = blockID;
     }
 

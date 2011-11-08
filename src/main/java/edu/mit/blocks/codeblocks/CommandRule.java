@@ -1,11 +1,15 @@
 package edu.mit.blocks.codeblocks;
 
+import edu.mit.blocks.workspace.Workspace;
 import edu.mit.blocks.workspace.WorkspaceEvent;
 import edu.mit.blocks.workspace.WorkspaceListener;
 
 public class CommandRule implements LinkRule, WorkspaceListener {
+    
+    private final Workspace workspace;
 
-    public CommandRule() {
+    public CommandRule(Workspace workspace) {
+        this.workspace = workspace;
     }
 
     public boolean canLink(Block block1, Block block2, BlockConnector socket1, BlockConnector socket2) {
@@ -43,7 +47,7 @@ public class CommandRule implements LinkRule, WorkspaceListener {
                     return;
                 }
 
-                link = BlockLink.getBlockLink(top, bottom, top.getAfterConnector(), bottom.getBeforeConnector());
+                link = BlockLink.getBlockLink(workspace, top, bottom, top.getAfterConnector(), bottom.getBeforeConnector());
                 link.connect();
             }
         }

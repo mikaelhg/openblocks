@@ -9,6 +9,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import edu.mit.blocks.workspace.ISupportMemento;
+import edu.mit.blocks.workspace.Workspace;
 
 /**
  * <code>BlockConnector</code> is a light class that describes the socket/plug
@@ -32,6 +33,7 @@ public class BlockConnector implements ISupportMemento {
     private boolean isExpandable = false;
     private boolean isLabelEditable = false;
     private String expandGroup = "";
+    private final Workspace workspace;
 
     //Specifies the PositionType of connector:
     //Single is the default connector that appears on only one side (left/right) of a block.
@@ -42,6 +44,7 @@ public class BlockConnector implements ISupportMemento {
     
     /**
      * Constructs a new <code>BlockConnector</code>
+     * @param workspace The workspace this connector is created in 
      * @param kind the kind of this socket
      * @param positionType the PositionType of connector
      * @param label the String label of this socket
@@ -50,20 +53,22 @@ public class BlockConnector implements ISupportMemento {
      * @param expandGroup the expand socket group of this connector
      * @param connBlockID the ID of the block connected to this 
      */
-    public BlockConnector(String kind, PositionType positionType, String label, boolean isLabelEditable, boolean isExpandable, String expandGroup, Long connBlockID) {
-        this(kind, positionType, label, isLabelEditable, isExpandable, connBlockID);
+    public BlockConnector(Workspace workspace, String kind, PositionType positionType, String label, boolean isLabelEditable, boolean isExpandable, String expandGroup, Long connBlockID) {
+        this(workspace, kind, positionType, label, isLabelEditable, isExpandable, connBlockID);
         this.expandGroup = expandGroup == null ? "" : expandGroup;
     }
     
     /**
-     * Constructs a new <code>BlockConnector</code> 
+     * Constructs a new <code>BlockConnector</code>
+     * @param workspace The workspace this connector is created in 
      * @param label the String label of this socket
      * @param kind the kind of this socket
 	 * @param isLabelEditable is true iff this BlockConnector can have its labels edited.
      * @param isExpandable true if this socket can expand into another connector when a block is connected to this
      * @param positionType specifies the PositionType of connector
      */
-    public BlockConnector(String kind, PositionType positionType, String label, boolean isLabelEditable, boolean isExpandable, Long connBlockID) {
+    public BlockConnector(Workspace workspace, String kind, PositionType positionType, String label, boolean isLabelEditable, boolean isExpandable, Long connBlockID) {
+        this.workspace = workspace;
         this.kind = kind;
         this.positionType = positionType;
         this.label = label;
@@ -75,32 +80,35 @@ public class BlockConnector implements ISupportMemento {
     
     /**
      * Constructs a new <code>BlockConnector</code> with a single position
+     * @param workspace The workspace this connector is created in 
      * @param label the String label of this socket
      * @param kind the kind of this socket
      * @param socketBlockID the block id attached to this socket
      */
-    public BlockConnector(String kind, String label, Long socketBlockID) {
-        this(kind, PositionType.SINGLE, label, false, false, socketBlockID);
+    public BlockConnector(Workspace workspace, String kind, String label, Long socketBlockID) {
+        this(workspace, kind, PositionType.SINGLE, label, false, false, socketBlockID);
     }
     
     /**
      * Constructs a new <code>BlockConnector</code> with the specified label and kind.
      * This new socket does not have an attached block.
+     * @param workspace The workspace this connector is created in 
      * @param label the String label of this socket
 	 * @param isLabelEditable is true iff this BlockConnector can have its labels edited.
      * @param kind the kind of this socket
      */
-    public BlockConnector(String label, String kind, boolean isLabelEditable, boolean isExpandable) {
-        this(kind, PositionType.SINGLE, label, isLabelEditable, isExpandable, Block.NULL);
+    public BlockConnector(Workspace workspace, String label, String kind, boolean isLabelEditable, boolean isExpandable) {
+        this(workspace, kind, PositionType.SINGLE, label, isLabelEditable, isExpandable, Block.NULL);
     }
     
     /**
      * Constucts a new <code>BlockConnector</code> by copying the connector information
      * from the specified con.  Copies the con's connector label and kind.
+     * @param workspace The workspace this connector is created in 
      * @param con the BlockConnector to copy from
      */
     public BlockConnector(BlockConnector con) {
-        this(con.kind, con.positionType, con.label, con.isLabelEditable, con.isExpandable, con.connBlockID);
+        this(con.workspace, con.kind, con.positionType, con.label, con.isLabelEditable, con.isExpandable, con.connBlockID);
         this.hasDefArg = con.hasDefArg;
         this.arg = con.arg;
         this.isLabelEditable = con.isLabelEditable;
@@ -240,7 +248,7 @@ public class BlockConnector implements ISupportMemento {
     public Long linkDefArgument() {
         //checks if connector has a def arg or if connector already has a block
         if (hasDefArg && connBlockID == Block.NULL) {
-            Block block = new Block(arg.getGenusName(), arg.label);
+            Block block = new Block(workspace, arg.getGenusName(), arg.label);
             connBlockID = block.getBlockID();
             return connBlockID;
         }
@@ -291,10 +299,11 @@ public class BlockConnector implements ISupportMemento {
     /**
      * Loads information for a single BlockConnector and returns an instance 
      * of BlockConnector with the loaded information
+     * @param workspace The workspace in use
      * @param node the Node containing the desired information
      * @return BlockConnector instance with the loaded information
      */
-    public static BlockConnector loadBlockConnector(Node node, HashMap<Long, Long> idMapping) {
+    public static BlockConnector loadBlockConnector(Workspace workspace, Node node, HashMap<Long, Long> idMapping) {
         Pattern attrExtractor = Pattern.compile("\"(.*)\"");
         Matcher nameMatcher;
 
@@ -363,13 +372,13 @@ public class BlockConnector implements ISupportMemento {
             assert initKind != null : "BlockConnector was not specified a initial connection kind";
 
             if (positionType.equals("single")) {
-                con = new BlockConnector(initKind, PositionType.SINGLE, label, isLabelEditable, isExpandable, idConnected);
+                con = new BlockConnector(workspace, initKind, PositionType.SINGLE, label, isLabelEditable, isExpandable, idConnected);
             } else if (positionType.equals("bottom")) {
-                con = new BlockConnector(initKind, PositionType.BOTTOM, label, isLabelEditable, isExpandable, idConnected);
+                con = new BlockConnector(workspace, initKind, PositionType.BOTTOM, label, isLabelEditable, isExpandable, idConnected);
             } else if (positionType.equals("mirror")) {
-                con = new BlockConnector(initKind, PositionType.MIRROR, label, isLabelEditable, isExpandable, idConnected);
+                con = new BlockConnector(workspace, initKind, PositionType.MIRROR, label, isLabelEditable, isExpandable, idConnected);
             } else if (positionType.endsWith("top")) {
-                con = new BlockConnector(initKind, PositionType.TOP, label, isLabelEditable, isExpandable, idConnected);
+                con = new BlockConnector(workspace, initKind, PositionType.TOP, label, isLabelEditable, isExpandable, idConnected);
             }
 
             con.expandGroup = expandGroup;
@@ -494,14 +503,15 @@ public class BlockConnector implements ISupportMemento {
      * This is a way of generating a BlockConnector from a memento. It's a bit
      * weird since other objects don't have this method, however, it makes the
      * best sense here since BlockConnector is essentially a struct.
+     * @param workspace The workspace in use
      * @param memento The state to load
      * @return An instance of BlockConnector
      */
-    public static BlockConnector instantiateFromState(Object memento) {
+    public static BlockConnector instantiateFromState(Workspace workspace, Object memento) {
         if (memento instanceof BlockConnectorState) {
             BlockConnectorState state = (BlockConnectorState) memento;
 
-            BlockConnector instance = new BlockConnector(state.kind, state.positionType, state.label, state.isLabelEditable, state.isExpandable, state.connBlockID);
+            BlockConnector instance = new BlockConnector(workspace, state.kind, state.positionType, state.label, state.isLabelEditable, state.isExpandable, state.connBlockID);
             instance.isLabelEditable = state.isLabelEditable;
 
             if (state.hasDefArg) {

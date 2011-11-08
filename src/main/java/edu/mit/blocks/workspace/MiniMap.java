@@ -20,10 +20,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import edu.mit.blocks.renderable.Comment;
-import edu.mit.blocks.renderable.RenderableBlock;
 import edu.mit.blocks.codeblocks.Block;
 import edu.mit.blocks.codeblocks.BlockConnector;
+import edu.mit.blocks.renderable.Comment;
+import edu.mit.blocks.renderable.RenderableBlock;
 
 /**
  * A MiniMap is a miniturized representation of the
@@ -92,6 +92,7 @@ public class MiniMap extends JPanel implements WorkspaceWidget, MouseListener, M
     /**this.ratio*/
     private double transformX = 1;
     private double transformY = 1;
+    private final Workspace workspace;
 
     /**
      * @effect  constructs a MiniMap, M, such that
@@ -102,9 +103,10 @@ public class MiniMap extends JPanel implements WorkspaceWidget, MouseListener, M
      * 			M.ratio = M.blockCanvas : M.wdith &&
      * 			M.location = ALWAYS 16 pixels away from the upper-right edge corner
      */
-    public MiniMap() {
+    public MiniMap(Workspace workspace) {
         super();
-        //this.blockCanvas=Workspace.getInstance().getBlockCanvas();
+        this.workspace = workspace;
+        //this.blockCanvas=workspace.getBlockCanvas();
         //this.setBounds(500,0, MAPHEIGHT, MAPHEIGHT);
         this.setPreferredSize(new Dimension(MAPHEIGHT, MAPHEIGHT));
         this.setLayout(null);
@@ -172,7 +174,7 @@ public class MiniMap extends JPanel implements WorkspaceWidget, MouseListener, M
         }
 
         //Aspect-Ratio Logic
-        this.blockCanvas = Workspace.getInstance().getBlockCanvas();
+        this.blockCanvas = workspace.getBlockCanvas();
         this.transformX = (double) (MAPWIDTH) / this.getCanvas().getWidth();//MUST CAST MAPHEIGHT TO DOUBLE!!
         this.transformY = (double) (MAPHEIGHT) / this.getCanvas().getHeight();
 
@@ -212,7 +214,7 @@ public class MiniMap extends JPanel implements WorkspaceWidget, MouseListener, M
                 g.fillRect(dividerRect.x, dividerRect.y, dividerRect.width + 1, dividerRect.height);
             }
         }
-        for (Component component : Workspace.getInstance().getComponentsInLayer(Workspace.DRAGGED_BLOCK_LAYER)) {
+        for (Component component : workspace.getComponentsInLayer(Workspace.DRAGGED_BLOCK_LAYER)) {
             if (component instanceof RenderableBlock && component != null && component.isVisible()) {
                 g.setColor(((RenderableBlock) component).getBLockColor());
                 drawBoundingBox(g, component);
@@ -365,13 +367,13 @@ public class MiniMap extends JPanel implements WorkspaceWidget, MouseListener, M
         Point worldPoint = SwingUtilities.convertPoint(
                 this.getCanvas(),
                 rescaleToWorld(mapPoint),
-                Workspace.getInstance());
+                workspace);
 
         //checking bounds
         int width = block.getStackBounds().width + 3;
         int height = block.getStackBounds().height + 3;
-        int canvasWidth = this.getCanvas().getWidth() - Workspace.getInstance().getCanvasOffset().width;
-        int canvasHeight = this.getCanvas().getHeight() - Workspace.getInstance().getCanvasOffset().height;
+        int canvasWidth = this.getCanvas().getWidth() - workspace.getCanvasOffset().width;
+        int canvasHeight = this.getCanvas().getHeight() - workspace.getCanvasOffset().height;
         if (worldPoint.y + height > canvasHeight) {
             worldPoint.setLocation(worldPoint.x, canvasHeight - height);
         }
@@ -399,7 +401,7 @@ public class MiniMap extends JPanel implements WorkspaceWidget, MouseListener, M
             location.setLocation(location.getX(), 1);
         }
         //find page that it should drop on. w could be null.  so watch out.
-        WorkspaceWidget w = Workspace.getInstance().getWidgetAt(location);
+        WorkspaceWidget w = workspace.getWidgetAt(location);
         for (Page page : this.blockCanvas.getPages()) {
             if (page.contains(SwingUtilities.convertPoint(block.getParent(), location, page.getJComponent()))) {
                 w = page;

@@ -62,7 +62,7 @@ public class WorkspaceController {
     private Element langDefRoot;
     private boolean isWorkspacePanelInitialized = false;
     protected JPanel workspacePanel;
-    protected Workspace workspace;
+    protected final Workspace workspace;
     protected SearchBar searchBar;
 
     //flag to indicate if a new lang definition file has been set
@@ -83,7 +83,7 @@ public class WorkspaceController {
      *
      */
     public WorkspaceController() {
-        workspace = Workspace.getInstance();
+        this.workspace = new Workspace();
     }
 
     /**
@@ -143,11 +143,11 @@ public class WorkspaceController {
         BlockConnectorShape.loadBlockConnectorShapes(root);
 
         //load genuses
-        BlockGenus.loadBlockGenera(root);
+        BlockGenus.loadBlockGenera(workspace, root);
 
         //load rules
-        BlockLinkChecker.addRule(new CommandRule());
-        BlockLinkChecker.addRule(new SocketRule());
+        BlockLinkChecker.addRule(workspace, new CommandRule(workspace));
+        BlockLinkChecker.addRule(workspace, new SocketRule());
 
         //set the dirty flag for the language definition file 
         //to false now that the lang file has been loaded

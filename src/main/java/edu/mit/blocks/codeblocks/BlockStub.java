@@ -78,8 +78,8 @@ public class BlockStub extends Block {
      * @param parentName 
      * @param stubGenus
      */
-    public BlockStub(Long initParentID, String parentGenus, String parentName, String stubGenus) {
-        super(stubGenus);
+    public BlockStub(Workspace workspace, Long initParentID, String parentGenus, String parentName, String stubGenus) {
+        super(workspace, stubGenus);
 
         assert initParentID != Block.NULL : "Parent id of stub should not be null";
 
@@ -169,14 +169,15 @@ public class BlockStub extends Block {
     /**
      * Constructs a new BlockStub instance.  This contructor is protected as it should only be called 
      * while Block loads its information from the save String
+     * @param workspace The workspace this stub should be created in
      * @param blockID the Long block ID of this
      * @param stubGenus the BlockGenus of this
      * @param label the Block label of this
      * @param parentName the String name of its parent
      * @param parentGenus the String BlockGenus name of its parent
      */
-    protected BlockStub(Long blockID, String stubGenus, String label, String parentName, String parentGenus) {
-        super(blockID, stubGenus, label, true);   //stubs may have stubs...
+    protected BlockStub(Workspace workspace, Long blockID, String stubGenus, String label, String parentName, String parentGenus) {
+        super(workspace, blockID, stubGenus, label, true);   //stubs may have stubs...
         //unlike the above constructor, the blockID specified should already
         //be referencing a fully loaded block with all necessary information
         //such as sockets, plugs, labels, etc.
@@ -495,12 +496,12 @@ public class BlockStub extends Block {
         Block b2 = Block.getBlock(id);
         BlockConnector conn2 = b2.getConnectorTo(getBlockID());
         BlockConnector conn = getConnectorTo(id);
-        BlockLink link = BlockLink.getBlockLink(this, b2, conn, conn2);
+        BlockLink link = BlockLink.getBlockLink(workspace, this, b2, conn, conn2);
         RenderableBlock rb = RenderableBlock.getRenderableBlock(link.getSocketBlockID());
         link.disconnect();
         rb.blockDisconnected(link.getSocket());
-        Workspace.getInstance().notifyListeners(
-                new WorkspaceEvent(rb.getParentWidget(), link, WorkspaceEvent.BLOCKS_DISCONNECTED));
+        workspace.notifyListeners(
+                new WorkspaceEvent(workspace, rb.getParentWidget(), link, WorkspaceEvent.BLOCKS_DISCONNECTED));
 
     }
 

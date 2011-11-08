@@ -28,10 +28,10 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import edu.mit.blocks.codeblockutil.CTracklessScrollPane;
 import edu.mit.blocks.renderable.BlockUtilities;
 import edu.mit.blocks.renderable.TextualFactoryBlock;
 import edu.mit.blocks.workspace.Workspace;
-import edu.mit.blocks.codeblockutil.CTracklessScrollPane;
 
 /**
  * AutCompletePanel is a Panel that displays an editable text field
@@ -58,11 +58,14 @@ public class AutoCompletePanel extends JPanel implements MouseListener, MouseMot
     private final JTextField editor;
     /**menu that displays set of possibilities from user-input patter**/
     private final JList menu;
+    /** The workspace in use */
+    private final Workspace workspace;
 
     /**Constructs AutoCompletePanel*/
     @SuppressWarnings("serial")
-    public AutoCompletePanel() {
+    public AutoCompletePanel(Workspace workspace) {
         super(new BorderLayout());
+        this.workspace = workspace;
         font = new Font("Ariel", Font.BOLD, 12);
 
         //set up editor (text field)
@@ -209,12 +212,12 @@ public class AutoCompletePanel extends JPanel implements MouseListener, MouseMot
         // two "+" blocks, otherwise get the blocks matching the input text
         try {
             Float.valueOf(text);
-            matchingBlocks = BlockUtilities.getDigits(text);
+            matchingBlocks = BlockUtilities.getDigits(workspace, text);
         } catch (NumberFormatException e) {
             if (text.equals(TypeBlockManager.PLUS_OPERATION_LABEL)) {
-                matchingBlocks = BlockUtilities.getPlusBlocks(text);
+                matchingBlocks = BlockUtilities.getPlusBlocks(workspace, text);
             } else {
-                matchingBlocks = BlockUtilities.getAllMatchingBlocks(text);
+                matchingBlocks = BlockUtilities.getAllMatchingBlocks(workspace, text);
             }
         }
         //update menu and repaint
@@ -226,8 +229,9 @@ public class AutoCompletePanel extends JPanel implements MouseListener, MouseMot
 
     /**
      * Should display whatever block was last selected in menu.
+     * @param workspace 
      */
-    private void displayBlock() {
+    private void displayBlock(Workspace workspace) {
         Object obj = menu.getSelectedValue();
         if (obj != null && obj instanceof TextualFactoryBlock) {
             //make JPanel-user-Interface invisible
@@ -238,19 +242,19 @@ public class AutoCompletePanel extends JPanel implements MouseListener, MouseMot
             try {
                 //if integer, then pass in the number typed by the user
                 Float.valueOf(obj.toString());
-                TypeBlockManager.automateBlockInsertion((TextualFactoryBlock) obj, obj.toString());
+                TypeBlockManager.automateBlockInsertion(workspace, (TextualFactoryBlock) obj, obj.toString());
             } catch (NumberFormatException e) {
                 // if "+" then pass the two labels in
                 if (obj.toString().equals(TypeBlockManager.NUMBER_PLUS_OPERATION_LABEL)
                         || obj.toString().equals(TypeBlockManager.TEXT_PLUS_OPERATION_LABEL)) {
-                    TypeBlockManager.automateBlockInsertion((TextualFactoryBlock) obj, obj.toString());
+                    TypeBlockManager.automateBlockInsertion(workspace, (TextualFactoryBlock) obj, obj.toString());
                     // if starts with quote (is a string block)
                 } else if (obj.toString().startsWith(TypeBlockManager.QUOTE_LABEL)) {
                     String[] quote = obj.toString().split(TypeBlockManager.QUOTE_LABEL);
-                    TypeBlockManager.automateBlockInsertion((TextualFactoryBlock) obj, quote[1]);
+                    TypeBlockManager.automateBlockInsertion(workspace, (TextualFactoryBlock) obj, quote[1]);
                     // otherwise, don't pass a label in
                 } else {
-                    TypeBlockManager.automateBlockInsertion((TextualFactoryBlock) obj);
+                    TypeBlockManager.automateBlockInsertion(workspace, (TextualFactoryBlock) obj);
                 }
             }
         }
@@ -324,7 +328,7 @@ public class AutoCompletePanel extends JPanel implements MouseListener, MouseMot
         public void keyPressed(KeyEvent e) {
             if (e.getKeyChar() == KeyEvent.VK_ENTER) {
                 menu.setSelectedIndex(0);
-                displayBlock();
+                displayBlock(workspace);
             } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
                 menu.setSelectedIndex(0);
                 menu.requestFocus();//validation and repainting done in menu.focus gained
@@ -335,7 +339,7 @@ public class AutoCompletePanel extends JPanel implements MouseListener, MouseMot
                 repaint();
                 //TODO: AutoCompletePane should not know about
                 //the Workspace.  Need to design a better system for this.
-                Workspace.getInstance().getBlockCanvas().getCanvas().requestFocus();
+                workspace.getBlockCanvas().getCanvas().requestFocus();
             }
         }
     }
@@ -369,21 +373,21 @@ public class AutoCompletePanel extends JPanel implements MouseListener, MouseMot
         /**Drop block if user double clicks on an item*/
         public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 2) {
-                displayBlock();
+                displayBlock(workspace);
             }
         }
 
         /**Drop selected block if user presses enter*/
         public void keyTyped(KeyEvent e) {
             if (e.getKeyChar() == KeyEvent.VK_ENTER) {
-                displayBlock();
+                displayBlock(workspace);
             } else if (e.getKeyChar() == KeyEvent.VK_ESCAPE) {
                 setVisible(false);
                 revalidate();
                 repaint();
                 //TODO: AutoCompletePane should not know about
                 //the Workspace.  Need to design a better system for this.
-                Workspace.getInstance().getBlockCanvas().getCanvas().requestFocus();
+                workspace.getBlockCanvas().getCanvas().requestFocus();
             }
         }
 

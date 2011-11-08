@@ -29,6 +29,9 @@ public class WorkspaceEvent {
     public final static int BLOCK_COMMENT_CHANGED = 18;
     //workspace specific event
     public final static int WORKSPACE_FINISHED_LOADING = 100;
+    
+    private final Workspace workspace;
+    
     private Long blockID = Block.NULL;
     private int eventType;
     private WorkspaceWidget widget = null;
@@ -44,13 +47,15 @@ public class WorkspaceEvent {
      * @param page
      * @param eventType
      */
-    public WorkspaceEvent(WorkspaceWidget page, int eventType) {
+    public WorkspaceEvent(Workspace workspace, WorkspaceWidget page, int eventType) {
+        this.workspace = workspace;
         this.widget = page;
         this.eventType = eventType;
         this.blockID = Block.NULL;
     }
 
-    public WorkspaceEvent(WorkspaceWidget page, int eventType, boolean userSpawned) {
+    public WorkspaceEvent(Workspace workspace, WorkspaceWidget page, int eventType, boolean userSpawned) {
+        this.workspace = workspace;
         this.widget = page;
         this.eventType = eventType;
         this.blockID = Block.NULL;
@@ -65,14 +70,16 @@ public class WorkspaceEvent {
      * @param oldName the old String name of this page
      * @param eventType
      */
-    public WorkspaceEvent(WorkspaceWidget page, String oldName, int eventType) {
+    public WorkspaceEvent(Workspace workspace, WorkspaceWidget page, String oldName, int eventType) {
+        this.workspace = workspace;
         this.widget = page;
         this.eventType = eventType;
         this.blockID = Block.NULL;
         this.oldWidgetName = oldName;
     }
 
-    public WorkspaceEvent(WorkspaceWidget page, String oldName, int eventType, boolean userSpawned) {
+    public WorkspaceEvent(Workspace workspace, WorkspaceWidget page, String oldName, int eventType, boolean userSpawned) {
+        this.workspace = workspace;
         this.widget = page;
         this.eventType = eventType;
         this.blockID = Block.NULL;
@@ -87,13 +94,15 @@ public class WorkspaceEvent {
      * @param blockID
      * @param eventType
      */
-    public WorkspaceEvent(WorkspaceWidget widget, Long blockID, int eventType) {
+    public WorkspaceEvent(Workspace workspace, WorkspaceWidget widget, Long blockID, int eventType) {
+        this.workspace = workspace;
         this.widget = widget;
         this.eventType = eventType;
         this.blockID = blockID;
     }
 
-    public WorkspaceEvent(WorkspaceWidget widget, Long blockID, int eventType, boolean userSpawned) {
+    public WorkspaceEvent(Workspace workspace, WorkspaceWidget widget, Long blockID, int eventType, boolean userSpawned) {
+        this.workspace = workspace;
         this.widget = widget;
         this.eventType = eventType;
         this.blockID = blockID;
@@ -108,18 +117,28 @@ public class WorkspaceEvent {
      * @param link
      * @param eventType
      */
-    public WorkspaceEvent(WorkspaceWidget widget, BlockLink link, int eventType) {
+    public WorkspaceEvent(Workspace workspace, WorkspaceWidget widget, BlockLink link, int eventType) {
+        this.workspace = workspace;
         this.widget = widget;
         this.link = link;
         this.eventType = eventType;
         this.blockID = Block.NULL;
     }
 
-    public WorkspaceEvent(WorkspaceWidget widget, BlockLink link, int eventType, boolean userSpawned) {
+    public WorkspaceEvent(Workspace workspace, WorkspaceWidget widget, BlockLink link, int eventType, boolean userSpawned) {
+        this.workspace = workspace;
         this.widget = widget;
         this.link = link;
         this.eventType = eventType;
         this.userSpawned = userSpawned;
+    }
+    
+    /**
+     * Returns a reference on the workspace that is currently being used
+     * @return The workspace in use
+     */
+    public Workspace getWorkspace() {
+        return workspace;
     }
 
     /**
