@@ -8,14 +8,14 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.mit.blocks.renderable.RenderableBlock;
-
-import edu.mit.blocks.workspace.Page;
-import edu.mit.blocks.workspace.WorkspaceEvent;
-import edu.mit.blocks.workspace.WorkspaceListener;
-import edu.mit.blocks.workspace.BlockCanvas.Canvas;
 import edu.mit.blocks.codeblocks.Block;
 import edu.mit.blocks.codeblocks.BlockConnector;
+import edu.mit.blocks.renderable.RenderableBlock;
+import edu.mit.blocks.workspace.BlockCanvas.Canvas;
+import edu.mit.blocks.workspace.Page;
+import edu.mit.blocks.workspace.Workspace;
+import edu.mit.blocks.workspace.WorkspaceEvent;
+import edu.mit.blocks.workspace.WorkspaceListener;
 
 /**
  * The FocusTraversalManager has two function.  First, it 
@@ -78,11 +78,13 @@ public class FocusTraversalManager implements MouseListener, KeyListener, Worksp
     private Point canvasFocusPoint = new Point(0, 0);
     /** this.focusblock: the Block ID that currently has focus */
     private Long focusBlock = Block.NULL;
+    private final Workspace workspace;
 
     /////////////////
     // Constructor //
     /////////////////
-    public FocusTraversalManager() {
+    public FocusTraversalManager(Workspace workspace) {
+        this.workspace = workspace;
     }
 
     ///////////////
@@ -729,7 +731,7 @@ public class FocusTraversalManager implements MouseListener, KeyListener, Worksp
     // Key Listeners Method      //
     ///////////////////////////////
     public void keyPressed(KeyEvent e) {
-        KeyInputMap.processKeyChar(e);
+        KeyInputMap.processKeyChar(workspace, e);
     }
 
     public void keyReleased(KeyEvent e) {

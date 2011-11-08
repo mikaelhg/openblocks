@@ -5,13 +5,14 @@ import java.awt.geom.Point2D;
 
 import edu.mit.blocks.codeblocks.BlockConnector;
 import edu.mit.blocks.codeblocks.BlockConnectorShape;
+import edu.mit.blocks.workspace.Workspace;
 
 class SocketLabel extends BlockLabel {
 
     private BlockConnector socket;
 
-    SocketLabel(BlockConnector socket, String initLabelText, BlockLabel.Type labelType, boolean isEditable, long blockID) {
-        super(initLabelText, labelType, isEditable, blockID, false, new Color(190, 250, 125));
+    SocketLabel(Workspace workspace, BlockConnector socket, String initLabelText, BlockLabel.Type labelType, boolean isEditable, long blockID) {
+        super(workspace, initLabelText, labelType, isEditable, blockID, false, new Color(190, 250, 125));
         this.socket = socket;
     }
 

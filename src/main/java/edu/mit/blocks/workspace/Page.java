@@ -31,9 +31,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import edu.mit.blocks.renderable.RenderableBlock;
 import edu.mit.blocks.codeblocks.Block;
 import edu.mit.blocks.codeblockutil.CToolTip;
+import edu.mit.blocks.renderable.RenderableBlock;
 
 /**
  * A Page serves as both an abstract container of blocks 
@@ -87,6 +87,9 @@ import edu.mit.blocks.codeblockutil.CToolTip;
  * happens the page changes its display accordingly
  */
 public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemento {
+    
+    /** The workspace in use */
+    private final Workspace workspace;
 
     /** Width while in collapsed mode */
     private static final int COLLAPSED_WIDTH = 20;
@@ -147,12 +150,13 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
      * 			6) The font of this page is "Default", PLAIN, and 12.
      * 			7) The set of blocks is empty.
      */
-    public Page(String name, int pageWidth, int pageHeight, String pageDrawer) {
-        this(name, pageWidth, pageHeight, pageDrawer, true, null);
+    public Page(Workspace workspace, String name, int pageWidth, int pageHeight, String pageDrawer) {
+        this(workspace, name, pageWidth, pageHeight, pageDrawer, true, null);
     }
 
-    public Page(String name, int pageWidth, int pageHeight, String pageDrawer, boolean inFullview, Color defaultColor) {
+    public Page(Workspace workspace, String name, int pageWidth, int pageHeight, String pageDrawer, boolean inFullview, Color defaultColor) {
         super();
+        this.workspace = workspace;
         this.defaultColor = defaultColor;
         this.pageJComponent.setLayout(null);
         this.pageJComponent.setName(name);
@@ -189,6 +193,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
     /**
      * Constructs a new Page
      *
+     * @param workspace The workspace in use
      * @param name - name of this page (this.name)
      *
      * @requires name != null
@@ -201,13 +206,14 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
      * 			6) The font of this page is "Default", PLAIN, and 12.
      * 			7) The set of blocks is empty.
      */
-    public Page(String name) {
-        this(name, -1, -1, name);
+    public Page(Workspace workspace, String name) {
+        this(workspace, name, -1, -1, name);
     }
 
     /**
      * Constructs a new Page
      *
+     * @param workspace The workspace in use
      * @requires none
      * @effects constructs a new Page such that:
      * 			1) The name of this page equals the argument "".
@@ -218,8 +224,8 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
      * 			6) The font of this page is "Default", PLAIN, and 12.
      * 			7) The set of blocks is empty.
      */
-    public static Page getBlankPage() {
-        return new Page(emptyString);
+    public static Page getBlankPage(Workspace workspace) {
+        return new Page(workspace, emptyString);
     }
 
     /**
@@ -631,8 +637,8 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
 
         //fire to workspace that block was added to canvas if oldParent != this
         if (oldParent != this) {
-            Workspace.getInstance().notifyListeners(new WorkspaceEvent(oldParent, block.getBlockID(), WorkspaceEvent.BLOCK_MOVED));
-            Workspace.getInstance().notifyListeners(new WorkspaceEvent(this, block.getBlockID(), WorkspaceEvent.BLOCK_ADDED, true));
+            workspace.notifyListeners(new WorkspaceEvent(workspace, oldParent, block.getBlockID(), WorkspaceEvent.BLOCK_MOVED));
+            workspace.notifyListeners(new WorkspaceEvent(workspace, this, block.getBlockID(), WorkspaceEvent.BLOCK_ADDED, true));
         }
 
         // if the block is off the edge, shift everything or grow as needed to fully show it
@@ -723,7 +729,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
                 Node blockNode;
                 for (int j = 0; j < blocks.getLength(); j++) {
                     blockNode = blocks.item(j);
-                    RenderableBlock rb = RenderableBlock.loadBlockNode(blockNode, this, idMapping);
+                    RenderableBlock rb = RenderableBlock.loadBlockNode(workspace, blockNode, this, idMapping);
                     // save the loaded blocks to add later
                     loadedBlocks.add(rb);
                 }
@@ -736,7 +742,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
                 rb.setHighlightParent(this.getRBParent());
                 //System.out.println("loading rb to canvas: "+rb+" at: "+rb.getBounds());
                 //add internallly
-                Workspace.getInstance().notifyListeners(new WorkspaceEvent(this, rb.getBlockID(), WorkspaceEvent.BLOCK_ADDED));
+                workspace.notifyListeners(new WorkspaceEvent(this, rb.getBlockID(), WorkspaceEvent.BLOCK_ADDED));
                 if (importingPage) {
                 Block.getBlock(rb.getBlockID()).setFocus(false);
                 rb.resetHighlight();
@@ -768,7 +774,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
                 rb.setHighlightParent(this.getRBParent());
                 //System.out.println("loading rb to canvas: "+rb+" at: "+rb.getBounds());
                 //add internallly
-                Workspace.getInstance().notifyListeners(new WorkspaceEvent(this, rb.getBlockID(), WorkspaceEvent.BLOCK_ADDED));
+                workspace.notifyListeners(new WorkspaceEvent(workspace, this, rb.getBlockID(), WorkspaceEvent.BLOCK_ADDED));
                 if (importingPage) {
                     Block.getBlock(rb.getBlockID()).setFocus(false);
                     rb.resetHighlight();
@@ -903,7 +909,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
             //Finally, add all the remaining blocks that weren't there before
             ArrayList<RenderableBlock> blocksToAdd = new ArrayList<RenderableBlock>();
             for (Long newBlockID : unloadedRenderableBlockStates) {
-                RenderableBlock newBlock = new RenderableBlock(this, newBlockID);
+                RenderableBlock newBlock = new RenderableBlock(workspace, this, newBlockID);
                 newBlock.loadState(renderableBlockStates.get(newBlockID));
                 blocksToAdd.add(newBlock);
             }

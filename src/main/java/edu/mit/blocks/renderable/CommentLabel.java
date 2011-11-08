@@ -16,9 +16,11 @@ import edu.mit.blocks.workspace.WorkspaceEvent;
 public class CommentLabel extends BlockControlLabel {
 
     private static final long serialVersionUID = 1L;
+    private final Workspace workspace;
 
-    public CommentLabel(long blockID) {
+    public CommentLabel(Workspace workspace, long blockID) {
         super(blockID);
+        this.workspace = workspace;
         this.setBackground(Color.darkGray);
         this.setOpaque(true);
     }
@@ -81,11 +83,11 @@ public class CommentLabel extends BlockControlLabel {
         toggle();
         RenderableBlock rb = RenderableBlock.getRenderableBlock(getBlockID());
         rb.getComment().setVisible(isActive());
-        Workspace.getInstance().notifyListeners(new WorkspaceEvent(rb.getComment().getCommentSource().getParentWidget(), WorkspaceEvent.BLOCK_COMMENT_VISBILITY_CHANGE));
+        workspace.notifyListeners(new WorkspaceEvent(workspace, rb.getComment().getCommentSource().getParentWidget(), WorkspaceEvent.BLOCK_COMMENT_VISBILITY_CHANGE));
         update();
         rb.revalidate();
         rb.repaint();
-        Workspace.getInstance().getMiniMap().repaint();
+        workspace.getMiniMap().repaint();
     }
 
     /**

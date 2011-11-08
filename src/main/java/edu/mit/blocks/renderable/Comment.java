@@ -90,6 +90,7 @@ public class Comment extends JPanel {
     private Shape body, resize, textarea;
     private boolean pressed = false;
     private boolean active = false;
+    private final Workspace workspace;
 
     /**
      * Constructs a Comment
@@ -101,12 +102,14 @@ public class Comment extends JPanel {
      * the implementor must then add the comment using the proper
      * Swing methods OR through the convenience method Comment.setParent()
      *
+     * @param workspace The workspace in use
      * @param initText,  initial text of comment
      * @param source, where the comment is linked to.
      * @param borderColor the color that the border of the comment should be
      * @param zoom  initial zoom
      */
-    public Comment(String initText, CommentSource source, Color borderColor, double zoom) {
+    public Comment(Workspace workspace, String initText, CommentSource source, Color borderColor, double zoom) {
+        this.workspace = workspace;
         //set up important fields
         this.zoom = zoom;
         this.setLayout(null);
@@ -130,7 +133,7 @@ public class Comment extends JPanel {
         textArea.addKeyListener(new KeyAdapter() {
 
             public void keyPressed(KeyEvent e) {
-                Workspace.getInstance().notifyListeners(new WorkspaceEvent(getCommentSource().getParentWidget(), WorkspaceEvent.BLOCK_COMMENT_CHANGED));
+                Comment.this.workspace.notifyListeners(new WorkspaceEvent(Comment.this.workspace, getCommentSource().getParentWidget(), WorkspaceEvent.BLOCK_COMMENT_CHANGED));
 
                 if (e.isControlDown() || ((e.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)) {
                     if (e.getKeyCode() == KeyEvent.VK_Z) {
@@ -157,7 +160,7 @@ public class Comment extends JPanel {
 
         //set up listeners
         CommentEventListener eventListener = new CommentEventListener();
-        this.jCompDH = new JComponentDragHandler(this);
+        this.jCompDH = new JComponentDragHandler(workspace, this);
         this.addMouseListener(eventListener);
         this.addMouseMotionListener(eventListener);
         textArea.addMouseListener(new MouseAdapter() {
@@ -177,20 +180,20 @@ public class Comment extends JPanel {
 
         this.arrow = new CommentArrow(this);
 
-        commentLabel = new CommentLabel(source.getBlockID());
+        commentLabel = new CommentLabel(workspace, source.getBlockID());
         source.add(commentLabel);
         commentLabel.setActive(true);
 
         this.reformComment();
 
-        Workspace.getInstance().notifyListeners(new WorkspaceEvent(getCommentSource().getParentWidget(), WorkspaceEvent.BLOCK_COMMENT_ADDED));
+        workspace.notifyListeners(new WorkspaceEvent(workspace, getCommentSource().getParentWidget(), WorkspaceEvent.BLOCK_COMMENT_ADDED));
     }
 
     /**
      * Handle the removal of this comment from its comment source
      */
     public void delete() {
-        Workspace.getInstance().notifyListeners(new WorkspaceEvent(getCommentSource().getParentWidget(), WorkspaceEvent.BLOCK_COMMENT_REMOVED));
+        workspace.notifyListeners(new WorkspaceEvent(workspace, getCommentSource().getParentWidget(), WorkspaceEvent.BLOCK_COMMENT_REMOVED));
 
         getParent().remove(arrow.arrow);
         setParent(null);
@@ -363,11 +366,12 @@ public class Comment extends JPanel {
 
     /**
      * Loads the comment from a NodeList of comment parts
+     * @param workspace The workspace in use
      * @param commentChildren
      * @param rb
      * @return
      */
-    public static Comment loadComment(NodeList commentChildren, RenderableBlock rb) {
+    public static Comment loadComment(Workspace workspace, NodeList commentChildren, RenderableBlock rb) {
         Comment comment = null;
         boolean commentCollapsed = false;
 
@@ -392,7 +396,7 @@ public class Comment extends JPanel {
         }
 
         if (text != null) {
-            comment = new Comment(text, rb, rb.getBlock().getColor(), rb.getZoom());
+            comment = new Comment(workspace, text, rb, rb.getBlock().getColor(), rb.getZoom());
             comment.setLocation(commentLoc.x, commentLoc.y);
             comment.update(!commentCollapsed);
             comment.setMyWidth((int) boxSize.getWidth());
@@ -486,7 +490,7 @@ public class Comment extends JPanel {
         }
         super.setLocation(x, y);
         arrow.updateArrow();
-        Workspace.getInstance().getMiniMap().repaint();
+        workspace.getMiniMap().repaint();
     }
 
     /**
@@ -680,11 +684,11 @@ public class Comment extends JPanel {
                 width = (int) ww;
                 height = (int) hh;
                 reformComment();
-                Workspace.getInstance().notifyListeners(new WorkspaceEvent(getCommentSource().getParentWidget(), WorkspaceEvent.BLOCK_COMMENT_RESIZED));
+                workspace.notifyListeners(new WorkspaceEvent(workspace, getCommentSource().getParentWidget(), WorkspaceEvent.BLOCK_COMMENT_RESIZED));
             } else {
                 jCompDH.mouseDragged(e);
                 arrow.updateArrow();
-                Workspace.getInstance().notifyListeners(new WorkspaceEvent(getCommentSource().getParentWidget(), WorkspaceEvent.BLOCK_COMMENT_MOVED));
+                workspace.notifyListeners(new WorkspaceEvent(workspace, getCommentSource().getParentWidget(), WorkspaceEvent.BLOCK_COMMENT_MOVED));
             }
         }
     }

@@ -117,6 +117,7 @@ public class InfixRule implements LinkRule, WorkspaceListener {
                 return;
             }
             BlockLink link2 = BlockLink.getBlockLink(
+                    e.getWorkspace(),
                     newchild,
                     oldchild,
                     newchild.getSocketAt(0),

@@ -18,6 +18,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
+import edu.mit.blocks.workspace.Workspace;
+
 /**
  * A navigator navigates between different Explorers.
  * Though the UI holds a common theme, each explorer
@@ -79,14 +81,18 @@ final public class Navigator {
     /** Displays the sliding action when moving from one explorer to the next */
     private NavigationAnimator animator;
 
+    /** The workspace in use */
+    private final Workspace workspace;
+
     /**
      * Constructs new navigator with an empty collection of canvases.
      */
-    public Navigator() {
-        this(Type.GLASS);
+    public Navigator(Workspace workspace) {
+        this(workspace, Type.GLASS);
     }
 
-    public Navigator(Type UIModel) {
+    public Navigator(Workspace workspace, Type UIModel) {
+        this.workspace = workspace;
         explorerModel = UIModel;
         animator = new NavigationAnimator();
         explorers = new ArrayList<Explorer>();
@@ -131,7 +137,7 @@ final public class Navigator {
         }
         Explorer explorer;
         if (explorerModel == Type.GLASS) {
-            explorer = new GlassExplorer();
+            explorer = new GlassExplorer(workspace);
         } else if (explorerModel == Type.MAGIC) {
             explorer = new MagicExplorer();
         } else if (explorerModel == Type.POPUP) {

@@ -25,8 +25,10 @@ public class TrashCan extends JComponent implements MouseListener, WorkspaceWidg
     private Image openedTcImage;
     private Image currentImage;
     private Color currentColor = Color.BLACK;
+    private final Workspace workspace;
 
-    public TrashCan(Image trashCanImage, Image openedTrashCanImage) {
+    public TrashCan(Workspace workspace, Image trashCanImage, Image openedTrashCanImage) {
+        this.workspace = workspace;
         this.tcImage = trashCanImage;
         this.openedTcImage = openedTrashCanImage;
         currentImage = tcImage;
@@ -55,7 +57,7 @@ public class TrashCan extends JComponent implements MouseListener, WorkspaceWidg
         this.setLocation(500, 400);
 
         addMouseListener(this);
-        Workspace.getInstance().addComponentListener(this);
+        workspace.addComponentListener(this);
 
         //to make draggable, uncomment
         //JComponentDragHandler dragHandler = new JComponentDragHandler(this);
@@ -132,8 +134,8 @@ public class TrashCan extends JComponent implements MouseListener, WorkspaceWidg
 
     public void componentResized(ComponentEvent e) {
         Point location = new Point(
-                Workspace.getInstance().getWidth(),
-                Workspace.getInstance().getHeight());
+                workspace.getWidth(),
+                workspace.getHeight());
         location.translate(-this.getWidth() - 50, -this.getHeight() - 50);
         this.setLocation(location);
     }

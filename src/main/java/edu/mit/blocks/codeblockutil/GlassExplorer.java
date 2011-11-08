@@ -54,12 +54,15 @@ public class GlassExplorer extends JPanel implements Explorer, FocusListener {
     private static final int SELECTED_CANVAS_WIDTH = 225;
     /** A List of listeners for this canvas */
     private List<ExplorerListener> listeners;
+    /** The workspace in use */
+    private final Workspace workspace;
 
     /**
      * Constructor
      */
-    public GlassExplorer() {
+    public GlassExplorer(Workspace workspace) {
         super(new BorderLayout());
+        this.workspace = workspace;
         this.selectedCanvasIndex = DEFAULT_INDEX;
         this.drawers = new ArrayList<GlassCard>();
         this.setOpaque(true);
@@ -73,7 +76,8 @@ public class GlassExplorer extends JPanel implements Explorer, FocusListener {
         buttonPane.setLayout(new GridLayout(0, 1));
         canvasPane = new CanvasPane();
         canvasPane.setOpaque(false);
-        buttonPane.add(canvasPane);
+        workspace.add(canvasPane, Workspace.WIDGET_LAYER);
+        workspace.revalidate();
         this.add(buttonPane, BorderLayout.CENTER);
         this.add(retardedPane, BorderLayout.SOUTH);
         this.revalidate();
@@ -145,8 +149,6 @@ public class GlassExplorer extends JPanel implements Explorer, FocusListener {
                 canvasPane.add(card.getScroll());
                 canvasPane.setBackground(card.getBackgorundColor());
                 timer.expand();
-                Workspace.getInstance().add(canvasPane, Workspace.WIDGET_LAYER);
-                Workspace.getInstance().revalidate();
                 canvasPane.setBounds(buttonPane.getWidth(), buttonPane.getY(),
                         0, 0);
                 this.requestFocus();
@@ -339,6 +341,7 @@ public class GlassExplorer extends JPanel implements Explorer, FocusListener {
                 } else {
                     timer.stop();
                     GlassExplorer.this.notifyListeners(GlassExplorerEvent.SLIDING_CONTAINER_FINISHED_CLOSED);
+                    //buttonPane.add(canvasPane);
                     canvasPane.setSize(0, canvasHeight);
                     canvasPane.revalidate();
                     canvasPane.repaint();

@@ -1,10 +1,10 @@
 package edu.mit.blocks.codeblocks;
 
+import edu.mit.blocks.codeblockutil.Sound;
+import edu.mit.blocks.codeblockutil.SoundManager;
 import edu.mit.blocks.renderable.RenderableBlock;
 import edu.mit.blocks.workspace.Workspace;
 import edu.mit.blocks.workspace.WorkspaceEvent;
-import edu.mit.blocks.codeblockutil.SoundManager;
-import edu.mit.blocks.codeblockutil.Sound;
 
 /**
  * A class that stores information about a potential block connection.
@@ -19,6 +19,8 @@ import edu.mit.blocks.codeblockutil.Sound;
  */
 public class BlockLink {
 
+    private final Workspace workspace;
+    
     private static Sound clickSound;
     private Long plugBlockID;
     private Long socketBlockID;
@@ -34,12 +36,14 @@ public class BlockLink {
 
     /**
      * Private constructor to (somewhat) limit object creation
+     * @param workspace The corresponding workspace
      * @param block1
      * @param block2
      * @param socket1
      * @param socket2
      */
-    private BlockLink(Block block1, Block block2, BlockConnector socket1, BlockConnector socket2) {
+    private BlockLink(Workspace workspace, Block block1, Block block2, BlockConnector socket1, BlockConnector socket2) {
+        this.workspace = workspace;
         boolean isPlug1 = (block1.hasPlug() && block1.getPlug() == socket1)
                 || (block1.hasBeforeConnector() && block1.getBeforeConnector() == socket1);
         boolean isPlug2 = (block2.hasPlug() && block2.getPlug() == socket2)
@@ -130,14 +134,14 @@ public class BlockLink {
             BlockConnector plugBlockPlug = BlockLinkChecker.getPlugEquivalent(plugBlock);
             if (plugBlockPlug != null && plugBlockPlug.hasBlock()) {
                 Block socketBlock = Block.getBlock(plugBlockPlug.getBlockID());
-                BlockLink link = BlockLink.getBlockLink(plugBlock, socketBlock, plugBlockPlug, socket);
+                BlockLink link = BlockLink.getBlockLink(workspace, plugBlock, socketBlock, plugBlockPlug, socket);
                 link.disconnect();
                 //don't tell the block about the disconnect like we would normally do, because
                 // we don't actually want it to have a chance to remove any expandable sockets
                 // since the inserted block will be filling whatever socket was vacated by this
                 // broken link.
                 //NOTIFY WORKSPACE LISTENERS OF DISCONNECTION (not sure if this is great because the connection is immediately replaced)
-                Workspace.getInstance().notifyListeners(new WorkspaceEvent(RenderableBlock.getRenderableBlock(socketBlock.getBlockID()).getParentWidget(), link, WorkspaceEvent.BLOCKS_DISCONNECTED));
+                workspace.notifyListeners(new WorkspaceEvent(workspace, RenderableBlock.getRenderableBlock(socketBlock.getBlockID()).getParentWidget(), link, WorkspaceEvent.BLOCKS_DISCONNECTED));
             }
         }
         if (plug.hasBlock()) {
@@ -169,19 +173,20 @@ public class BlockLink {
 
     /**
      * Factory method for creating BlockLink objects
+     * @param workspace The current workspace
      * @param block1 one of the Block objects in the potential link
      * @param block2 the other Block object
      * @param socket1 the BlockConnector from block1
      * @param socket2 the BlockConnector from block2
      * @return a BlockLink object storing the potential link between block1 and block2
      */
-    public static BlockLink getBlockLink(Block block1, Block block2, BlockConnector socket1, BlockConnector socket2) {
+    public static BlockLink getBlockLink(Workspace workspace, Block block1, Block block2, BlockConnector socket1, BlockConnector socket2) {
         // If these arguments are the same as the last call to getBlockLink, return the old object instead of creating a new one
         if (!((block1.getBlockID().equals(lastPlugID) && block2.getBlockID().equals(lastSocketID)
                 && socket1.equals(lastPlug) && socket2.equals(lastSocket))
                 || (block2.getBlockID().equals(lastPlugID) && block1.getBlockID().equals(lastSocketID)
                 && socket2.equals(lastPlug) && socket1.equals(lastSocket)))) {
-            lastLink = new BlockLink(block1, block2, socket1, socket2);
+            lastLink = new BlockLink(workspace, block1, block2, socket1, socket2);
         }
         return lastLink;
     }
