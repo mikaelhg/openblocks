@@ -67,9 +67,6 @@ public class TypeBlockManager {
         this.autoCompletePanel = new AutoCompletePanel(workspace);
         this.blockCanvas = component;
         this.focusManager = workspace.getFocusManager();
-        blockCanvas.getCanvas().addMouseListener(focusManager);
-        blockCanvas.getCanvas().addKeyListener(focusManager);
-        workspace.addWorkspaceListener(this.focusManager);
     }
     
     /**
@@ -78,6 +75,16 @@ public class TypeBlockManager {
      */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+        if (enabled) {
+            blockCanvas.getCanvas().addMouseListener(focusManager);
+            blockCanvas.getCanvas().addKeyListener(focusManager);
+            workspace.addWorkspaceListener(focusManager);
+        }
+        else {
+            blockCanvas.getCanvas().removeMouseListener(focusManager);
+            blockCanvas.getCanvas().removeKeyListener(focusManager);
+            workspace.removeWorkspaceListener(focusManager);
+        }
     }
     
     /**

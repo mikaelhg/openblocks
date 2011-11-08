@@ -110,7 +110,7 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
      */
     private MiniMap miniMap;
     private FactoryManager factory;
-    private FocusTraversalManager focusManager;
+    private final FocusTraversalManager focusManager;
     
     private final TypeBlockManager typeBlockManager;
 
