@@ -669,7 +669,10 @@ public class BlockGenus {
                         if (imageLocationNode.getNodeName().equals("FileLocation")) {
                             String fileLocation = imageLocationNode.getTextContent();
                             try {
-                                URL fileURL = new URL("file", "", /*workingDirectory +*/ fileLocation);
+                            	URL fileURL = BlockGenus.class.getClassLoader().getResource(fileLocation);
+                            	if (fileURL == null ) {
+                            		fileURL = new URL("file", "", /*workingDirectory +*/ fileLocation);
+                            	}
                                 if (fileURL != null && location != null) {
                                     //translate location String to ImageLocation representation
                                     ImageLocation imgLoc = ImageLocation.getImageLocation(location);

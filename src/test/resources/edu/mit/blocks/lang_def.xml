@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE BlockLangDef SYSTEM "lang_def.dtd">
+<!DOCTYPE BlockLangDef SYSTEM "support/lang_def.dtd">
 
 <!-- 
 
@@ -600,7 +600,7 @@ BlockGenuses are first loaded.
 					Reports the opposite of <arg n="1"/>.
 				</text>
 				<arg-description n="1" name="boolean">
-					The boolean (true or false) that should be inverted.
+					The boolean (<em>true</em> or <em>false</em>) that should be inverted.
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -619,7 +619,7 @@ BlockGenuses are first loaded.
 				<text>
 					Counts all agents that satisfy a certain condition.
 				</text>
-				<arg-description n="1" name="condition">
+				<arg-description n="1" name="condition" name="condition">
 					The condition an agent must satisfy to be counted
 				</arg-description>
 			</description>
@@ -722,10 +722,10 @@ BlockGenuses are first loaded.
 					Appends <arg n="3"/> to the end of <arg n="2"/>.
 				</text>
 				<arg-description n="2" name="first">
-					The text to which to append.
+					The text to which to append <arg n="3"/>.
 				</arg-description>
 				<arg-description n="3" name="second">
-					The text to append to.
+					The text to append to <arg n="2"/>.
 				</arg-description>
 			</description>
 			<BlockConnectors>
@@ -1593,7 +1593,7 @@ BlockGenuses are first loaded.
 				<text>
 					Causes this agent to change its shape to the supplied shape.
 				</text>
-				<arg-description n="1" name="string">
+				<arg-description n="1" name="string" name="string">
 					The shape
 				</arg-description>
 			</description>
@@ -1611,7 +1611,7 @@ BlockGenuses are first loaded.
 				<text>
 					Causes this agent to change its breed to the supplied breed.
 				</text>
-				<arg-description n="1" name="string">
+				<arg-description n="1" name="string" name="string">
 					The name of the new breed.
 				</arg-description>
 			</description>
@@ -2133,7 +2133,7 @@ BlockGenuses are first loaded.
 				<text>
 					When switched on, agents do commands over and over. <note>There are different commands for each breed.</note>
 				</text>
-				<arg-description n="1" name="agents">
+				<arg-description n="1" name="agents" name="breed">
 					The breed of the agents performing the commands attached here.
 				</arg-description>
 			</description>
@@ -2170,7 +2170,7 @@ BlockGenuses are first loaded.
 				<text>
 					When switched on, agents do commands once. <note>There are different commands for each breed.</note>
 				</text>
-				<arg-description n="1" name="agents">
+				<arg-description n="1" name="agents" name="breed">
 					The breed of the agents performing the commands attached here.
 				</arg-description>
 			</description>
@@ -2212,7 +2212,7 @@ BlockGenuses are first loaded.
 					The number of seconds for which the commands are run when switched on.
 				</arg-description>
 				
-				<arg-description n="2" name="agents">
+				<arg-description n="2" name="agents" name="breed">
 					The breed of the agents performing the commands attached here.
 				</arg-description>
 			</description>
@@ -2478,7 +2478,7 @@ BlockGenuses are first loaded.
 				<text>
 					Sets the score to be the given value.
 				</text>
-				<arg-description n="1" name="score">
+				<arg-description n="1" name="score" name="score">
 					The new value for the score.
 				</arg-description>
 			</description>
@@ -3001,6 +3001,11 @@ BlockGenuses are first loaded.
 		<ClosedTrashImage>/support/images/trash.png</ClosedTrashImage>
 	</TrashCan>
 	
-
+	<BreedShapeMappings>
+		<BtoSMapping>
+			<BreedName>Turtles</BreedName>
+			<BreedShape>animals/turtle-default</BreedShape>
+		</BtoSMapping>
+	</BreedShapeMappings>
 	
 </BlockLangDef>
