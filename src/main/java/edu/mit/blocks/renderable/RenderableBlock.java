@@ -36,16 +36,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import edu.mit.blocks.renderable.BlockImageIcon.ImageLocation;
-import edu.mit.blocks.workspace.ContextMenu;
-import edu.mit.blocks.workspace.FactoryManager;
-import edu.mit.blocks.workspace.ISupportMemento;
-import edu.mit.blocks.workspace.MiniMap;
-import edu.mit.blocks.workspace.RBParent;
-import edu.mit.blocks.workspace.SearchableElement;
-import edu.mit.blocks.workspace.Workspace;
-import edu.mit.blocks.workspace.WorkspaceEvent;
-import edu.mit.blocks.workspace.WorkspaceWidget;
 import edu.mit.blocks.codeblocks.Block;
 import edu.mit.blocks.codeblocks.BlockConnector;
 import edu.mit.blocks.codeblocks.BlockConnectorShape;
@@ -58,6 +48,16 @@ import edu.mit.blocks.codeblocks.JComponentDragHandler;
 import edu.mit.blocks.codeblocks.rendering.BlockShapeUtil;
 import edu.mit.blocks.codeblockutil.CToolTip;
 import edu.mit.blocks.codeblockutil.GraphicsManager;
+import edu.mit.blocks.renderable.BlockImageIcon.ImageLocation;
+import edu.mit.blocks.workspace.ContextMenu;
+import edu.mit.blocks.workspace.FactoryManager;
+import edu.mit.blocks.workspace.ISupportMemento;
+import edu.mit.blocks.workspace.MiniMap;
+import edu.mit.blocks.workspace.RBParent;
+import edu.mit.blocks.workspace.SearchableElement;
+import edu.mit.blocks.workspace.Workspace;
+import edu.mit.blocks.workspace.WorkspaceEvent;
+import edu.mit.blocks.workspace.WorkspaceWidget;
 
 /**
  * RenderableBlock is responsible for all graphical rendering of a code Block.  This class is also 
@@ -1657,6 +1657,10 @@ public class RenderableBlock extends JComponent implements SearchableElement, Mo
             dragHandler.myLoc.move(getX() + dragHandler.mPressedX, getY() + dragHandler.mPressedY);
             Point p = SwingUtilities.convertPoint(this.getParent(), dragHandler.myLoc, workspace);
             WorkspaceWidget widget = workspace.getWidgetAt(p);
+            if (widget == null) {
+                // not on a workspace widget, cancel dragging
+                return;
+            }
 
             //if this is the first call to mouseDragged
             if (!dragging) {
