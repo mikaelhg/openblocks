@@ -110,6 +110,9 @@ public class PageDrawerLoadingUtils {
                 }
             }
 
+            // whether pages should show a control to collapse them or not
+            boolean collapsiblePages = getBooleanValue(pagesNode, "collapsible-pages");
+            
             Page page;
             NodeList pages = pagesNode.getChildNodes();
             Node pageNode;
@@ -128,7 +131,7 @@ public class PageDrawerLoadingUtils {
                     pageDrawer = getNodeValue(pageNode, "page-drawer");
                     pageInFullView = getBooleanValue(pageNode, "page-infullview");
                     pageId = getNodeValue(pageNode, "page-id");
-                    page = new Page(workspace, pageName, pageWidth, 0, pageDrawer, pageInFullView, pageColor);
+                    page = new Page(workspace, pageName, pageWidth, 0, pageDrawer, pageInFullView, pageColor, collapsiblePages);
                     page.setPageId(pageId);
 
                     NodeList pageNodes = pageNode.getChildNodes();

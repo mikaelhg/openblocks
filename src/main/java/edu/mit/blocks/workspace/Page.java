@@ -151,10 +151,10 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
      * 			7) The set of blocks is empty.
      */
     public Page(Workspace workspace, String name, int pageWidth, int pageHeight, String pageDrawer) {
-        this(workspace, name, pageWidth, pageHeight, pageDrawer, true, null);
+        this(workspace, name, pageWidth, pageHeight, pageDrawer, true, null, true);
     }
 
-    public Page(Workspace workspace, String name, int pageWidth, int pageHeight, String pageDrawer, boolean inFullview, Color defaultColor) {
+    public Page(Workspace workspace, String name, int pageWidth, int pageHeight, String pageDrawer, boolean inFullview, Color defaultColor, boolean isCollapsible) {
         super();
         this.workspace = workspace;
         this.defaultColor = defaultColor;
@@ -171,7 +171,9 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
 
         this.fullview = inFullview;
         this.collapse = new CollapseButton(inFullview, name);
-        this.pageJComponent.add(collapse);
+        if (isCollapsible) {
+            this.pageJComponent.add(collapse);
+        }
         this.pageJComponent.setFullView(inFullview);
     }
 

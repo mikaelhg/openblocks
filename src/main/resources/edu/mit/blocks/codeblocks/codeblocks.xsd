@@ -168,6 +168,11 @@
 					</xs:sequence>
 					<xs:attribute name="drawer-with-page" type="yesNoType"/>
 					<xs:attribute name="is-blank-page" type="yesNoType"/>
+					<xs:attribute name="collapsible-pages" type="yesNoType">
+						<xs:annotation>
+							<xs:documentation>Whether pages should display a control to collapse them or not.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
 				</xs:complexType>
 			</xs:element>
 		</xs:sequence>
