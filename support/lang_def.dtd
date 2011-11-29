@@ -45,7 +45,7 @@
 <!ELEMENT description (text, arg-description*)>
 <!ELEMENT text (#PCDATA|note|em|i|br|arg)*>
 <!ELEMENT arg-description (#PCDATA)>
-<!ATTLIST arg-description n CDATA #REQUIRED name CDATA #REQUIRED>
+<!ATTLIST arg-description n CDATA #REQUIRED doc-name CDATA #REQUIRED>
 <!ELEMENT note (#PCDATA|arg|i)*>
 <!ELEMENT em (#PCDATA)>
 <!ELEMENT i (#PCDATA)>
