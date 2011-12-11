@@ -11,7 +11,7 @@
     <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
     <name>openblocks</name>
-    <url>https://github.com/mikaelhg/openblocks</url>
+    <url>https://github.com/MenteaXML/openblocks</url>
     <build>
         <plugins>
             <plugin>
