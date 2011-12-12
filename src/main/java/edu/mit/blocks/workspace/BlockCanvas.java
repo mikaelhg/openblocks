@@ -21,6 +21,7 @@ import javax.swing.SwingUtilities;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import edu.mit.blocks.codeblockutil.CGraphite;
 import edu.mit.blocks.codeblockutil.CHoverScrollPane;
@@ -57,6 +58,8 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
     private CScrollPane scrollPane;
     /** The workspace in use */
     private final Workspace workspace;
+    
+    private boolean collapsible = false;
 
     //////////////////////////////
     //Constructor/Destructor	//
@@ -444,7 +447,7 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
     		if (Workspace.everyPageHasDrawer) {
     			pageElement.setAttribute("drawer-with-page", "yes");
     		}
-    		
+    		pageElement.setAttribute("collapsible-pages", collapsible?"yes":"no");
     		for (Page page: pages) {
     			Node pageNode = page.getSaveNode(document);
     			pageElement.appendChild(pageNode);
@@ -471,6 +474,15 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
         //load pages, page drawers, and their blocks from save file
         //PageDrawerManager.loadPagesAndDrawers(root);
         PageDrawerLoadingUtils.loadPagesAndDrawers(workspace, root, workspace.getFactoryManager());
+        
+        NodeList pagesRoot = root.getElementsByTagName("Pages");
+        if(pagesRoot != null && pagesRoot.getLength()>0) {
+            Node pagesNode = pagesRoot.item(0);
+            if(pagesNode != null) {
+                collapsible = PageDrawerLoadingUtils.getBooleanValue(pagesNode, "collapsible-pages");
+            }
+        }
+        
         int screenWidth = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width;
         int canvasWidth = canvas.getPreferredSize().width;
         if (canvasWidth < screenWidth) {
