@@ -195,6 +195,16 @@ public class WorkspaceController {
      * @return the DOM node for the entire workspace.
      */
     public Node getSaveNode() {
+    	return getSaveNode(true);
+    }
+    
+    /**
+     * Returns a DOM node for the entire workspace.  This includes the block workspace, any 
+     * custom factories, canvas view state and position, pages
+     * @param validate If {@code true}, perform a validation of the output against the code blocks schema
+     * @return the DOM node for the entire workspace.
+     */
+    public Node getSaveNode(boolean validate) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
