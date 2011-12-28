@@ -51,13 +51,11 @@ public class PageDrawerLoadingUtils {
         return null;
     }
 
-    private static boolean getBooleanValue(Node node, String nodeKey) {
+    public static boolean getBooleanValue(Node node, String nodeKey) {
         String bool = getNodeValue(node, nodeKey);
         if (bool != null) {
             if (bool.equals("no")) {
                 return false;
-            } else {
-                return true;
             }
         }
         return true;

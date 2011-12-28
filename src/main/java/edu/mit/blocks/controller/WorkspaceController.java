@@ -304,6 +304,17 @@ public class WorkspaceController {
     }
 
     /**
+     * Loads the programming project from the specified element.  
+     * This method assumes that a Language Definition File has already 
+     * been specified for this programming project.
+     * @param element element of the programming project to load
+     */
+    public void loadProjectFromElement(Element elementToLoad) {
+        workspace.loadWorkspaceFrom(elementToLoad, langDefRoot);
+        workspaceLoaded = true;
+    }
+
+    /**
      * Loads the programming project specified in the projectContents String, 
      * which is associated with the language definition file contained in the 
      * specified langDefContents.  All the blocks contained in projectContents
