@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.event.ComponentEvent;
@@ -114,6 +115,10 @@ public class RBHighlightHandler extends JComponent implements ComponentListener,
     }
 
     public void updateImage() {
+    	if (GraphicsEnvironment.isHeadless()) {
+    		return;
+    	}
+    	
         // cache the focus so it'll know when it needs to redraw later.
         hasFocus = rb.getBlock().hasFocus();
 

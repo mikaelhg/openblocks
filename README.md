@@ -16,6 +16,7 @@ To do:
 
 * upgrade code maintainability from the academic baseline to the commercial baseline
 * replace static singletons with contexts and instances
+* separate the model from the UI
 
 Done:
 -----

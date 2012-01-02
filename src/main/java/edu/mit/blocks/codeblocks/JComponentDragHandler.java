@@ -3,6 +3,7 @@ package edu.mit.blocks.codeblocks;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Transparency;
@@ -83,6 +84,11 @@ public class JComponentDragHandler implements MouseListener, MouseMotionListener
     }
 
     private static Cursor createHandCursor(String location, String cursorName) {
+    	if (GraphicsEnvironment.isHeadless()) {
+    		// return default hand cursor if headless
+    		return Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
+    	}
+    	
         java.net.URL handURL = JComponentDragHandler.class.getResource(location);
         assert handURL != null : "Can not find hand cursor image " + cursorName;
         ImageIcon handicon = new ImageIcon(handURL);
