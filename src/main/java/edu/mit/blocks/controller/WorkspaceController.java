@@ -222,7 +222,9 @@ public class WorkspaceController {
             }
 
             document.appendChild(documentElement);
-            validate(document);
+            if (validate) {
+            	validate(document);
+            }
 
             return document;
         }
