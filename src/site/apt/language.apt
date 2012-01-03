@@ -35,10 +35,12 @@ Language Definition File XML Specification
   </BlockGenus>
 +-------------
 
-  Figure 1: The forward block and its block genus fd specification.
+[images/block.png] The forward block
+
+  <<Figure 1>>: The forward block and its block genus fd specification.
 
 *--+--+
-|Block Genus Attributes|Description|
+||Block Genus Attributes||Description|
 *--+--+
 |name|Unique name for genus|
 *--+--+
@@ -76,21 +78,23 @@ Language Definition File XML Specification
   The BlockConnectors specifies the properties of all the connecting points of a block
   genus. There are four kinds of connectors, differing in their meaning and location:
 
-   * Plug: Returns a value. Resides on the left side of a block.
+   [ Plug] Returns a value. Resides on the left side of a block.
 
-   * Socket: Reads in a value or branches the flow of execution. Resides on the right side
+   [ Socket] Reads in a value or branches the flow of execution. Resides on the right side
   of a block.
 
-   * Before: Connects to previous command. Resides on the top side of a block.
+   [ Before] Connects to previous command. Resides on the top side of a block.
 
-   * After: Connects to the next command. Resides on the bottom side of a block.
+   [ After] Connects to the next command. Resides on the bottom side of a block.
 
  Each connector has a type that determines its shape and the data (number, string, boolean,
   polymorphic) or command type that it reads/returns/connects to. Before and After
   connectors are always of type command. A Socket may be of any type. Similarly, a Plug
   returns any type except command.
 
-  Figure 2: The if genus and its block has two sockets: one Boolean labeled “test” and a command
+[images/plug-socket.png] The if genus and its block has two sockets: one Boolean labeled “test” and a command labeled “then.” The true genus and its block has a boolean plug mirrored on both sides.
+
+  <<Figure 2>>: The if genus and its block has two sockets: one Boolean labeled “test” and a command
   labeled “then.” The true genus and its block has a boolean plug mirrored on both sides.
 
   Sockets and Plugs are specified in the xml file. Before and After connectors are
@@ -98,7 +102,7 @@ Language Definition File XML Specification
   starter or terminator.
 
 *--+--+
-|  BlockConnector Attributes |  Description
+||  BlockConnector Attributes ||  Description
 *--+--+
 |  label |   Label that resides by the connector on the block. For example, steps is a label of forward’s socket.
 *--+--+
@@ -117,7 +121,7 @@ Language Definition File XML Specification
   especially if the default argument is a common choice to connect to a block.
 
 *--+--+
-|  Default Argument Attribues |  Description
+||  Default Argument Attribues ||  Description
 *--+--+
 |  genus-name |   the block genus name of the default argument
 *--+--+
@@ -131,6 +135,8 @@ Language Definition File XML Specification
   and they reference the parent block they were created from. Examples of stubs are
   getters and setters for variables. The block genus agent-var-boolean specified below has
   two stubs: a getter and a setter.
+
+[images/getter-setter.png] The genus agent-var-boolean has two stubs, a getter and a setter.
 
 +--------------
   <BlockGenus name="agent-var-boolean" kind="variable" initlabel="agent boolean"
@@ -148,20 +154,20 @@ Language Definition File XML Specification
   <LangSpecProperty key="scope" value="agent"></LangSpecProperty>
 +---------------
 
-  Figure 3: The genus agent-var-boolean has two stubs, a getter and a setter.
+  <<Figure 3>>: The genus agent-var-boolean has two stubs, a getter and a setter.
 
   Currently there are five stubs available, each with its own genus:
 
- * getter: a data block returns the value of its parent block.
+ [getter] a data block returns the value of its parent block.
 
- * setter: a command block that sets the value of its parent block
+ [ setter] a command block that sets the value of its parent block
 
- * inc: a command block that increments the value of its parent block by a fixed value.
+ [ inc] a command block that increments the value of its parent block by a fixed value.
 
- * caller: a command block that executes the commands enclosed by its parent. This
+ [ caller] a command block that executes the commands enclosed by its parent. This
   stub is used by procedure blocks to create their call blocks.
 
- * agent: a data block that returns the value its parent block for a particular agent
+ [ agent] a data block that returns the value its parent block for a particular agent
 
 ***  2.1.4 LangSpecProperties
 
@@ -177,6 +183,8 @@ Language Definition File XML Specification
   blocks with families have an additional drop down box included in its graphical block.
   Family members are included in this drop down box.
 
+[images/forward-back.png] The forward and back block genuses are in the same family. The graphical block shows its family members in its drop down.
+
 +--------------
   <BlockFamilies>
   <BlockFamily>
@@ -185,8 +193,7 @@ Language Definition File XML Specification
   </BlockFamily>
 +-------------
 
-  Figure 4: The forward and back block genuses are in the same family. The graphical block
-  shows its family members in its drop down.
+  <<Figure 4>>: The forward and back block genuses are in the same family. The graphical block shows its family members in its drop down.
 
 * 3 Specifying the Workspace
 
@@ -196,23 +203,23 @@ Language Definition File XML Specification
   contain a series of buttons, each button toggling the visibility of one block drawer.
   There are four types of block drawers, each differing in behavior and functionality.
 
- * Default: contains one instance of each block contained. Blocks may be dragged and
+ [ Default] contains one instance of each block contained. Blocks may be dragged and
   dropped within the drawer and to and from the block canvas or other block drawers.
 
- * Factory: contains blocks that can produce an infinite amount of block instances.
+ [ Factory] contains blocks that can produce an infinite amount of block instances.
   When a block is picked from a factory drawer, a new instance is created. When a
   block is dragged back to a factory drawer, the block is deleted. The blocks contained
   within this drawer never move, but only produce new blocks.
 
- * Page: contains blocks for a particular page
+ [ Page] contains blocks for a particular page
 
- * Custom: Similar to the default block drawer, except that this drawer may be saved
+ [ Custom] Similar to the default block drawer, except that this drawer may be saved
   with the project for future use.
 
  []
 
 *--+--+
-|  BlockDrawer Attributes/Elements |  Description
+||  BlockDrawer Attributes/Elements ||  Description
 *--+--+
 | name |   the name of this drawer. The name is displayed in the button corresponding to this drawer
 *--+--+
@@ -237,8 +244,9 @@ Language Definition File XML Specification
   drawers that contain blocks that are “special” to that page.
 
 *--+--+
-| Page Attributes | Description
+|| Page Attributes || Description
 *--+--+
 | page-name |  name of this page. Name is drawn on the page.
 *--+--+
 | drawer-name | drawer associated with this page
+*--+--+
