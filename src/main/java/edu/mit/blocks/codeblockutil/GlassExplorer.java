@@ -260,7 +260,7 @@ public class GlassExplorer extends JPanel implements Explorer, FocusListener {
          * This assumes that only ONE component will be added!  If more are to
          * be added, first add them to another container and set that container's
          * preferredSize.
-         * @override java.awt.Container#add(java.awt.Component)
+         * @overrides java.awt.Container#add(java.awt.Component)
          * @param comp the Component to be added
          * @requires the CanvasPane doesn't yet contain any components, and
          * comp has its preferredSize set
@@ -281,7 +281,7 @@ public class GlassExplorer extends JPanel implements Explorer, FocusListener {
         }
 
         /**
-         * @override java.awt.Container#remove(java.awt.Component)
+         * @overrides java.awt.Container#remove(java.awt.Component)
          * @see java.awt.Container#remove(java.awt.Component)
          */
         public void remove(Component comp) {
@@ -292,7 +292,7 @@ public class GlassExplorer extends JPanel implements Explorer, FocusListener {
         }
 
         /**
-         * @override java.awt.Container#removeAll()
+         * @overrides java.awt.Container#removeAll()
          * @see java.awt.Container#removeAll()
          */
         public void removeAll() {

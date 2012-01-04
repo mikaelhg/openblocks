@@ -165,7 +165,7 @@ public class TabbedExplorer extends JPanel implements Explorer, MouseListener, A
      * out of bounds, perform no action.
      * @param index - the index of the canvas to be viewed.
      *
-     * @requres none (INDEX DOES NOT HAVE TO BE WITHIN BOUNDS)
+     * @requires none (INDEX DOES NOT HAVE TO BE WITHIN BOUNDS)
      */
     public void selectCanvas(int index) {
         if (index >= 0 && index < drawerCards.size()) {

@@ -401,7 +401,9 @@ final public class Navigator {
         /**
          * Switches the switcher UI to reflect the current state of the navigator
          *
-         * @param newIndex
+         * @param left
+         * @param middle
+         * @param right
          */
         void switchView(String left, String middle, String right) {
             leftLabel.setText(left);
