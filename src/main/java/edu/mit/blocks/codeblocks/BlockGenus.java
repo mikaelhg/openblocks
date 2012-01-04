@@ -368,7 +368,7 @@ public class BlockGenus {
      * Returns the String block text description of this.
      * Also known as the block tool tip, or block description.
      * If no descriptions exists, return null.
-     * @returns the String block text description of this or NULL.
+     * @return the String block text description of this or NULL.
      */
     public String getBlockDescription() {
         return blockDescription;
@@ -383,7 +383,7 @@ public class BlockGenus {
      * An existing description may not have an existing
      * socket (in the case of expandable socket sizes).
      * If no descriptions exists, return null.
-     * @returns the String argument descriptions of this or NULL.
+     * @return the String argument descriptions of this or NULL.
      */
     public Iterable<String> getInitialArgumentDescriptions() {
         return Collections.unmodifiableList(argumentDescriptions);

@@ -48,7 +48,7 @@ public class TextualFactoryBlock {
         return this.ID.toLowerCase().compareTo(b2.ID.toLowerCase());
     }
 
-    /** @returns the string representation of this TextualFactoryBlock */
+    /** @return the string representation of this TextualFactoryBlock */
     public String toString() {
         return stringRepresentation;
     }

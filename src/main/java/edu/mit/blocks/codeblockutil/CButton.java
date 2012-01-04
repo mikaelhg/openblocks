@@ -103,7 +103,7 @@ public class CButton extends JButton implements MouseListener {
      * @param selectedColor
      *
      * @requires buttonColor, selectedColor != null
-     * @modfidies this.buttonColor && this.seletedColor
+     * @modifies this.buttonColor && this.seletedColor
      * @effects change button coloring to match to inputs
      */
     public void setLighting(Color buttonColor, Color selectedColor) {

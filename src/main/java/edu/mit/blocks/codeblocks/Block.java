@@ -1182,7 +1182,7 @@ public class Block implements ISupportMemento {
      * Also known as the block tool tip, or block description.
      * If no descriptions exists, return null.
      * FORWARDED FROM BLOCK GENUS
-     * @returns the String block text description of this
+     * @return the String block text description of this
      * 			or NULL if none exists.
      */
     public String getBlockDescription() {
@@ -1193,7 +1193,7 @@ public class Block implements ISupportMemento {
      * Returns the the argument description at index i.
      * If the index is out of bounds or if no argument
      * description exists for arguemnt at index i , return null.
-     * @returns the String argument descriptions of this or NULL.
+     * @return the String argument descriptions of this or NULL.
      */
     public String getArgumentDescription(int index) {
         if (index < argumentDescriptions.size() && index >= 0) {
@@ -1254,7 +1254,7 @@ public class Block implements ISupportMemento {
     }
     
     /**
-     * @returns current information about block
+     * @return current information about block
      */
     public String toString() {
         return "Block " + blockID + ": " + label + " with sockets: " + sockets + " and plug: " + plug + " before: " + before + " after: " + after;

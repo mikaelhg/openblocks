@@ -93,7 +93,6 @@ class BlockControlLabel extends JLabel implements MouseListener {
 
     /**
      * toggles the active state of this label
-     * @return
      */
     void toggle() {
         setActive(!isActive());

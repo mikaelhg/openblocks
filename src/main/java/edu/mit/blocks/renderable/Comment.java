@@ -103,8 +103,8 @@ public class Comment extends JPanel {
      * Swing methods OR through the convenience method Comment.setParent()
      *
      * @param workspace The workspace in use
-     * @param initText,  initial text of comment
-     * @param source, where the comment is linked to.
+     * @param initText  initial text of comment
+     * @param source where the comment is linked to.
      * @param borderColor the color that the border of the comment should be
      * @param zoom  initial zoom
      */
@@ -464,7 +464,7 @@ public class Comment extends JPanel {
     /**
      *  moves this to a new position at (x,y) but not outside of its parent Container
      * @modifies this.location
-     * @effect  Set this.location.x to x, if x is within bounds of this.parent.
+     * @effects  Set this.location.x to x, if x is within bounds of this.parent.
      * 			if not, then set this.location.x to closest boundary value.
      *      	Set this.location.y to y, if y is within bounds of this.parent.
      * 			if not, then set this.location.y to closest boundary value.
@@ -496,7 +496,7 @@ public class Comment extends JPanel {
     /**
      * moves this to a new position at (x,y) but not outside of its parent Container
      * @modifies this.location
-     * @effect  Set this.location.x to x, if x is within bounds of this.parent.
+     * @effects  Set this.location.x to x, if x is within bounds of this.parent.
      * 			if not, then set this.location.x to closest boundary value.
      *      	Set this.location.y to y, if y is within bounds of this.parent.
      * 			if not, then set this.location.y to closest boundary value.
@@ -509,7 +509,7 @@ public class Comment extends JPanel {
 
     /**
      * @modifies this
-     * @effect translate this.location
+     * @effects translate this.location
      * 		by dx in the x-direction and dy in the y-direction
      * @param dx
      * @param dy
@@ -523,7 +523,7 @@ public class Comment extends JPanel {
      * a new Container.  Removal and addition applies only
      * if the Containers are non-null
      * @modifies the current this.parent and newparent
-     * @effect First, remove this from current this.parent ONLY if
+     * @effects First, remove this from current this.parent ONLY if
      * 		current this.parent is non-null.  Second, add this to
      * 		newparent container ONLY if newparent is non-null.
      * 		Third, repaint both modified parent containers.
@@ -547,12 +547,12 @@ public class Comment extends JPanel {
      * Moves this comment from it's old parent Container to
      * a new Container with given constrain.
      * @modifies the current this.parent and newparent
-     * @effect First, remove this from current this.parent ONLY if
+     * @effects First, remove this from current this.parent ONLY if
      * 		current this.parent is non-null.  Second, add this to
      * 		newparent container ONLY if newparent is non-null.
      * 		Third, repaint both modified parent containers.
      * @param newparent
-     * @parem constraints
+     * @param constraints
      */
     public void setParent(Container newparent, Object constraints) {
         //though it's tempting to just write "this.setParent(newparent)"

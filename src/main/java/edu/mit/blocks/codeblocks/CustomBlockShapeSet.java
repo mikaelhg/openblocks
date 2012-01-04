@@ -34,7 +34,7 @@ public abstract class CustomBlockShapeSet {
      * Checks if the given block is a "special shape" that has custom dimensions.
      * CornerPoints is an array with array order Point2D topLeftCorner, Point2D topRightCorner,
      * 											Point2D botLeftCorner, Point2D botRightCorner.
-     * @returns if a matching customBlockShape was found that corresponds to the given block.
+     * @return if a matching customBlockShape was found that corresponds to the given block.
      * @modifies the array of cornerPoints if method returns true
      */
     public boolean checkCustomShapes(Block b, Point2D[] cornerPoints, int labelsWidth, int totalSocketHeight) {
