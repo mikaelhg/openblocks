@@ -38,7 +38,7 @@ import javax.swing.JComponent;
  * 		PageChangeListeners are invoked
  * 
  * @specfield leftPage : Page //the page on the left side of thsi PageDivider
- * @Specfield color : Color //the color of this pageDivider
+ * @specfield color : Color //the color of this pageDivider
  * @specfield mouseIn : boolean flag //true if and only if mouse is over this PageDivider
  */
 public class PageDivider extends JComponent implements MouseListener, MouseMotionListener {
@@ -106,7 +106,7 @@ public class PageDivider extends JComponent implements MouseListener, MouseMotio
 
     /**
      * @effects all WorkspaceListeners
-     * @modies fires and notifys all WorkspaceListener of a Page_Resize event
+     * @modifies fires and notifies all WorkspaceListener of a Page_Resize event
      */
     public void mouseReleased(MouseEvent e) {
         if (dragDone) {

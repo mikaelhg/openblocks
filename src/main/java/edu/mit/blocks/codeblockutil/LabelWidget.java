@@ -71,7 +71,7 @@ public abstract class LabelWidget extends JComponent {
     /**
      * BlockLabel Constructor that takes in BlockID as well.
      * Unfortunately BlockID is needed, so the label can redirect mouse actions.
-     * @param zoom
+     *
      */
     public LabelWidget(String initLabelText, Color fieldColor, Color tooltipBackground) {
         if (initLabelText == null) {
