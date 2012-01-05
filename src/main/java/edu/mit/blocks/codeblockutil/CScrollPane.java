@@ -35,12 +35,12 @@ public abstract class CScrollPane extends JLayeredPane implements MouseWheelList
     }
 
     /**
-     * @returns vertical scroll bar bounding range model.  May be null
+     * @return vertical scroll bar bounding range model.  May be null
      */
     abstract public BoundedRangeModel getVerticalModel();
 
     /**
-     * @returns horizontal scroll bar bounding range model.  May be null
+     * @return horizontal scroll bar bounding range model.  May be null
      */
     abstract public BoundedRangeModel getHorizontalModel();
 
@@ -57,7 +57,7 @@ public abstract class CScrollPane extends JLayeredPane implements MouseWheelList
      * for example, if contentRect is larger than the viewport, scrolling
      * will be confined to the viewport's bounds.
      *
-     * @parem contentRect - the Rectangle to display
+     * @param contentRect - the Rectangle to display
      */
     abstract public void scrollRectToVisible(Rectangle contentRect);
 

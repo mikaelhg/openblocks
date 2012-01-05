@@ -48,8 +48,92 @@
                     </archive>
                 </configuration>
             </plugin>
+	    <plugin>
+	      <groupId>org.apache.maven.plugins</groupId>
+	      <artifactId>maven-javadoc-plugin</artifactId>
+	      <version>2.8</version>
+	      <configuration>
+		<show>private</show>
+		<tags>
+		  <tag>
+		    <name>effects</name>
+		    <!-- 'effects' tag for all places -->
+		    <placement>a</placement>
+		    <head>Effects:</head>
+		  </tag>
+		  <tag>
+		    <name>modifies</name>
+		    <!-- 'modifies' tag for all places -->
+		    <placement>a</placement>
+		    <head>Modifies:</head>
+		  </tag>
+		  <tag>
+		    <name>overrides</name>
+		    <!-- 'overrides' tag for all places -->
+		    <placement>a</placement>
+		    <head>Overrides:</head>
+		  </tag>
+		  <tag>
+		    <name>requires</name>
+		    <!-- 'requires' tag for all places -->
+		    <placement>a</placement>
+		    <head>Requires:</head>
+		  </tag>
+		  <tag>
+		    <name>specfield</name>
+		    <!-- 'specfield' tag for all places -->
+		    <placement>a</placement>
+		    <head>Spec field:</head>
+		  </tag>
+		</tags>
+	      </configuration>
+	    </plugin>
         </plugins>
     </build>
+    <reporting>
+      <plugins>
+	<plugin>
+	  <groupId>org.apache.maven.plugins</groupId>
+	  <artifactId>maven-javadoc-plugin</artifactId>
+	  <version>2.8</version>
+	  <configuration>
+	    <show>public</show>
+	    <tags>
+	      <tag>
+		<name>effects</name>
+		<!-- 'effects' tag for all places -->
+		<placement>a</placement>
+		<head>Effects:</head>
+	      </tag>
+	      <tag>
+		<name>modifies</name>
+		<!-- 'modifies' tag for all places -->
+		<placement>a</placement>
+		<head>Modifies:</head>
+	      </tag>
+	      <tag>
+		<name>overrides</name>
+		<!-- 'overrides' tag for all places -->
+		<placement>a</placement>
+		<head>Overrides:</head>
+	      </tag>
+	      <tag>
+		<name>requires</name>
+		<!-- 'requires' tag for all places -->
+		<placement>a</placement>
+		<head>Requires:</head>
+	      </tag>
+	      <tag>
+		<name>specfield</name>
+		<!-- 'specfield' tag for all places -->
+		<placement>a</placement>
+		<head>Spec field:</head>
+	      </tag>
+	    </tags>
+	  </configuration>
+	</plugin>
+      </plugins>
+    </reporting>
     <dependencies>
         <dependency>
             <groupId>jfree</groupId>

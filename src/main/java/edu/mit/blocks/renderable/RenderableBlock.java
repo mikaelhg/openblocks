@@ -476,13 +476,13 @@ public class RenderableBlock extends JComponent implements SearchableElement, Mo
     /**
      * Synchronizes this RenderableBlock's socket components (including tags, labels)
      * with the associated Block's list of sockets.
+     * Complexity: 	Running time for n Block sockets
+     * 				and m Renderable tags: O(m+nm)=O(nm)
      * @effects for every socket in Block:
      * 				(1) check/add corresponding tag structure,
      * 				(2) check/add block label
      * 			for every tag in Renderable:
      * 				(1) delete any sockets not in Block
-     * @complexity 	Running time for n Block sockets
-     * 				and m Renderable tags: O(m+nm)=O(nm)
      */
     private boolean synchronizeSockets() {
         boolean changed = false;
@@ -601,7 +601,7 @@ public class RenderableBlock extends JComponent implements SearchableElement, Mo
     /**
      * Determine the width necessary to accommodate for placed labels.  Used to
      * determine the minimum width of a block.
-     * @returns int pixel width needed for the labels
+     * @return int pixel width needed for the labels
      */
     public int accomodateLabelsWidth() {
         int maxSocketWidth = 0;
@@ -1269,7 +1269,6 @@ public class RenderableBlock extends JComponent implements SearchableElement, Mo
 
     /**
      * Draws the BlockImageIcon instances of this onto itself
-     * @param buffImgG2 the current Graphics2D representation of this
      * @param width the current width of the buffered image
      * @param height the current height of the buffered image
      */
@@ -1856,7 +1855,7 @@ public class RenderableBlock extends JComponent implements SearchableElement, Mo
     /**
      * Changes Point boxSize (x,y) to the (width,height) of boxSizeNode
      * That is x = width and y = height
-     * @param location
+     * @param boxSizeNode
      * @param boxSize
      */
     public static void extractBoxSizeInfo(Node boxSizeNode, Dimension boxSize) {
