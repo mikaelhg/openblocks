@@ -143,7 +143,7 @@ BlockGenuses are first loaded.
 			</LangSpecProperties>
 		</BlockGenus>
 		
-		<BlockGenus name="false" kind="data" initlabel="blah" color="255 0 255">
+		<BlockGenus name="false" kind="data" initlabel="false" color="255 0 255">
 			<description>
 				<text>
 					Reports the boolean false.
@@ -341,7 +341,7 @@ BlockGenuses are first loaded.
 				<text>
 					Agents moves <arg n="1"/> steps forward.
 				</text>
-				<arg-description n="1" doc-name="steps">
+				<arg-description n="1" name="steps">
 					Number of steps to move.
 				</arg-description>
 			</description>
@@ -361,7 +361,7 @@ BlockGenuses are first loaded.
 				<text>
 					Agents moves <arg n="1"/> steps backward.
 				</text>
-				<arg-description n="1" doc-name="steps">
+				<arg-description n="1" name="steps">
 					Number of steps to move.
 				</arg-description>
 			</description>
