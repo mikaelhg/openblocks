@@ -1,0 +1,258 @@
+# Document   : lang_def.dtd
+# Description:
+#     This defines the language and initial workspace setup.
+
+namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
+
+BlockLangDef =
+  element BlockLangDef {
+    attlist.BlockLangDef,
+    BlockConnectorShapes,
+    BlockGenuses,
+    BlockFamilies?,
+    BlockDrawerSets?,
+    Pages?,
+    TrashCan?,
+    MiniMap?
+  }
+attlist.BlockLangDef &= empty
+# This defines a mapping between block connector shape type to number
+BlockConnectorShapes =
+  element BlockConnectorShapes {
+    attlist.BlockConnectorShapes, BlockConnectorShape*
+  }
+attlist.BlockConnectorShapes &= empty
+BlockConnectorShape =
+  element BlockConnectorShape { attlist.BlockConnectorShape, empty }
+attlist.BlockConnectorShape &= attribute shape-type { text }
+attlist.BlockConnectorShape &= attribute shape-number { text }
+BlockGenuses =
+  element BlockGenuses { attlist.BlockGenuses, BlockGenus* }
+attlist.BlockGenuses &= empty
+# This defines a single block genus
+BlockGenus =
+  element BlockGenus {
+    attlist.BlockGenus,
+    description?,
+    BlockConnectors?,
+    Stubs?,
+    Images?,
+    LangSpecProperties?
+  }
+attlist.BlockGenus &= attribute name { text }
+attlist.BlockGenus &= attribute initlabel { text }
+# the kind of a genus can affect the rendering of a block.  relevant kinds are: 
+# - command: performs an operation and may take in more than one input 
+# - data: returns primitive values such as number, string, boolean
+# - function: takes in an input and performs an operation to produce an ouput
+attlist.BlockGenus &= attribute kind { text }
+attlist.BlockGenus &= attribute color { text }
+attlist.BlockGenus &=
+  [ a:defaultValue = "no" ] attribute editable-label { "yes" | "no" }?
+attlist.BlockGenus &=
+  [ a:defaultValue = "no" ] attribute label-unique { "yes" | "no" }?
+attlist.BlockGenus &=
+  [ a:defaultValue = "no" ] attribute is-label-value { "yes" | "no" }?
+attlist.BlockGenus &= attribute label-prefix { text }?
+attlist.BlockGenus &= attribute label-suffix { text }?
+attlist.BlockGenus &=
+  [ a:defaultValue = "no" ]
+  attribute page-label-enabled { "yes" | "no" }?
+# is-starter and is-terminator only apply to blocks of kind: command
+attlist.BlockGenus &=
+  [ a:defaultValue = "no" ] attribute is-starter { "yes" | "no" }?
+attlist.BlockGenus &=
+  [ a:defaultValue = "no" ] attribute is-terminator { "yes" | "no" }?
+# This defines a block description and the description of its block arguments
+arg = element arg { attlist.arg, empty }
+attlist.arg &=
+  attribute n { text },
+  attribute name { text }?
+description =
+  element description { attlist.description, \text, arg-description* }
+attlist.description &= empty
+\text =
+  element text { attlist.text, (text | note | em | i | br | arg)* }
+attlist.text &= empty
+arg-description =
+  element arg-description { attlist.arg-description, text }
+attlist.arg-description &=
+  attribute n { text },
+  attribute doc-name { text }
+note = element note { attlist.note, (text | arg | i)* }
+attlist.note &= empty
+em = element em { attlist.em, text }
+attlist.em &= empty
+i = element i { attlist.i, text }
+attlist.i &= empty
+br = element br { attlist.br, text }
+attlist.br &= empty
+# BlockConnectors are where blocks get connected
+BlockConnectors =
+  element BlockConnectors { attlist.BlockConnectors, BlockConnector* }
+attlist.BlockConnectors &= empty
+BlockConnector =
+  element BlockConnector { attlist.BlockConnector, DefaultArg? }
+attlist.BlockConnector &= attribute label { text }?
+attlist.BlockConnector &=
+  [ a:defaultValue = "no" ] attribute label-editable { "yes" | "no" }?
+# Order matters with socket connectors and at most one plug is allowed (no multiple return types)
+attlist.BlockConnector &= attribute connector-kind { "plug" | "socket" }
+#  for connector-type use the shape-type values specified in block connectors
+attlist.BlockConnector &= attribute connector-type { text }
+attlist.BlockConnector &=
+  [ a:defaultValue = "single" ]
+  attribute position-type { "single" | "mirror" | "bottom" }?
+attlist.BlockConnector &=
+  [ a:defaultValue = "no" ] attribute is-expandable { "yes" | "no" }?
+DefaultArg = element DefaultArg { attlist.DefaultArg, empty }
+attlist.DefaultArg &= attribute genus-name { text }
+attlist.DefaultArg &= attribute label { text }?
+Stubs = element Stubs { attlist.Stubs, Stub* }
+attlist.Stubs &= empty
+# This defines a stub of a block, so that the block can exist as a single entity and have mini-references to it
+Stub = element Stub { attlist.Stub, LangSpecProperties }
+attlist.Stub &= attribute scope { text }?
+attlist.Stub &=
+  attribute stub-genus {
+    "getter" | "setter" | "caller" | "agent" | "inc"
+  }
+# Defines the images that are drawn on the block itself. 
+# Note: For now, only one image is enabled and wrap-text and image-editable have no effect.
+# Note: make sure FileLocation specified is relative to workspace directory
+Images = element Images { attlist.Images, Image }
+attlist.Images &= empty
+Image = element Image { attlist.Image, FileLocation }
+attlist.Image &=
+  [ a:defaultValue = "no" ] attribute wrap-text { "yes" | "no" }?
+attlist.Image &=
+  [ a:defaultValue = "no" ] attribute image-editable { "yes" | "no" }?
+attlist.Image &=
+  [ a:defaultValue = "center" ]
+  attribute block-location {
+    "center"
+    | "east"
+    | "west"
+    | "north"
+    | "south"
+    | "southeast"
+    | "southwest"
+    | "northeast"
+    | "northwest"
+  }?
+attlist.Image &= attribute width { text }?
+attlist.Image &= attribute height { text }?
+FileLocation = element FileLocation { attlist.FileLocation, text }
+attlist.FileLocation &= empty
+LangSpecProperties =
+  element LangSpecProperties {
+    attlist.LangSpecProperties, LangSpecProperty*
+  }
+attlist.LangSpecProperties &= empty
+LangSpecProperty =
+  element LangSpecProperty { attlist.LangSpecProperty, text }
+attlist.LangSpecProperty &= attribute key { text }
+attlist.LangSpecProperty &= attribute value { text }
+# This defines a BlockGenus Family
+BlockFamilies =
+  element BlockFamilies { attlist.BlockFamilies, BlockFamily* }
+attlist.BlockFamilies &= empty
+BlockFamily = element BlockFamily { attlist.BlockFamily, FamilyMember* }
+attlist.BlockFamily &= empty
+FamilyMember = element FamilyMember { attlist.FamilyMember, text }
+attlist.FamilyMember &= empty
+#  Defines BlockDrawerSets and their Block Drawer content
+BlockDrawerSets =
+  element BlockDrawerSets { attlist.BlockDrawerSets, BlockDrawerSet* }
+attlist.BlockDrawerSets &= empty
+BlockDrawerSet =
+  element BlockDrawerSet { attlist.BlockDrawerSet, BlockDrawer* }
+attlist.BlockDrawerSet &=
+  [ a:defaultValue = "bar" ] attribute type { "bar" | "stack" }?
+attlist.BlockDrawerSet &= attribute name { text }
+attlist.BlockDrawerSet &=
+  [ a:defaultValue = "west" ]
+  attribute location {
+    "east"
+    | "west"
+    | "north"
+    | "south"
+    | "northeast"
+    | "southeast"
+    | "southwest"
+    | "northwest"
+  }?
+# window-per-drawer specifies if each drawer should be its own draggable window.  otherwise, all the drawers 
+# are contained within one draggable window and only one drawer can be opened at once. 
+# Whether or not the window is draggable depends if drawer-draggable is set to "yes."
+attlist.BlockDrawerSet &=
+  [ a:defaultValue = "yes" ]
+  attribute window-per-drawer { "yes" | "no" }?
+attlist.BlockDrawerSet &=
+  [ a:defaultValue = "yes" ]
+  attribute drawer-draggable { "yes" | "no" }?
+# the width of all the drawers within this set
+attlist.BlockDrawerSet &= attribute width { text }?
+# This defines BlockDrawers and their content
+BlockDrawer =
+  element BlockDrawer {
+    attlist.BlockDrawer, (BlockGenusMember | Separator | NextLine)*
+  }
+attlist.BlockDrawer &= attribute name { text }
+attlist.BlockDrawer &=
+  [ a:defaultValue = "default" ]
+  attribute type { "default" | "factory" | "page" | "custom" }?
+attlist.BlockDrawer &=
+  [ a:defaultValue = "no" ] attribute is-open { "yes" | "no" }?
+attlist.BlockDrawer &= attribute button-color { text }
+BlockGenusMember =
+  element BlockGenusMember { attlist.BlockGenusMember, text }
+attlist.BlockGenusMember &= empty
+Separator = element Separator { attlist.Separator, empty }
+attlist.Separator &= empty
+NextLine = element NextLine { attlist.NextLine, empty }
+attlist.NextLine &= empty
+# Defines Pages dividing the Block Canvas and the optional PageDrawers associated with them
+# Each Page can have only one PageDrawer.  
+# For now, every page must have a drawer or no pages can have drawers.
+# The block canvas need not contain any pages.  You may choose to have
+# a blank canvas instead of a canvas of pages.
+Pages = element Pages { attlist.Pages, Page* }
+#     drawer-with-page auto generates a new drawer for each new page created by a user 
+# and creates an empty drawer for each page that does not specify a page drawer 
+attlist.Pages &=
+  [ a:defaultValue = "no" ] attribute drawer-with-page { "yes" | "no" }?
+Page = element Page { attlist.Page, PageDrawer? }
+attlist.Page &= attribute page-name { text }
+attlist.Page &= attribute page-width { text }
+attlist.Page &= attribute page-drawer { text }?
+attlist.Page &= attribute page-color { text }?
+attlist.Page &= attribute page-shape { text }?
+PageDrawer =
+  element PageDrawer { attlist.PageDrawer, BlockGenusMember* }
+attlist.PageDrawer &= empty
+# If specified a trash can will appear on the workspace.
+# For both of its child elements, a location for the images should be specified relative to the working directory.
+# The open trash image appears when a user drags a block over the trashcan.  The closed trash image is the default 
+# image during steady state. 
+TrashCan =
+  element TrashCan {
+    attlist.TrashCan, OpenTrashImage, ClosedTrashImage
+  }
+attlist.TrashCan &= empty
+OpenTrashImage = element OpenTrashImage { attlist.OpenTrashImage, text }
+attlist.OpenTrashImage &= empty
+ClosedTrashImage =
+  element ClosedTrashImage { attlist.ClosedTrashImage, text }
+attlist.ClosedTrashImage &= empty
+# By default, a minimap will always appear in the upper right corner
+# of the block canvas, unless enabled is set to "no." 
+MiniMap = element MiniMap { attlist.MiniMap, empty }
+attlist.MiniMap &=
+  [ a:defaultValue = "yes" ] attribute enabled { "yes" | "no" }?
+# By default, typeblocking will be enabled, such that when the user types onto the canvas
+# blocks will fly out that match the entered text.
+Typeblocking = element Typeblocking { attlist.Typeblocking, empty }
+attlist.Typeblocking &=
+  [ a:defaultValue = "yes" ] attribute enabled { "yes" | "no" }?
+start = Typeblocking | BlockLangDef
