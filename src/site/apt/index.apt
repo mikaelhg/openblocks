@@ -1,6 +1,5 @@
-  First line of first paragraph.
-  Second line of first paragraph.
-  Third line of first paragraph.
+OpenBlocks refactoring branch
 
-  Line 1 of paragraph 2 (separated from first paragraph by an open line).
-  Line 2 of paragraph 2.
+  This is a fork of MIT OpenBlocks (covered by the MIT license) for refactoring purposes.
+
+  The principal objective of the fork is to make the code more amenable to inclusion to other projects.
