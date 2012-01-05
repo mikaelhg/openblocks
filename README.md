@@ -25,3 +25,13 @@ Done:
 * remove dependency to TableLayout, which doesn't appear to be actively maintained,
   and really not even used in a very complex manner
 
+Contributors:
+-------------
+
+In order of first appearance on commit logs:
+
+* The original MIT team: Eric Klopfer, Daniel Wendel, Ricarose Roque, Corey McCaffrey, Lunduo Ye, Aidan Ho, Brett Warne, Xudan Liu, Hout Nga
+* Mikael Gueck (https://github.com/mikaelhg)
+* David Li (https://github.com/taweili)
+* Philippe Cade (https://github.com/philippecade)
+* Tony Graham / MenteaXML (https://github.com/MenteaXML)
