@@ -91,8 +91,8 @@ public class InfixBlockShape extends BlockShape {
                     BCS.addDataSocket(gpBottom, curSocket.getKind(), false);
                     //rb.updateSocketPoint(curSocket, rightSocket);
                 } else { //there is a connected block
-                    Block connectedBlock = Block.getBlock(curSocket.getBlockID());
-                    RenderableBlock connectedRBlock = RenderableBlock.getRenderableBlock(curSocket.getBlockID());
+                    Block connectedBlock = rb.getWorkspace().getEnv().getBlock(curSocket.getBlockID());
+                    RenderableBlock connectedRBlock = rb.getWorkspace().getEnv().getRenderableBlock(curSocket.getBlockID());
 
                     //calculate and update the new socket point
                     //update the socket point of this cursocket which should now adopt the plug socket point of its
@@ -108,7 +108,7 @@ public class InfixBlockShape extends BlockShape {
                     rb.updateSocketPoint(curSocket, new Point2D.Double(newX, newY));
 
 
-                    BlockShape connectedBlockShape = RenderableBlock.getRenderableBlock(curSocket.getBlockID()).getBlockShape();
+                    BlockShape connectedBlockShape = rb.getWorkspace().getEnv().getRenderableBlock(curSocket.getBlockID()).getBlockShape();
                     //append left side of connected block
                     appendPath(gpBottom, connectedBlockShape.getLeftSide(), false);
 
@@ -200,8 +200,8 @@ public class InfixBlockShape extends BlockShape {
             } else {
                 //a block is connected to this socket, check if that block has sockets
                 //OR if the block is an infix block - if it is infix, then just wrap around the infix block
-                Block block = Block.getBlock(socket.getBlockID());
-                BlockShape shape = RenderableBlock.getRenderableBlock(socket.getBlockID()).getBlockShape();
+                Block block = rb.getWorkspace().getEnv().getBlock(socket.getBlockID());
+                BlockShape shape = rb.getWorkspace().getEnv().getRenderableBlock(socket.getBlockID()).getBlockShape();
                 if (block.getNumSockets() == 0 || block.isInfix()) {
                     //append this block's top and right side
                     //TODO instead of just appending the right side...draw line to
@@ -247,7 +247,7 @@ public class InfixBlockShape extends BlockShape {
                     }
                     bottomSocketWidth -= BlockConnectorShape.NORMAL_DATA_PLUG_WIDTH;
                     // if it's a mirror plug, subtract for the other side, too.
-                    if (Block.getBlock(socket.getBlockID()).getPlug().getPositionType() == BlockConnector.PositionType.MIRROR) {
+                    if (rb.getWorkspace().getEnv().getBlock(socket.getBlockID()).getPlug().getPositionType() == BlockConnector.PositionType.MIRROR) {
                         bottomSocketWidth -= BlockConnectorShape.NORMAL_DATA_PLUG_WIDTH;
                     }
                 }

@@ -14,7 +14,7 @@ class PageLabel extends BlockLabel {
         int x = 5;
         int y = 5;
 
-        RenderableBlock rb = RenderableBlock.getRenderableBlock(getBlockID());
+        RenderableBlock rb = workspace.getEnv().getRenderableBlock(getBlockID());
         if (rb != null) {
             x += descale(rb.getControlLabelsWidth());
         }

@@ -147,7 +147,7 @@ public class LinkFinderUtil {
 
         //if the parent has no sockets, try its parent
         if (parent.hasPlug()) {
-            return LinkFinderUtil.connectBlocks(workspace, child, Block.getBlock(parent.getPlugBlockID()));
+            return LinkFinderUtil.connectBlocks(workspace, child, workspace.getEnv().getBlock(parent.getPlugBlockID()));
         }
 
         return null;

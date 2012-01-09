@@ -14,13 +14,12 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
-import edu.mit.blocks.workspace.Workspace;
-import edu.mit.blocks.workspace.WorkspaceEvent;
 import edu.mit.blocks.codeblocks.Block;
 import edu.mit.blocks.codeblocks.BlockConnector;
-import edu.mit.blocks.codeblocks.BlockGenus;
 import edu.mit.blocks.codeblocks.BlockStub;
 import edu.mit.blocks.codeblockutil.LabelWidget;
+import edu.mit.blocks.workspace.Workspace;
+import edu.mit.blocks.workspace.WorkspaceEvent;
 
 /**
  * BlockLabel is a region on a block in which text is displayed and possibly edited.  The
@@ -53,7 +52,7 @@ public class BlockLabel implements MouseListener, MouseMotionListener, KeyListen
     private Long blockID;
     private BlockLabel.Type labelType;
     private double zoom = 1.0;
-    private final Workspace workspace;
+    protected final Workspace workspace;
 
     /**
      * BlockLabel Constructor
@@ -75,7 +74,7 @@ public class BlockLabel implements MouseListener, MouseMotionListener, KeyListen
         }
         this.blockID = blockID;
         this.labelType = labelType;
-        widget = new LabelWidget(initLabelText, Block.getBlock(blockID).getColor().darker(), tooltipBackground) {
+        widget = new LabelWidget(initLabelText, workspace.getEnv().getBlock(blockID).getColor().darker(), tooltipBackground) {
 
             private static final long serialVersionUID = 328149080424L;
 
@@ -95,15 +94,15 @@ public class BlockLabel implements MouseListener, MouseMotionListener, KeyListen
                 return textValid(text);
             }
         };
-        widget.setNumeric(Block.getBlock(this.blockID).getGenusName().equals("number"));
+        widget.setNumeric(workspace.getEnv().getBlock(this.blockID).getGenusName().equals("number"));
 
         // Only editable if the isEditable parameter was true, the label is either a Block's name or
         // socket label, the block can edit labels, and the block is not in the factory.
         widget.setEditable(
                 isEditable
                 && (labelType == BlockLabel.Type.NAME_LABEL || labelType == BlockLabel.Type.PORT_LABEL)
-                && Block.getBlock(blockID).isLabelEditable()
-                && !(RenderableBlock.getRenderableBlock(blockID) instanceof FactoryRenderableBlock));
+                && workspace.getEnv().getBlock(blockID).isLabelEditable()
+                && !(workspace.getEnv().getRenderableBlock(blockID) instanceof FactoryRenderableBlock));
         if (labelType == null || labelType.equals(BlockLabel.Type.NAME_LABEL)) {
             widget.setFont(BlockLabel.blockFontLarge_Bold);
         } else if (labelType.equals(BlockLabel.Type.PAGE_LABEL)) {
@@ -113,15 +112,15 @@ public class BlockLabel implements MouseListener, MouseMotionListener, KeyListen
         } else if (labelType.equals(BlockLabel.Type.DATA_LABEL)) {
             widget.setFont(BlockLabel.blockFontMedium_Bold);
         }
-        if (Block.getBlock(blockID).hasSiblings()) {
+        if (workspace.getEnv().getBlock(blockID).hasSiblings()) {
             //Map<String, String> siblings = new HashMap<String, String>();
-            List<String> siblingsNames = Block.getBlock(blockID).getSiblingsList();
+            List<String> siblingsNames = workspace.getEnv().getBlock(blockID).getSiblingsList();
             String[][] siblings = new String[siblingsNames.size() + 1][2];
-            siblings[0] = new String[]{Block.getBlock(blockID).getGenusName(), Block.getBlock(blockID).getInitialLabel()};
+            siblings[0] = new String[]{workspace.getEnv().getBlock(blockID).getGenusName(), workspace.getEnv().getBlock(blockID).getInitialLabel()};
             for (int i = 0; i < siblingsNames.size(); i++) {
-                siblings[i + 1] = new String[]{siblingsNames.get(i), BlockGenus.getGenusWithName(siblingsNames.get(i)).getInitialLabel()};
+                siblings[i + 1] = new String[]{siblingsNames.get(i), workspace.getEnv().getGenusWithName(siblingsNames.get(i)).getInitialLabel()};
             }
-            widget.setSiblings(hasComboPopup && Block.getBlock(blockID).hasSiblings(), siblings);
+            widget.setSiblings(hasComboPopup && workspace.getEnv().getBlock(blockID).hasSiblings(), siblings);
         }
 
         widget.addMouseListenerToLabel(this);
@@ -234,26 +233,26 @@ public class BlockLabel implements MouseListener, MouseMotionListener, KeyListen
 
     protected void textChanged(String text) {
         if ((this.labelType.equals(BlockLabel.Type.NAME_LABEL) || this.labelType.equals(BlockLabel.Type.PORT_LABEL))
-                && Block.getBlock(blockID).isLabelEditable()) {
+                && workspace.getEnv().getBlock(blockID).isLabelEditable()) {
             if (this.labelType.equals(BlockLabel.Type.NAME_LABEL)) {
-                Block.getBlock(blockID).setBlockLabel(text);
+            	workspace.getEnv().getBlock(blockID).setBlockLabel(text);
             }
-            BlockConnector plug = Block.getBlock(blockID).getPlug();
+            BlockConnector plug = workspace.getEnv().getBlock(blockID).getPlug();
             // Check if we're connected to a block. If we are and the the block we're connected to
             // has stubs, update them.
             if (plug != null && plug.getBlockID() != Block.NULL) {
-                if (Block.getBlock(plug.getBlockID()) != null) {
-                    if (Block.getBlock(plug.getBlockID()).isProcedureDeclBlock()
-                            && Block.getBlock(plug.getBlockID()).hasStubs()) {
+                if (workspace.getEnv().getBlock(plug.getBlockID()) != null) {
+                    if (workspace.getEnv().getBlock(plug.getBlockID()).isProcedureDeclBlock()
+                            && workspace.getEnv().getBlock(plug.getBlockID()).hasStubs()) {
                         // Blocks already store their socket names when saved so it is not necessary
                         // nor desired to call the connectors changed event again.
-                        if (RenderableBlock.getRenderableBlock(plug.getBlockID()).isLoading()) {
-                            BlockStub.parentConnectorsChanged(plug.getBlockID());
+                        if (workspace.getEnv().getRenderableBlock(plug.getBlockID()).isLoading()) {
+                            BlockStub.parentConnectorsChanged(workspace, plug.getBlockID());
                         }
                     }
                 }
             }
-            RenderableBlock rb = RenderableBlock.getRenderableBlock(blockID);
+            RenderableBlock rb = workspace.getEnv().getRenderableBlock(blockID);
             if (rb != null) {
                 workspace.notifyListeners(new WorkspaceEvent(workspace, rb.getParentWidget(), blockID, WorkspaceEvent.BLOCK_RENAMED));
             }
@@ -262,83 +261,84 @@ public class BlockLabel implements MouseListener, MouseMotionListener, KeyListen
 
     protected void genusChanged(String genus) {
         if (widget.hasSiblings()) {
-            Block oldBlock = Block.getBlock(blockID);
+            Block oldBlock = workspace.getEnv().getBlock(blockID);
             oldBlock.changeGenusTo(genus);
-            RenderableBlock rb = RenderableBlock.getRenderableBlock(blockID);
+            RenderableBlock rb = workspace.getEnv().getRenderableBlock(blockID);
             rb.repaintBlock();
             workspace.notifyListeners(new WorkspaceEvent(workspace, rb.getParentWidget(), blockID, WorkspaceEvent.BLOCK_GENUS_CHANGED));
         }
     }
 
     protected void dimensionsChanged(Dimension value) {
-        if (RenderableBlock.getRenderableBlock(blockID) != null) {
-            RenderableBlock.getRenderableBlock(blockID).repaintBlock();
+        if (workspace.getEnv().getRenderableBlock(blockID) != null) {
+        	workspace.getEnv().getRenderableBlock(blockID).repaintBlock();
         }
     }
 
     protected boolean textValid(String text) {
         return !text.equals("")
-                && BlockUtilities.isLabelValid(blockID, text);
+                && BlockUtilities.isLabelValid(workspace, blockID, text);
     }
 
-    public void mouseClicked(MouseEvent e) {
+	public void mouseClicked(MouseEvent e) {
         if (!((e.getClickCount() == 1) && widget.isEditable())) {
-            RenderableBlock.getRenderableBlock(blockID).processMouseEvent(SwingUtilities.convertMouseEvent(widget, e, widget.getParent()));
+        	workspace.getEnv().getRenderableBlock(blockID).processMouseEvent(SwingUtilities.convertMouseEvent(widget, e, widget.getParent()));
         }
     }
-
-    public void mousePressed(MouseEvent e) {
+	public void mousePressed(MouseEvent e) {
         if (widget.getParent() != null && widget.getParent() instanceof MouseListener) {
-            RenderableBlock.getRenderableBlock(blockID).processMouseEvent(SwingUtilities.convertMouseEvent(widget, e, widget.getParent()));
+        	workspace.getEnv().getRenderableBlock(blockID).processMouseEvent(SwingUtilities.convertMouseEvent(widget, e, widget.getParent()));
         }
     }
 
-    public void mouseReleased(MouseEvent e) {
+	public void mouseReleased(MouseEvent e) {
         if (widget.getParent() != null && widget.getParent() instanceof MouseListener) {
-            RenderableBlock.getRenderableBlock(blockID).processMouseEvent(SwingUtilities.convertMouseEvent(widget, e, widget.getParent()));
+        	workspace.getEnv().getRenderableBlock(blockID).processMouseEvent(SwingUtilities.convertMouseEvent(widget, e, widget.getParent()));
         }
     }
 
-    public void mouseEntered(MouseEvent e) {
+	public void mouseEntered(MouseEvent e) {
         if (widget.getParent() != null && widget.getParent() instanceof MouseListener) {
-            RenderableBlock.getRenderableBlock(blockID).processMouseEvent(SwingUtilities.convertMouseEvent(widget, e, widget.getParent()));
+        	workspace.getEnv().getRenderableBlock(blockID)
+            .processMouseEvent(SwingUtilities.convertMouseEvent(widget, e,
+            		widget.getParent()));
         }
     }
 
-    public void mouseExited(MouseEvent e) {
+	public void mouseExited(MouseEvent e) {
         if (widget.getParent() != null && widget.getParent() instanceof MouseListener) {
-            RenderableBlock.getRenderableBlock(blockID).processMouseEvent(SwingUtilities.convertMouseEvent(widget, e, widget.getParent()));
+        	workspace.getEnv().getRenderableBlock(blockID).processMouseEvent(SwingUtilities.convertMouseEvent(widget, e, widget.getParent()));
         }
     }
 
-    public void mouseDragged(MouseEvent e) {
+	public void mouseDragged(MouseEvent e) {
         if (widget.getParent() != null && widget.getParent() instanceof MouseMotionListener) {
             ((MouseMotionListener) widget.getParent()).mouseDragged(SwingUtilities.convertMouseEvent(widget, e, widget.getParent()));
         }
     }
 
-    public void mouseMoved(MouseEvent e) {
+	public void mouseMoved(MouseEvent e) {
     }
 
-    public void keyPressed(KeyEvent e) {
+	public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_ESCAPE:
-                RenderableBlock.getRenderableBlock(blockID).requestFocus();
+            	workspace.getEnv().getRenderableBlock(blockID).requestFocus();
                 return;
             case KeyEvent.VK_ENTER:
-                RenderableBlock.getRenderableBlock(blockID).requestFocus();
+            	workspace.getEnv().getRenderableBlock(blockID).requestFocus();
                 return;
             case KeyEvent.VK_TAB:
-                RenderableBlock.getRenderableBlock(blockID).processKeyPressed(e);
+            	workspace.getEnv().getRenderableBlock(blockID).processKeyPressed(e);
                 return;
         }
-        if (Block.getBlock(this.blockID).getGenusName().equals("number")) {
+        if (workspace.getEnv().getBlock(this.blockID).getGenusName().equals("number")) {
             if (e.getKeyChar() == '-' && widget.canProcessNegativeSign()) {
                 return;
             }
             for (char c : validOperators) {
                 if (e.getKeyChar() == c) {
-                    RenderableBlock.getRenderableBlock(blockID).processKeyPressed(e);
+                	workspace.getEnv().getRenderableBlock(blockID).processKeyPressed(e);
                     return;
                 }
             }

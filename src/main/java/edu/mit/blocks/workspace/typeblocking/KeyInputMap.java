@@ -120,10 +120,10 @@ public class KeyInputMap {
 //=====================================================================
         switch (key.getKeyCode()) {
             case KeyEvent.VK_DELETE:
-                TypeBlockManager.automateBlockDeletion(workspace);
+            workspace.getTypeBlockManager().automateBlockDeletion(workspace);
                 return;
             case KeyEvent.VK_BACK_SPACE:
-                TypeBlockManager.automateBlockDeletion(workspace);
+            workspace.getTypeBlockManager().automateBlockDeletion(workspace);
                 return;
             case KeyEvent.VK_DOWN:
                 TypeBlockManager.automateFocusTraversal(workspace, Direction.DOWN);
@@ -162,21 +162,21 @@ public class KeyInputMap {
         if (KeyInputMap.DEFAULT_ENABLED) {
             //for the special negative sign
             if (key.getKeyChar() == '-') {
-                TypeBlockManager.automateNegationInsertion(workspace);
+            workspace.getTypeBlockManager().automateNegationInsertion(workspace);
                 return;
             }
             if (key.getKeyChar() == 'x' || key.getKeyChar() == 'X') {
-                TypeBlockManager.automateMultiplication(workspace, key.getKeyChar());
+            workspace.getTypeBlockManager().automateMultiplication(workspace, key.getKeyChar());
                 return;
             }
             if (key.getKeyChar() == '+') {
-                TypeBlockManager.automateAddition(workspace, key.getKeyChar());
+            workspace.getTypeBlockManager().automateAddition(workspace, key.getKeyChar());
                 return;
             }
             //For all other special default input mappings
             for (Character keyChar : KeyInputMap.defaultInputMap.keySet()) {
                 if (keyChar.equals(key.getKeyChar())) {
-                    TypeBlockManager.automateBlockInsertion(
+                workspace.getTypeBlockManager().automateBlockInsertion(
                             workspace,
                             KeyInputMap.defaultInputMap.get(keyChar)[0],
                             KeyInputMap.defaultInputMap.get(keyChar)[1]);
@@ -190,7 +190,7 @@ public class KeyInputMap {
 //=====================================================================
         for (Character keyChar : KeyInputMap.customInputMap.keySet()) {
             if (keyChar.equals(key.getKeyChar())) {
-                TypeBlockManager.automateBlockInsertion(
+            workspace.getTypeBlockManager().automateBlockInsertion(
                         workspace,
                         KeyInputMap.customInputMap.get(keyChar)[0],
                         KeyInputMap.customInputMap.get(keyChar)[1]);
@@ -202,10 +202,10 @@ public class KeyInputMap {
 //======Process AlphaNumeric Key Inputs
 //=====================================================================
         if (Character.isLetterOrDigit(key.getKeyChar())) {
-            TypeBlockManager.automateAutoComplete(workspace, key.getKeyChar());
+        workspace.getTypeBlockManager().automateAutoComplete(workspace, key.getKeyChar());
         } // takes care of the +, -, = ... when not set to automated block placements
         else {
-            TypeBlockManager.automateAutoComplete(workspace, key.getKeyChar());
+        workspace.getTypeBlockManager().automateAutoComplete(workspace, key.getKeyChar());
         }
     }
 }

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -18,9 +19,9 @@ import org.w3c.dom.NodeList;
 import edu.mit.blocks.codeblocks.BlockConnector.PositionType;
 import edu.mit.blocks.renderable.BlockImageIcon;
 import edu.mit.blocks.renderable.BlockImageIcon.ImageLocation;
-import edu.mit.blocks.renderable.RenderableBlock;
 import edu.mit.blocks.workspace.ISupportMemento;
 import edu.mit.blocks.workspace.Workspace;
+import edu.mit.blocks.workspace.WorkspaceEnvironment;
 
 /**
  * Block holds the mutable prop (data) of a particular block.  These mutable 
@@ -34,10 +35,14 @@ public class Block implements ISupportMemento {
     /** The ID that is to be assigned to the next new block */
     private static long NEXT_ID = 1;
 
+	// all used IDs are stored in this HashSet - replaces the keySet of ALL_BLOCKS (deprecated) for IDs management aspects
+    private static HashSet<Long> ALL_IDS = new HashSet<Long>();
+
     //Defines a NULL id for a Block
     public static final Long NULL = Long.valueOf(-1);
     
     /** A universal hashmap of all the Block instances*/
+    @Deprecated
     private final static HashMap<Long, Block> ALL_BLOCKS = new HashMap<Long, Block>();
     
     //block identifying information
@@ -79,6 +84,9 @@ public class Block implements ISupportMemento {
 
     protected final Workspace workspace;
     
+    // shortcut field (workspace.getEnv() call provides the same)
+    private final WorkspaceEnvironment env;
+    
     /**
      * Constructs a new Block from the specified information.  This class constructor is 
      * protected as block loading from XML content or the (careful!) creation of its subclasses 
@@ -91,24 +99,30 @@ public class Block implements ISupportMemento {
     protected Block(Workspace workspace, Long id, String genusName, String label, boolean linkToStubs) {
 
         this.workspace = workspace;
-        if (ALL_BLOCKS.containsKey(id)) {
-            Block dup = ALL_BLOCKS.get(id);
-            System.out.println("pre-existing block is: " + dup + " with genus " + dup.getGenusName() + " and label " + dup.getBlockLabel());
-            assert !ALL_BLOCKS.containsKey(id) : "Block id: " + id + " already exists!  BlockGenus " + genusName + " label: " + label;
-        }
-        this.blockID = id;
+        this.env = workspace.getEnv();
+        // these fields have to be set before the call to addBlock()
+		this.blockID = id;
+        this.genusName = genusName;
+        this.label = label;
 
-        //if this assigned id value equals the next id to automatically assign 
+        //add to ALL_BLOCKS
+        //warning: publishing this block before constructor finishes has the
+        //potential to cause some problems such as data races
+        //other threads could access this block from getBlock()
+        workspace.getEnv().addBlock(this);
+
+        //if this assigned id value equals the next id to automatically assign
         // a new block, increment the next id value by 1
         if (id.longValue() == NEXT_ID) {
             NEXT_ID++;
         }
+        ALL_IDS.add(id);
 
         sockets = new ArrayList<BlockConnector>();
         argumentDescriptions = new ArrayList<String>();
         //copy connectors from BlockGenus
 
-        final BlockGenus genus = BlockGenus.getGenusWithName(genusName);
+        final BlockGenus genus = env.getGenusWithName(genusName);
         if (genus == null) {
             throw new RuntimeException("genusName: " + genusName + " does not exist.");
         }
@@ -130,9 +144,7 @@ public class Block implements ISupportMemento {
             after = new BlockConnector(genus.getInitAfter());
         }
 
-        this.genusName = genusName;
 
-        this.label = label;
 
         for (final String arg : genus.getInitialArgumentDescriptions()) {
             argumentDescriptions.add(arg.trim());
@@ -140,16 +152,11 @@ public class Block implements ISupportMemento {
 
         this.expandGroups = new ArrayList<List<BlockConnector>>(genus.getExpandGroups());
 
-        //add to ALL_BLOCKS
-        //warning: publishing this block before constructor finishes has the
-        //potential to cause some problems such as data races
-        //other threads could access this block from getBlock()
-        ALL_BLOCKS.put(this.blockID, this);
 
         //add itself to stubs hashmap
         //however factory blocks will have entries in hashmap...
         if (linkToStubs && this.hasStubs()) {
-            BlockStub.putNewParentInStubMap(this.blockID);
+            BlockStub.putNewParentInStubMap(workspace, this.blockID);
         }
     }
     
@@ -170,7 +177,7 @@ public class Block implements ISupportMemento {
 
         NEXT_ID++;
 
-        while (ALL_BLOCKS.containsKey(NEXT_ID)) {
+        while (ALL_IDS.contains(NEXT_ID)) {
             NEXT_ID++;
         }
     }
@@ -189,7 +196,7 @@ public class Block implements ISupportMemento {
 
         NEXT_ID++;
 
-        while (ALL_BLOCKS.containsKey(NEXT_ID)) {
+        while (ALL_IDS.contains(NEXT_ID)) {
             NEXT_ID++;
         }
     }
@@ -202,7 +209,7 @@ public class Block implements ISupportMemento {
      * @param genusName the name of its associated <code>BlockGenus</code> 
      */
     public Block(Workspace workspace, String genusName) {
-        this(workspace, genusName, BlockGenus.getGenusWithName(genusName).getInitialLabel());
+        this(workspace, genusName, workspace.getEnv().getGenusWithName(genusName).getInitialLabel());
     }
     
     /**
@@ -216,21 +223,27 @@ public class Block implements ISupportMemento {
      * linked to stubs
      */
     public Block(Workspace workspace, String genusName, boolean linkToStubs) {
-        this(workspace, genusName, BlockGenus.getGenusWithName(genusName).getInitialLabel(), linkToStubs);
+        this(workspace, genusName, workspace.getEnv().getGenusWithName(genusName).getInitialLabel(), linkToStubs);
     }
     
     /**
      * Returns the Block instance with the specified blockID
      * @param blockID
      * @return the Block instance with the specified blockID
+	 *
+	 * @deprecated: use workspace.getEnv().<same method name> instead
      */
+    @Deprecated
     public static Block getBlock(Long blockID) {
         return ALL_BLOCKS.get(blockID);
     }
     
     /**
      * Clears all block instances and resets id assigment.
+	 *
+	 * @deprecated: use workspace.getEnv().<same method name> instead
      */
+    @Deprecated
     public static void reset() {
         ALL_BLOCKS.clear();
         NEXT_ID = 1;
@@ -301,7 +314,7 @@ public class Block implements ISupportMemento {
      */
     public void setBlockLabel(String newLabel) {
         if (this.linkToStubs && this.hasStubs()) {
-            BlockStub.parentNameChanged(this.label, newLabel, this.blockID);
+            BlockStub.parentNameChanged(workspace, this.label, newLabel, this.blockID);
         }
         label = newLabel;
     }
@@ -313,7 +326,7 @@ public class Block implements ISupportMemento {
     public void setPageLabel(String newPageLabel) {
         //update stubs
         if (this.linkToStubs && this.hasStubs()) {
-            BlockStub.parentPageLabelChanged(newPageLabel, this.blockID);
+            BlockStub.parentPageLabelChanged(workspace, newPageLabel, this.blockID);
         }
         pageLabel = newPageLabel;
     }
@@ -323,7 +336,7 @@ public class Block implements ISupportMemento {
      * @return the BlockGenus of this
      */
     private BlockGenus getGenus() {
-        return BlockGenus.getGenusWithName(genusName);
+        return env.getGenusWithName(genusName);
     }
     
     /**
@@ -333,7 +346,7 @@ public class Block implements ISupportMemento {
      */
     public void changeGenusTo(String genusName) {
         this.genusName = genusName;
-        label = BlockGenus.getGenusWithName(genusName).getInitialLabel();
+        label = env.getGenusWithName(genusName).getInitialLabel();
     }
     
     ////////////////////////////////
@@ -531,7 +544,7 @@ public class Block implements ISupportMemento {
         //NOTE: must update the sockets of this before updating its stubs as stubs use this as a reference to update its own sockets
         //if block has stubs, update its stubs as well
         if (hasStubs()) {
-            BlockStub.parentConnectorsChanged(blockID);
+            BlockStub.parentConnectorsChanged(workspace, getBlockID());
         }
     }
     
@@ -551,7 +564,7 @@ public class Block implements ISupportMemento {
         //NOTE: must update the sockets of this before updating its stubs as stubs use this as a reference to update its own sockets
         //if block has stubs, update its stubs as well
         if (hasStubs()) {
-            BlockStub.parentConnectorsChanged(blockID);
+            BlockStub.parentConnectorsChanged(workspace, blockID);
         }
     }
  
@@ -658,10 +671,10 @@ public class Block implements ISupportMemento {
     public void removeSocket(BlockConnector socket) {
         //disconnect any blocks connected to socket
         if (socket.getBlockID() != Block.NULL) {
-            Block connectedBlock = Block.getBlock(socket.getBlockID());
+            Block connectedBlock = workspace.getEnv().getBlock(socket.getBlockID());
             connectedBlock.getConnectorTo(this.blockID).setConnectorBlockID(Block.NULL);
             socket.setConnectorBlockID(Block.NULL);
-            RenderableBlock.getRenderableBlock(blockID).blockDisconnected(socket);
+            workspace.getEnv().getRenderableBlock(blockID).blockDisconnected(socket);
         }
         sockets.remove(socket);
     }
@@ -870,7 +883,10 @@ public class Block implements ISupportMemento {
                 defargIDs.add(id);
                 //if id not null, then connect def arg's plug to this block
                 if (id != Block.NULL) {
-                    Block.getBlock(id).getPlug().setConnectorBlockID(this.blockID);
+                	workspace.getEnv()
+                	.getBlock(id)
+                	.getPlug()
+                	.setConnectorBlockID(this.blockID);
                 }
             }
             return defargIDs;
@@ -909,7 +925,7 @@ public class Block implements ISupportMemento {
      * view of an event/change to the block data from the ui side
      */
     public void notifyRenderable() {
-        RenderableBlock.getRenderableBlock(blockID).repaintBlock();
+    	workspace.getEnv().getRenderableBlock(blockID).repaintBlock();
     }
     
     ////////////////////////////////////////
@@ -1529,7 +1545,7 @@ public class Block implements ISupportMemento {
             //create block or block stub instance
             if (!isStubBlock) {
                 if (label == null) {
-                    block = new Block(workspace, id, genusName, BlockGenus.getGenusWithName(genusName).getInitialLabel(), true);
+                    block = new Block(workspace, id, genusName, workspace.getEnv().getGenusWithName(genusName).getInitialLabel(), true);
                 } else {
                     block = new Block(workspace, id, genusName, label, true);
                 }
@@ -1590,6 +1606,7 @@ public class Block implements ISupportMemento {
     
     //Temp code so compiler can see all blocks
     //TODO remove when a more appropriate method exists for the workspace
+	@Deprecated
     public static Iterable<Block> getAllBlocks() {
         return ALL_BLOCKS.values();
     }
