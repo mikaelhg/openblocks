@@ -30,20 +30,6 @@ import edu.mit.blocks.workspace.WorkspaceEvent;
  */
 public class BlockStub extends Block {
 
-    /** STUB HASH MAPS
-     * key: parentName + parentGenus 
-     * 
-     * Key includes both parentName and parentGenus because the names of two parents
-     * may be the same if they are of different genii
-     * blockids of parents are not used as a reference because parents and stubs are
-     * connected by the parentName+parentGenus information not the blockID.  This 
-     * connection is more apparent when the parent Block is removed/deleted.  The stubs 
-     * become dangling references. These stubs are resolved when a new parent block is 
-     * created with the previous parent's name.  
-     * */
-    private static HashMap<String, Long> parentNameToParentBlock = new HashMap<String, Long>();
-    private static HashMap<String, ArrayList<Long>> parentNameToBlockStubs = new HashMap<String, ArrayList<Long>>();
-
     /**
      * Temporary mapping for parent type (caller plugs). 
      * TODO remove once BlockUtilities cloneBlock() is finished
@@ -88,7 +74,7 @@ public class BlockStub extends Block {
         this.stubGenus = stubGenus;
 
         //initial parent of this
-        Block parent = Block.getBlock(initParentID);
+        Block parent = workspace.getEnv().getBlock(initParentID);
         //has parent block label
         this.setBlockLabel(parent.getBlockLabel());
         //initialize stub properties based on stubGenus such as sockets, plugs, and labels
@@ -122,7 +108,7 @@ public class BlockStub extends Block {
                     BlockConnector socket = sockets.next();
                     //socket labels should correspond with the socket blocks of parent
                     if (socket.getBlockID() != Block.NULL) {
-                        addSocket(socket.getKind(), BlockConnector.PositionType.SINGLE, Block.getBlock(socket.getBlockID()).getBlockLabel(), false, false, Block.NULL);
+                        addSocket(socket.getKind(), BlockConnector.PositionType.SINGLE, workspace.getEnv().getBlock(socket.getBlockID()).getBlockLabel(), false, false, Block.NULL);
                     }
                 }
             }
@@ -162,7 +148,7 @@ public class BlockStub extends Block {
         //parent should have existed in hashmap before this stub was created
         //(look at main Block constructor)
         //thus no problem should occur with following line
-        parentNameToBlockStubs.get(parentName + parentGenus).add(this.getBlockID());
+        workspace.getEnv().getBlockStubs(parentName + parentGenus).add(this.getBlockID());
 
     }
 
@@ -188,29 +174,30 @@ public class BlockStub extends Block {
 
         //there's a chance that the parent for this has not been added to parentNameToBlockStubs mapping
         String key = parentName + parentGenus;
-        if (parentNameToBlockStubs.containsKey(key)) {
-            parentNameToBlockStubs.get(parentName + parentGenus).add(this.getBlockID());
+        if (workspace.getEnv().containsBlockStubs(key)) {
+            workspace.getEnv().getBlockStubs(parentName + parentGenus).add(this.getBlockID());
         } else {
             ArrayList<Long> stubs = new ArrayList<Long>();
             stubs.add(this.getBlockID());
-            parentNameToBlockStubs.put(key, stubs);
+            workspace.getEnv().putBlockStubs(key, stubs);
         }
     }
 
     /**
      * Clears all the mappings between parents and stubs.
      */
+    @Deprecated
     public static void reset() {
-        parentNameToBlockStubs.clear();
-        parentNameToParentBlock.clear();
+        //parentNameToBlockStubs.clear();
+        //parentNameToParentBlock.clear();
     }
 
     /**
      * Returns a list of the block ids of the specified parent's stubs
      * @param blockID
      */
-    public static Iterable<Long> getStubsOfParent(Long blockID) {
-        ArrayList<Long> stubs = parentNameToBlockStubs.get(Block.getBlock(blockID).getBlockLabel() + Block.getBlock(blockID).getGenusName());
+    public static Iterable<Long> getStubsOfParent(Workspace workspace, Block block) {
+        ArrayList<Long> stubs = workspace.getEnv().getBlockStubs(block.getBlockLabel() + block.getGenusName());
         if (stubs != null) {
             return stubs;
         } else {
@@ -222,19 +209,19 @@ public class BlockStub extends Block {
      * Saves the parent block information with the specified blockID in the Stub Map
      * @param blockID
      */
-    public static void putNewParentInStubMap(Long blockID) {
-        String key = Block.getBlock(blockID).getBlockLabel() + Block.getBlock(blockID).getGenusName();
-        parentNameToParentBlock.put(key, blockID);
+    public static void putNewParentInStubMap(Workspace workspace, Long blockID) {
+        String key = workspace.getEnv().getBlock(blockID).getBlockLabel() + workspace.getEnv().getBlock(blockID).getGenusName();
+        workspace.getEnv().putParentBlock(key, blockID);
 
-        if (parentNameToBlockStubs.get(key) == null) {
-            parentNameToBlockStubs.put(key, new ArrayList<Long>());
+        if (workspace.getEnv().getBlockStubs(key) == null) {
+            workspace.getEnv().putBlockStubs(key, new ArrayList<Long>());
         }
 
         //notify dangling stubs and update their renderables
         //dangling stubs will be waiting to have a parent assigned to them
         //and reflect that graphically
-        for (Long stubID : parentNameToBlockStubs.get(key)) {
-            BlockStub stub = (BlockStub) Block.getBlock(stubID);
+        for (Long stubID : workspace.getEnv().getBlockStubs(key)) {
+            BlockStub stub = (BlockStub) workspace.getEnv().getBlock(stubID);
             stub.notifyRenderable();
         }
 
@@ -246,19 +233,19 @@ public class BlockStub extends Block {
      * @param newParentName
      * @param parentID
      */
-    public static void parentNameChanged(String oldParentName, String newParentName, Long parentID) {
-        String oldKey = oldParentName + Block.getBlock(parentID).getGenusName();
-        String newKey = newParentName + Block.getBlock(parentID).getGenusName();
+    public static void parentNameChanged(Workspace workspace, String oldParentName, String newParentName, Long parentID) {
+        String oldKey = oldParentName + workspace.getEnv().getBlock(parentID).getGenusName();
+        String newKey = newParentName + workspace.getEnv().getBlock(parentID).getGenusName();
 
-        //only update if parents name really did "change" meaning the new parent name is 
+        //only update if parents name really did "change" meaning the new parent name is
         //different from the old parent name
         if (!oldKey.equals(newKey)) {
-            parentNameToParentBlock.put(newKey, parentID);
+            workspace.getEnv().putParentBlock(newKey, parentID);
 
-            //update the parent name of each stub 
-            ArrayList<Long> stubs = parentNameToBlockStubs.get(oldKey);
+            //update the parent name of each stub
+            ArrayList<Long> stubs = workspace.getEnv().getBlockStubs(oldKey);
             for (Long stub : stubs) {
-                BlockStub blockStub = ((BlockStub) Block.getBlock(stub));
+                BlockStub blockStub = ((BlockStub) workspace.getEnv().getBlock(stub));
                 blockStub.parentName = newParentName;
                 //update block label of each
                 blockStub.setBlockLabel(newParentName);
@@ -266,16 +253,16 @@ public class BlockStub extends Block {
             }
 
             //check if any stubs already exist for new key
-            ArrayList<Long> existingStubs = parentNameToBlockStubs.get(newKey);
+            ArrayList<Long> existingStubs = workspace.getEnv().getBlockStubs(newKey);
             if (existingStubs != null) {
                 stubs.addAll(existingStubs);
             }
 
-            parentNameToBlockStubs.put(newKey, stubs);
+            workspace.getEnv().putBlockStubs(newKey, stubs);
 
             //remove old parent name from hash maps
-            parentNameToParentBlock.remove(oldKey);
-            parentNameToBlockStubs.remove(oldKey);
+            workspace.getEnv().removeParentBlock(oldKey);
+            workspace.getEnv().removeBlockStubs(oldKey);
         }
     }
 
@@ -284,13 +271,13 @@ public class BlockStub extends Block {
      * @param newPageLabel
      * @param parentID
      */
-    public static void parentPageLabelChanged(String newPageLabel, Long parentID) {
-        String key = Block.getBlock(parentID).getBlockLabel() + Block.getBlock(parentID).getGenusName();
+    public static void parentPageLabelChanged(Workspace workspace, String newPageLabel, Long parentID) {
+        String key = workspace.getEnv().getBlock(parentID).getBlockLabel() + workspace.getEnv().getBlock(parentID).getGenusName();
 
-        //update each stub 
-        ArrayList<Long> stubs = parentNameToBlockStubs.get(key);
+        //update each stub
+        ArrayList<Long> stubs = workspace.getEnv().getBlockStubs(key);
         for (Long stub : stubs) {
-            BlockStub blockStub = ((BlockStub) Block.getBlock(stub));
+            BlockStub blockStub = ((BlockStub) workspace.getEnv().getBlock(stub));
             blockStub.setPageLabel(newPageLabel);
             blockStub.notifyRenderable();
         }
@@ -301,14 +288,14 @@ public class BlockStub extends Block {
      * Updates the BlocksStubs associated with the parent of its new page label
      * @param parentID
      */
-    public static void parentConnectorsChanged(Long parentID) {
-        String key = Block.getBlock(parentID).getBlockLabel() + Block.getBlock(parentID).getGenusName();
+    public static void parentConnectorsChanged(Workspace workspace, Long parentID) {
+        String key = workspace.getEnv().getBlock(parentID).getBlockLabel() + workspace.getEnv().getBlock(parentID).getGenusName();
 
         //update each stub only if stub is a caller (as callers are the only type of stubs that 
         //can change its connectors after being created)
-        ArrayList<Long> stubs = parentNameToBlockStubs.get(key);
+        ArrayList<Long> stubs = workspace.getEnv().getBlockStubs(key);
         for (Long stub : stubs) {
-            BlockStub blockStub = ((BlockStub) Block.getBlock(stub));
+            BlockStub blockStub = ((BlockStub) workspace.getEnv().getBlock(stub));
             if (blockStub.stubGenus.startsWith(CALLER_STUB)) {
                 blockStub.updateConnectors();
                 //System.out.println("updated connectors of: "+blockStub);
@@ -321,8 +308,8 @@ public class BlockStub extends Block {
      * Updates the plug on caller stubs associated with the given parent.
      * @param kind the new plug kind that callers should set
      */
-    public static void parentPlugChanged(Long parentID, String kind) {
-        String key = Block.getBlock(parentID).getBlockLabel() + Block.getBlock(parentID).getGenusName();
+    public static void parentPlugChanged(Workspace workspace, Long parentID, String kind) {
+        String key = workspace.getEnv().getBlock(parentID).getBlockLabel() + workspace.getEnv().getBlock(parentID).getGenusName();
 
         // Update our type mapping.
         if (kind == null) {
@@ -331,10 +318,10 @@ public class BlockStub extends Block {
             parentToPlugType.put(key, kind);
         }
 
-        // update each stub only if stub is a caller 
-        ArrayList<Long> stubs = parentNameToBlockStubs.get(key);
+        // update each stub only if stub is a caller
+        ArrayList<Long> stubs = workspace.getEnv().getBlockStubs(key);
         for (Long stub : stubs) {
-            BlockStub blockStub = ((BlockStub) Block.getBlock(stub));
+            BlockStub blockStub = ((BlockStub) workspace.getEnv().getBlock(stub));
             if (blockStub.stubGenus.startsWith(CALLER_STUB)) {
                 if (kind == null) {
                     blockStub.restoreInitConnectors();
@@ -362,10 +349,10 @@ public class BlockStub extends Block {
      */
     public Block getParent() {
         String key = parentName + parentGenus;
-        if (!parentNameToParentBlock.containsKey(key)) {
+        if (!workspace.getEnv().containsParentBlock(key)) {
             return null;
         }
-        return Block.getBlock(parentNameToParentBlock.get(key));
+        return workspace.getEnv().getBlock(workspace.getEnv().getParentBlockID(key));
     }
 
     /**
@@ -421,11 +408,11 @@ public class BlockStub extends Block {
                     if (i > this.getNumSockets() - 1) {
                         //socket labels should correspond with the socket blocks of parent
                         if (parentSocket.getBlockID() != Block.NULL) {
-                            addSocket(parentSocket.getKind(), BlockConnector.PositionType.SINGLE, Block.getBlock(parentSocket.getBlockID()).getBlockLabel(), false, false, Block.NULL);
+                            addSocket(parentSocket.getKind(), BlockConnector.PositionType.SINGLE, workspace.getEnv().getBlock(parentSocket.getBlockID()).getBlockLabel(), false, false, Block.NULL);
                         }
                     } else {
                         BlockConnector con = getSocketAt(i);
-                        this.setSocketAt(i, parentSocket.getKind(), con.getPositionType(), Block.getBlock(parentSocket.getBlockID()).getBlockLabel(), con.isLabelEditable(),
+                        this.setSocketAt(i, parentSocket.getKind(), con.getPositionType(), workspace.getEnv().getBlock(parentSocket.getBlockID()).getBlockLabel(), con.isLabelEditable(),
                                 con.isExpandable(), con.getBlockID());
                     }
                 }
@@ -450,7 +437,7 @@ public class BlockStub extends Block {
         // Always synchronize! We can't have both a plug and a before.
         removePlug();
         resetBeforeAndAfter();
-        RenderableBlock.getRenderableBlock(getBlockID()).updateConnectors();
+        workspace.getEnv().getRenderableBlock(getBlockID()).updateConnectors();
         notifyRenderable();
     }
 
@@ -485,7 +472,7 @@ public class BlockStub extends Block {
         // Always synchronize! We can't have both a plug and a before.
         removeBeforeAndAfter();
         setPlug(kind, PositionType.SINGLE, kind, false, Block.NULL);
-        RenderableBlock.getRenderableBlock(getBlockID()).updateConnectors();
+        workspace.getEnv().getRenderableBlock(getBlockID()).updateConnectors();
         notifyRenderable();
     }
 
@@ -493,11 +480,11 @@ public class BlockStub extends Block {
      * Disconnect the given block from us. Must have a valid id.
      */
     private void disconnectBlock(Long id) {
-        Block b2 = Block.getBlock(id);
+        Block b2 = workspace.getEnv().getBlock(id);
         BlockConnector conn2 = b2.getConnectorTo(getBlockID());
         BlockConnector conn = getConnectorTo(id);
         BlockLink link = BlockLink.getBlockLink(workspace, this, b2, conn, conn2);
-        RenderableBlock rb = RenderableBlock.getRenderableBlock(link.getSocketBlockID());
+        RenderableBlock rb = workspace.getEnv().getRenderableBlock(link.getSocketBlockID());
         link.disconnect();
         rb.blockDisconnected(link.getSocket());
         workspace.notifyListeners(

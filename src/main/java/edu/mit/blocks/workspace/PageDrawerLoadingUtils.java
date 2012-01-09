@@ -13,7 +13,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.mit.blocks.codeblocks.Block;
-import edu.mit.blocks.codeblocks.BlockGenus;
 import edu.mit.blocks.renderable.FactoryRenderableBlock;
 import edu.mit.blocks.renderable.RenderableBlock;
 
@@ -148,7 +147,7 @@ public class PageDrawerLoadingUtils {
                                     Node genusMember = genusMembers.item(j);
                                     if (genusMember.getNodeName().equals("BlockGenusMember")) {
                                         genusName = genusMember.getTextContent();
-                                        assert BlockGenus.getGenusWithName(genusName) != null : "Unknown BlockGenus: " + genusName;
+                                        assert workspace.getEnv().getGenusWithName(genusName) != null : "Unknown BlockGenus: " + genusName;
                                         Block block = new Block(workspace, genusName);
                                         drawerBlocks.add(new FactoryRenderableBlock(workspace, manager, block.getBlockID()));
                                     }
@@ -245,7 +244,7 @@ public class PageDrawerLoadingUtils {
                             blockNode = drawerBlocks.item(k);
                             if (blockNode.getNodeName().equals("BlockGenusMember")) {
                                 String genusName = blockNode.getTextContent();
-                                assert BlockGenus.getGenusWithName(genusName) != null : "Unknown BlockGenus: " + genusName;
+                                assert workspace.getEnv().getGenusWithName(genusName) != null : "Unknown BlockGenus: " + genusName;
                                 Block newBlock;
                                 //don't link factory blocks to their stubs because they will
                                 //forever remain inside the drawer and never be active

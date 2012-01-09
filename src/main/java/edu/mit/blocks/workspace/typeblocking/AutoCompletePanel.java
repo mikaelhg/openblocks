@@ -242,19 +242,19 @@ public class AutoCompletePanel extends JPanel implements MouseListener, MouseMot
             try {
                 //if integer, then pass in the number typed by the user
                 Float.valueOf(obj.toString());
-                TypeBlockManager.automateBlockInsertion(workspace, (TextualFactoryBlock) obj, obj.toString());
+                workspace.getTypeBlockManager().automateBlockInsertion(workspace, (TextualFactoryBlock) obj, obj.toString());
             } catch (NumberFormatException e) {
                 // if "+" then pass the two labels in
                 if (obj.toString().equals(TypeBlockManager.NUMBER_PLUS_OPERATION_LABEL)
                         || obj.toString().equals(TypeBlockManager.TEXT_PLUS_OPERATION_LABEL)) {
-                    TypeBlockManager.automateBlockInsertion(workspace, (TextualFactoryBlock) obj, obj.toString());
+                workspace.getTypeBlockManager().automateBlockInsertion(workspace, (TextualFactoryBlock) obj, obj.toString());
                     // if starts with quote (is a string block)
                 } else if (obj.toString().startsWith(TypeBlockManager.QUOTE_LABEL)) {
                     String[] quote = obj.toString().split(TypeBlockManager.QUOTE_LABEL);
-                    TypeBlockManager.automateBlockInsertion(workspace, (TextualFactoryBlock) obj, quote[1]);
+                    workspace.getTypeBlockManager().automateBlockInsertion(workspace, (TextualFactoryBlock) obj, quote[1]);
                     // otherwise, don't pass a label in
                 } else {
-                    TypeBlockManager.automateBlockInsertion(workspace, (TextualFactoryBlock) obj);
+                workspace.getTypeBlockManager().automateBlockInsertion(workspace, (TextualFactoryBlock) obj);
                 }
             }
         }

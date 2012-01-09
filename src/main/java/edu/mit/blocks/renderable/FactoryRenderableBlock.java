@@ -5,7 +5,6 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.SwingUtilities;
 
-import edu.mit.blocks.codeblocks.Block;
 import edu.mit.blocks.codeblocks.JComponentDragHandler;
 import edu.mit.blocks.workspace.Workspace;
 import edu.mit.blocks.workspace.WorkspaceWidget;
@@ -48,7 +47,7 @@ public class FactoryRenderableBlock extends RenderableBlock {
      * @return a new RenderableBlock instance with a new associated Block instance of the same genus as this.
      */
     public RenderableBlock createNewInstance() {
-        return BlockUtilities.cloneBlock(Block.getBlock(super.getBlockID()));
+        return BlockUtilities.cloneBlock(workspace.getEnv().getBlock(super.getBlockID()));
     }
 
     ///////////////////

@@ -35,11 +35,11 @@ public class CommandRule implements LinkRule, WorkspaceListener {
             BlockLink link = e.getSourceLink();
             if (link.getLastBlockID() != null && link.getLastBlockID() != Block.NULL
                     && BlockConnectorShape.isCommandConnector(link.getPlug()) && BlockConnectorShape.isCommandConnector(link.getSocket())) {
-                Block top = Block.getBlock(link.getPlugBlockID());
+                Block top = workspace.getEnv().getBlock(link.getPlugBlockID());
                 while (top.hasAfterConnector() && top.getAfterConnector().hasBlock()) {
-                    top = Block.getBlock(top.getAfterBlockID());
+                    top = workspace.getEnv().getBlock(top.getAfterBlockID());
                 }
-                Block bottom = Block.getBlock(link.getLastBlockID());
+                Block bottom = workspace.getEnv().getBlock(link.getLastBlockID());
 
                 // For safety: if either the top stack is terminated, or
                 // the bottom stack is not a starter, don't try to force a link

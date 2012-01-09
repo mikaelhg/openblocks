@@ -20,7 +20,7 @@ class NameLabel extends BlockLabel {
     }
 
     void update() {
-        RenderableBlock rb = RenderableBlock.getRenderableBlock(blockID);
+        RenderableBlock rb = workspace.getEnv().getRenderableBlock(blockID);
         if (rb != null) {
             int x = 0;
             int y = 0;

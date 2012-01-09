@@ -111,22 +111,22 @@ public class TypeBlockManager {
         }
     }
 
-    private static boolean isNullBlockInstance(Long blockID) {
+    private boolean isNullBlockInstance(Long blockID) {
         if (blockID == null) {
             return true;
         } else if (blockID.equals(Block.NULL)) {
             return true;
-        } else if (Block.getBlock(blockID) == null) {
+        } else if (workspace.getEnv().getBlock(blockID) == null) {
             return true;
-        } else if (Block.getBlock(blockID).getBlockID() == null) {
+        } else if (workspace.getEnv().getBlock(blockID).getBlockID() == null) {
             return true;
-        } else if (Block.getBlock(blockID).getBlockID().equals(Block.NULL)) {
+        } else if (workspace.getEnv().getBlock(blockID).getBlockID().equals(Block.NULL)) {
             return true;
-        } else if (RenderableBlock.getRenderableBlock(blockID) == null) {
+        } else if (workspace.getEnv().getRenderableBlock(blockID) == null) {
             return true;
-        } else if (RenderableBlock.getRenderableBlock(blockID).getBlockID() == null) {
+        } else if (workspace.getEnv().getRenderableBlock(blockID).getBlockID() == null) {
             return true;
-        } else if (RenderableBlock.getRenderableBlock(blockID).getBlockID().equals(Block.NULL)) {
+        } else if (workspace.getEnv().getRenderableBlock(blockID).getBlockID().equals(Block.NULL)) {
             return true;
         } else {
             return false;
@@ -145,7 +145,7 @@ public class TypeBlockManager {
      * 			 between the block with focus and it's parent
      * 			 block if one exists
      */
-    protected static void automateBlockDeletion(Workspace workspace) {
+    protected void automateBlockDeletion(Workspace workspace) {
         TypeBlockManager typeBlockManager = workspace.getTypeBlockManager();
         if (!typeBlockManager.isEnabled()) {
             System.err.println("AutoMateBlockDeletion invoked but typeBlockManager is disabled.");
@@ -176,8 +176,8 @@ public class TypeBlockManager {
         if (isNullBlockInstance(focusManager.getFocusBlockID())) {
             throw new RuntimeException("TypeBlockManager: deleting a null block references.");
         }
-        Block block = Block.getBlock(focusManager.getFocusBlockID());
-        RenderableBlock renderable = RenderableBlock.getRenderableBlock(block.getBlockID());
+        Block block = workspace.getEnv().getBlock(focusManager.getFocusBlockID());
+        RenderableBlock renderable = workspace.getEnv().getRenderableBlock(block.getBlockID());
 
         //get workspace widget associated with current focus
         WorkspaceWidget widget = renderable.getParentWidget();
@@ -203,33 +203,33 @@ public class TypeBlockManager {
             parentID = block.getPlugBlockID();
             this.disconnectBlock(block, widget);
             if (validConnection(block.getAfterConnector())) {
-                disconnectBlock(Block.getBlock(block.getAfterBlockID()), widget);
+                disconnectBlock(workspace.getEnv().getBlock(block.getAfterBlockID()), widget);
             }
         } else if (validConnection(block.getBeforeConnector())) {
             parentID = block.getBeforeBlockID();
-            BlockConnector parentConnectorToBlock = Block.getBlock(parentID).getConnectorTo(block.getBlockID());
+            BlockConnector parentConnectorToBlock = workspace.getEnv().getBlock(parentID).getConnectorTo(block.getBlockID());
             this.disconnectBlock(block, widget);
             if (validConnection(block.getAfterConnector())) {
                 Long afterBlockID = block.getAfterBlockID();
-                disconnectBlock(Block.getBlock(afterBlockID), widget);
+                disconnectBlock(workspace.getEnv().getBlock(afterBlockID), widget);
                 if (parentID != null) {
                     BlockLink link = BlockLinkChecker.canLink(
                             workspace,
-                            Block.getBlock(parentID),
-                            Block.getBlock(afterBlockID),
+                            workspace.getEnv().getBlock(parentID),
+                            workspace.getEnv().getBlock(afterBlockID),
                             parentConnectorToBlock,
-                            Block.getBlock(afterBlockID).getBeforeConnector());
+                            workspace.getEnv().getBlock(afterBlockID).getBeforeConnector());
                     if (link != null) {
                         link.connect();
                         workspace.notifyListeners(new WorkspaceEvent(
                                 workspace,
-                                RenderableBlock.getRenderableBlock(link.getPlugBlockID()).getParentWidget(),
+                                workspace.getEnv().getRenderableBlock(link.getPlugBlockID()).getParentWidget(),
                                 link, WorkspaceEvent.BLOCKS_CONNECTED));
-                        RenderableBlock.getRenderableBlock(link.getPlugBlockID()).repaintBlock();
-                        RenderableBlock.getRenderableBlock(link.getPlugBlockID()).repaint();
-                        RenderableBlock.getRenderableBlock(link.getPlugBlockID()).moveConnectedBlocks();
-                        RenderableBlock.getRenderableBlock(link.getSocketBlockID()).repaintBlock();
-                        RenderableBlock.getRenderableBlock(link.getSocketBlockID()).repaint();
+                        workspace.getEnv().getRenderableBlock(link.getPlugBlockID()).repaintBlock();
+                        workspace.getEnv().getRenderableBlock(link.getPlugBlockID()).repaint();
+                        workspace.getEnv().getRenderableBlock(link.getPlugBlockID()).moveConnectedBlocks();
+                        workspace.getEnv().getRenderableBlock(link.getSocketBlockID()).repaintBlock();
+                        workspace.getEnv().getRenderableBlock(link.getSocketBlockID()).repaint();
 
                     }
                 }
@@ -264,22 +264,22 @@ public class TypeBlockManager {
         container.repaint();
         renderable.setParentWidget(null);
         //Workspace.getInstance().notifyListeners(new WorkspaceEvent(widget, renderable.getBlockID(), WorkspaceEvent.BLOCK_REMOVED));
-        for (BlockConnector child : Block.getBlock(renderable.getBlockID()).getSockets()) {
+        for (BlockConnector child : workspace.getEnv().getBlock(renderable.getBlockID()).getSockets()) {
             if (child == null || child.getBlockID().equals(Block.NULL)) {
                 continue;
             }
-            RenderableBlock childRenderable = RenderableBlock.getRenderableBlock(child.getBlockID());
+            RenderableBlock childRenderable = workspace.getEnv().getRenderableBlock(child.getBlockID());
             if (childRenderable == null) {
                 continue;
             }
             removeBlock(childRenderable, widget, container);
         }
         // If it is a procedure block, we want to delete the entire stack
-        if (Block.getBlock(renderable.getBlockID()).isProcedureDeclBlock()) {
-            if (Block.getBlock(renderable.getBlockID()).getAfterBlockID() != Block.NULL) {
-                removeAfterBlock(RenderableBlock.getRenderableBlock(Block.getBlock(renderable.getBlockID()).getAfterBlockID()),
+        if (workspace.getEnv().getBlock(renderable.getBlockID()).isProcedureDeclBlock()) {
+            if (workspace.getEnv().getBlock(renderable.getBlockID()).getAfterBlockID() != Block.NULL) {
+                removeAfterBlock(workspace.getEnv().getRenderableBlock(workspace.getEnv().getBlock(renderable.getBlockID()).getAfterBlockID()),
                         widget, container);
-                this.disconnectBlock(Block.getBlock(Block.getBlock(renderable.getBlockID()).getAfterBlockID()), widget);
+                this.disconnectBlock(workspace.getEnv().getBlock(workspace.getEnv().getBlock(renderable.getBlockID()).getAfterBlockID()), widget);
             }
         }
         if (renderable.hasComment()) {
@@ -298,8 +298,8 @@ public class TypeBlockManager {
      *
      */
     private void removeAfterBlock(RenderableBlock afterBlock, WorkspaceWidget widget, Container container) {
-        if (Block.getBlock(afterBlock.getBlockID()).getAfterBlockID() != Block.NULL) {
-            removeAfterBlock(RenderableBlock.getRenderableBlock(Block.getBlock(afterBlock.getBlockID()).getAfterBlockID()),
+        if (workspace.getEnv().getBlock(afterBlock.getBlockID()).getAfterBlockID() != Block.NULL) {
+            removeAfterBlock(workspace.getEnv().getRenderableBlock(workspace.getEnv().getBlock(afterBlock.getBlockID()).getAfterBlockID()),
                     widget, container);
         }
         removeChildrenBlock(afterBlock, widget, container);
@@ -345,11 +345,11 @@ public class TypeBlockManager {
         container.repaint();
         renderable.setParentWidget(null);
         //Workspace.getInstance().notifyListeners(new WorkspaceEvent(widget, renderable.getBlockID(), WorkspaceEvent.BLOCK_REMOVED));
-        for (BlockConnector child : BlockLinkChecker.getSocketEquivalents(Block.getBlock(renderable.getBlockID()))) {
+        for (BlockConnector child : BlockLinkChecker.getSocketEquivalents(workspace.getEnv().getBlock(renderable.getBlockID()))) {
             if (child == null || child.getBlockID().equals(Block.NULL)) {
                 continue;
             }
-            RenderableBlock childRenderable = RenderableBlock.getRenderableBlock(child.getBlockID());
+            RenderableBlock childRenderable = workspace.getEnv().getRenderableBlock(child.getBlockID());
             if (childRenderable == null) {
                 continue;
             }
@@ -380,7 +380,7 @@ public class TypeBlockManager {
         if (childPlug == null || !childPlug.hasBlock() || isNullBlockInstance(childPlug.getBlockID())) {
             return;
         }
-        Block parentBlock = Block.getBlock(childPlug.getBlockID());
+        Block parentBlock = workspace.getEnv().getBlock(childPlug.getBlockID());
         BlockConnector parentSocket = parentBlock.getConnectorTo(childBlock.getBlockID());
         if (parentSocket == null) {
             return;
@@ -393,7 +393,7 @@ public class TypeBlockManager {
 
         link.disconnect();
 
-        RenderableBlock parentRenderable = RenderableBlock.getRenderableBlock(parentBlock.getBlockID());
+        RenderableBlock parentRenderable = workspace.getEnv().getRenderableBlock(parentBlock.getBlockID());
         if (parentRenderable == null) {
             throw new RuntimeException("INCONSISTANCY VIOLATION: "
                     + "parent block was valid, non-null, and existed.\n\tBut yet, when we get it's renderable"
@@ -426,7 +426,7 @@ public class TypeBlockManager {
             return;
         }
         typeBlockManager.bufferedBlock =
-                BlockUtilities.makeNodeWithChildren(typeBlockManager.focusManager.getFocusBlockID());
+                BlockUtilities.makeNodeWithChildren(workspace, typeBlockManager.focusManager.getFocusBlockID());
     }
 
     protected static void automateCopyAll(Workspace workspace) {
@@ -436,11 +436,11 @@ public class TypeBlockManager {
             return;
         }
         typeBlockManager.bufferedBlock =
-                BlockUtilities.makeNodeWithStack(typeBlockManager.focusManager.getFocusBlockID());
+                BlockUtilities.makeNodeWithStack(workspace, typeBlockManager.focusManager.getFocusBlockID());
     }
 
     /**
-     * @param workspace 
+     * @param workspace
      * @requires whatever is requires for AutomatedBlockInsertion
      *
      */
@@ -476,7 +476,7 @@ public class TypeBlockManager {
                     this.focusManager.getCanvasPoint(),
                     widget.getJComponent());
         } else {
-            RenderableBlock focusRenderable = RenderableBlock.getRenderableBlock(focusManager.getFocusBlockID());
+            RenderableBlock focusRenderable = workspace.getEnv().getRenderableBlock(focusManager.getFocusBlockID());
             widget = focusRenderable.getParentWidget();
             spot = focusRenderable.getLocation();
         }
@@ -506,7 +506,7 @@ public class TypeBlockManager {
     /**
      * Traverses the block tree structure to move
      * in the direction of the input argument.
-     * @param workspace 
+     * @param workspace
      * @param dir
      */
     protected static void automateFocusTraversal(Workspace workspace, Direction dir) {
@@ -544,23 +544,23 @@ public class TypeBlockManager {
             } else if (dir == Direction.RIGHT) {
                 focusManager.focusNextBlock();
             } else if (dir == Direction.ESCAPE) {
-                RenderableBlock block = RenderableBlock.getRenderableBlock(
+                RenderableBlock block = workspace.getEnv().getRenderableBlock(
                         focusManager.getFocusBlockID());
                 Point location = SwingUtilities.convertPoint(block, new Point(0, 0), this.blockCanvas.getCanvas());
                 this.focusManager.setFocus(location, Block.NULL);
                 this.blockCanvas.getCanvas().requestFocus();
             } else if (dir == Direction.ENTER) {
-                RenderableBlock.getRenderableBlock(focusManager.getFocusBlockID()).switchToLabelEditingMode(true);
+            	workspace.getEnv().getRenderableBlock(focusManager.getFocusBlockID()).switchToLabelEditingMode(true);
             }
         }
     }
 
     /**
      * Displays an assisting AutoCompletePanel.
-     * @param workspace 
+     * @param workspace
      * @param character
      */
-    protected static void automateAutoComplete(Workspace workspace, char character) {
+    protected void automateAutoComplete(Workspace workspace, char character) {
         TypeBlockManager typeBlockManager = workspace.getTypeBlockManager();
         if (!typeBlockManager.isEnabled()) {
             System.err.println("AutoMateAutoComplete invoked but typeBlockManager is disabled.");
@@ -586,7 +586,7 @@ public class TypeBlockManager {
         } else {
             //renderableblock has focus
             this.blockCanvas.getCanvas().add(autoCompletePanel, JLayeredPane.DRAG_LAYER);
-            RenderableBlock block = RenderableBlock.getRenderableBlock(focusManager.getFocusBlockID());
+            RenderableBlock block = workspace.getEnv().getRenderableBlock(focusManager.getFocusBlockID());
             Point location = SwingUtilities.convertPoint(
                     block,
                     this.focusManager.getBlockPoint(),
@@ -602,7 +602,7 @@ public class TypeBlockManager {
     /**
      * assumes number and differen genus exist and number genus has ediitabel lable
      */
-    protected static void automateNegationInsertion(Workspace workspace) {
+    protected void automateNegationInsertion(Workspace workspace) {
         TypeBlockManager typeBlockManager = workspace.getTypeBlockManager();
         if (!typeBlockManager.isEnabled()) {
             System.err.println("AutoMateNegationInsertion invoked but typeBlockManager is disabled.");
@@ -617,38 +617,38 @@ public class TypeBlockManager {
         Long parentBlockID = typeBlockManager.focusManager.getFocusBlockID();
         if (isNullBlockInstance(parentBlockID)) {
             //focus on canvas
-            TypeBlockManager.automateBlockInsertion(workspace, "number", "-");
+            automateBlockInsertion(workspace, "number", "-");
 
         } else {
-            Block parentBlock = Block.getBlock(parentBlockID);
+            Block parentBlock = workspace.getEnv().getBlock(parentBlockID);
             if (parentBlock.isDataBlock()) {
                 //focus on a data block
-                TypeBlockManager.automateBlockInsertion(workspace, "difference", null);
+                automateBlockInsertion(workspace, "difference", null);
             } else {
                 //focus on a non-data block
-                TypeBlockManager.automateBlockInsertion(workspace, "number", "-");
+                automateBlockInsertion(workspace, "number", "-");
             }
         }
     }
 
-    protected static void automateMultiplication(Workspace workspace, char character) {
+    protected void automateMultiplication(Workspace workspace, char character) {
         TypeBlockManager typeBlockManager = workspace.getTypeBlockManager();
         if (!typeBlockManager.isEnabled()) {
             System.err.println("AutoMateMultiplication invoked but typeBlockManager is disabled.");
             return;
         }
         if (!isNullBlockInstance(typeBlockManager.focusManager.getFocusBlockID())) {
-            Block parentBlock = Block.getBlock(typeBlockManager.focusManager.getFocusBlockID());
+            Block parentBlock = workspace.getEnv().getBlock(typeBlockManager.focusManager.getFocusBlockID());
             if (parentBlock.getGenusName().equals("number")) {
-                TypeBlockManager.automateBlockInsertion(workspace, "product", null);
+                automateBlockInsertion(workspace, "product", null);
                 return;
             }
         }
-        TypeBlockManager.automateAutoComplete(workspace, character);
+        automateAutoComplete(workspace, character);
         return;
     }
 
-    protected static void automateAddition(Workspace workspace, char character) {
+    protected void automateAddition(Workspace workspace, char character) {
         TypeBlockManager typeBlockManager = workspace.getTypeBlockManager();
         if (!typeBlockManager.isEnabled()) {
             System.err.println("AutoMateMultiplication invoked but typeBlockManager is disabled.");
@@ -658,18 +658,18 @@ public class TypeBlockManager {
         Long parentBlockID = typeBlockManager.focusManager.getFocusBlockID();
         if (isNullBlockInstance(parentBlockID)) {
             //focus on canvas
-            TypeBlockManager.automateBlockInsertion(workspace, "sum", null);
+            automateBlockInsertion(workspace, "sum", null);
         } else {
-            Block parentBlock = Block.getBlock(parentBlockID);
+            Block parentBlock = workspace.getEnv().getBlock(parentBlockID);
             if (parentBlock.getGenusName().equals("string")) {
                 //focus on string block
-                TypeBlockManager.automateBlockInsertion(workspace, "string-append", null);
+                automateBlockInsertion(workspace, "string-append", null);
             } else if (parentBlock.getGenusName().equals("string-append")) {
                 //focus on string append block
-                TypeBlockManager.automateBlockInsertion(workspace, "string-append", null);
+                automateBlockInsertion(workspace, "string-append", null);
             } else {
                 //focus on any other block
-                TypeBlockManager.automateBlockInsertion(workspace, "sum", null);
+                automateBlockInsertion(workspace, "sum", null);
             }
         }
     }
@@ -693,7 +693,7 @@ public class TypeBlockManager {
      * 				3. the canvas at the last mouse click point.
      * 			Then update any focus and block connections.
      */
-    protected static void automateBlockInsertion(Workspace workspace, String genusName, String label) {
+    protected void automateBlockInsertion(Workspace workspace, String genusName, String label) {
         TypeBlockManager typeBlockManager = workspace.getTypeBlockManager();
         if (!typeBlockManager.isEnabled()) {
             System.err.println("AutoMateBlockInsertion invoked but typeBlockManager is disabled.");
@@ -711,8 +711,8 @@ public class TypeBlockManager {
             //change name of block IF AN DONLY IFF a label was passed
             //and the block's label was editable and the block
             //does not need to have a unique label
-            if (label != null && Block.getBlock(createdRB.getBlockID()).isLabelEditable() && !Block.getBlock(createdRB.getBlockID()).labelMustBeUnique()) {
-                Block.getBlock(createdRB.getBlockID()).setBlockLabel(label);
+            if (label != null && workspace.getEnv().getBlock(createdRB.getBlockID()).isLabelEditable() && !workspace.getEnv().getBlock(createdRB.getBlockID()).labelMustBeUnique()) {
+            	workspace.getEnv().getBlock(createdRB.getBlockID()).setBlockLabel(label);
             }
             //add block
             typeBlockManager.addBlock(createdRB);
@@ -734,7 +734,7 @@ public class TypeBlockManager {
      * 				3. the canvas at the last mouse click point.
      * 			Then update any focus and block connections.
      */
-    protected static void automateBlockInsertion(Workspace workspace, TextualFactoryBlock block) {
+    protected void automateBlockInsertion(Workspace workspace, TextualFactoryBlock block) {
         /*Passing in an empty label name means that the block should already have
         a predetermined label name that does not need to be altered to the user's preference*/
         automateBlockInsertion(workspace, block, EMPTY_LABEL_NAME);
@@ -757,7 +757,7 @@ public class TypeBlockManager {
      * 			to that string.
      * 			Then update any focus and block connections.
      */
-    protected static void automateBlockInsertion(Workspace workspace, TextualFactoryBlock block, String label) {
+    protected void automateBlockInsertion(Workspace workspace, TextualFactoryBlock block, String label) {
         TypeBlockManager typeBlockManager = workspace.getTypeBlockManager();
         if (!typeBlockManager.isEnabled()) {
             System.err.println("AutoMateBlockInsertion invoked but typeBlockManager is disabled.");
@@ -792,7 +792,7 @@ public class TypeBlockManager {
      * @return new RenderableBlock instance from the TextualFactoryBlock
      * 		   or null if not possible.
      */
-    private static RenderableBlock createRenderableBlock(TextualFactoryBlock block) {
+    private RenderableBlock createRenderableBlock(TextualFactoryBlock block) {
         //if textual wrapper is null, return a null instance of RenderableBlock.
         if (block == null) {
             return null;
@@ -834,10 +834,10 @@ public class TypeBlockManager {
         //check invariant
         if (block == null || block.getBlockID() == null
                 || block.getBlockID().equals(Block.NULL)
-                || Block.getBlock(block.getBlockID()) == null
-                || Block.getBlock(block.getBlockID()).getGenusName() == null
-                || Block.getBlock(block.getBlockID()).getGenusName().length() == 0
-                || Block.getBlock(block.getBlockID()).getBlockLabel() == null) {
+                || workspace.getEnv().getBlock(block.getBlockID()) == null
+                || workspace.getEnv().getBlock(block.getBlockID()).getGenusName() == null
+                || workspace.getEnv().getBlock(block.getBlockID()).getGenusName().length() == 0
+                || workspace.getEnv().getBlock(block.getBlockID()).getBlockLabel() == null) {
             throw new RuntimeException("Invariant Violated: may not pass an invalid instance of renderabel block");
         }
 
@@ -851,16 +851,16 @@ public class TypeBlockManager {
                     workspace,
                     this.focusManager.getCanvasPoint(),
                     block,
-                    RenderableBlock.getRenderableBlock(parentBlockID));
+                    workspace.getEnv().getRenderableBlock(parentBlockID));
         } else {
-            RenderableBlock parentBlock = RenderableBlock.getRenderableBlock(parentBlockID);
+            RenderableBlock parentBlock = workspace.getEnv().getRenderableBlock(parentBlockID);
             new BlockDropAnimator(
                     workspace,
                     SwingUtilities.convertPoint(parentBlock,
                     this.focusManager.getBlockPoint(),
                     this.blockCanvas.getCanvas()),
                     block,
-                    RenderableBlock.getRenderableBlock(parentBlockID));
+                    workspace.getEnv().getRenderableBlock(parentBlockID));
         }
         this.focusManager.setFocus(block.getBlockID());
     }

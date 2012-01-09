@@ -1,5 +1,7 @@
 package edu.mit.blocks.codeblocks;
 
+import edu.mit.blocks.workspace.Workspace;
+
 public class CompilerException extends Exception {
 
     private static final long serialVersionUID = 1L;
@@ -14,10 +16,10 @@ public class CompilerException extends Exception {
     private Long illegalBlockID;
     private String label;
 
-    public CompilerException(Error error, Long illegalBlockID) {
+    public CompilerException(Error error, Workspace workspace, Long illegalBlockID) {
         this.error = error;
         this.illegalBlockID = illegalBlockID;
-        label = Block.getBlock(illegalBlockID).getBlockLabel();
+        label = workspace.getEnv().getBlock(illegalBlockID).getBlockLabel();
     }
 
     public String getMessage() {

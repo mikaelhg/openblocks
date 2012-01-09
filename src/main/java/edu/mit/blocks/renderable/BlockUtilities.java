@@ -43,8 +43,8 @@ public class BlockUtilities {
      * @return true if the specified label is valid according to the specifications
      * of this block's genus.
      */
-    public static boolean isLabelValid(Long blockID, String label) {
-        return isLabelValid(Block.getBlock(blockID), label);
+    public static boolean isLabelValid(Workspace workspace, Long blockID, String label) {
+        return isLabelValid(workspace.getEnv().getBlock(blockID), label);
     }
 
     public static boolean isLabelValid(Block block, String label) {
@@ -397,7 +397,7 @@ public class BlockUtilities {
                 //do not drop down default arguments
                 renderable.ignoreDefaultArguments();
                 //get corresponding block
-                Block newblock = Block.getBlock(renderable.getBlockID());
+                Block newblock = workspace.getEnv().getBlock(renderable.getBlockID());
                 //make sure corresponding block is not a null instance of block
                 if (newblock == null || newblock.getBlockID().equals(Block.NULL)) {
                     throw new RuntimeException("Invariant Violated: a valid non null blockID just"
@@ -431,33 +431,33 @@ public class BlockUtilities {
         return null;
     }
 
-    private static boolean isNullBlockInstance(Long blockID) {
+    private static boolean isNullBlockInstance(Workspace workspace, Long blockID) {
         if (blockID == null) {
             return true;
         } else if (blockID.equals(Block.NULL)) {
             return true;
-        } else if (Block.getBlock(blockID) == null) {
+        } else if (workspace.getEnv().getBlock(blockID) == null) {
             return true;
-        } else if (Block.getBlock(blockID).getBlockID() == null) {
+        } else if (workspace.getEnv().getBlock(blockID).getBlockID() == null) {
             return true;
-        } else if (Block.getBlock(blockID).getBlockID().equals(Block.NULL)) {
+        } else if (workspace.getEnv().getBlock(blockID).getBlockID().equals(Block.NULL)) {
             return true;
-        } else if (RenderableBlock.getRenderableBlock(blockID) == null) {
+        } else if (workspace.getEnv().getRenderableBlock(blockID) == null) {
             return true;
-        } else if (RenderableBlock.getRenderableBlock(blockID).getBlockID() == null) {
+        } else if (workspace.getEnv().getRenderableBlock(blockID).getBlockID() == null) {
             return true;
-        } else if (RenderableBlock.getRenderableBlock(blockID).getBlockID().equals(Block.NULL)) {
+        } else if (workspace.getEnv().getRenderableBlock(blockID).getBlockID().equals(Block.NULL)) {
             return true;
         } else {
             return false;
         }
     }
 
-    public static BlockNode makeNodeWithChildren(Long blockID) {
-        if (isNullBlockInstance(blockID)) {
+    public static BlockNode makeNodeWithChildren(Workspace workspace, Long blockID) {
+        if (isNullBlockInstance(workspace, blockID)) {
             return null;
         }
-        Block block = Block.getBlock(blockID);
+        Block block = workspace.getEnv().getBlock(blockID);
         String genus = block.getGenusName();
         String parentGenus = block instanceof BlockStub ? ((BlockStub) block).getParentGenus() : null;
         String label;
@@ -469,17 +469,17 @@ public class BlockUtilities {
         BlockNode node = new BlockNode(genus, parentGenus, label);
         for (BlockConnector socket : block.getSockets()) {
             if (socket.hasBlock()) {
-                node.addChild(makeNodeWithStack(socket.getBlockID()));
+                node.addChild(makeNodeWithStack(workspace, socket.getBlockID()));
             }
         }
         return node;
     }
 
-    public static BlockNode makeNodeWithStack(Long blockID) {
-        if (isNullBlockInstance(blockID)) {
+    public static BlockNode makeNodeWithStack(Workspace workspace, Long blockID) {
+        if (isNullBlockInstance(workspace, blockID)) {
             return null;
         }
-        Block block = Block.getBlock(blockID);
+        Block block = workspace.getEnv().getBlock(blockID);
         String genus = block.getGenusName();
         String parentGenus = block instanceof BlockStub ? ((BlockStub) block).getParentGenus() : null;
         String label;
@@ -491,11 +491,11 @@ public class BlockUtilities {
         BlockNode node = new BlockNode(genus, parentGenus, label);
         for (BlockConnector socket : block.getSockets()) {
             if (socket.hasBlock()) {
-                node.addChild(makeNodeWithStack(socket.getBlockID()));
+                node.addChild(makeNodeWithStack(workspace, socket.getBlockID()));
             }
         }
         if (block.hasAfterConnector()) {
-            node.setAfter(makeNodeWithStack(block.getAfterBlockID()));
+            node.setAfter(makeNodeWithStack(workspace, block.getAfterBlockID()));
         }
         return node;
     }
@@ -520,13 +520,13 @@ public class BlockUtilities {
         if (renderable == null) {
             throw new RuntimeException("No children block exists for this genus: " + genusName);
         }
-        Block block = Block.getBlock(renderable.getBlockID()); //assume not null
+        Block block = workspace.getEnv().getBlock(renderable.getBlockID()); //assume not null
         widget.blockDropped(renderable);
         for (int i = 0; i < node.getChildren().size(); i++) {
             BlockConnector socket = block.getSocketAt(i);
             BlockNode child = node.getChildren().get(i);
             RenderableBlock childRenderable = makeRenderable(workspace, child, widget);
-            Block childBlock = Block.getBlock(childRenderable.getBlockID());
+            Block childBlock = workspace.getEnv().getBlock(childRenderable.getBlockID());
 
             //link blocks
             BlockLink link;
@@ -538,14 +538,14 @@ public class BlockUtilities {
                 link = null;
             }//assume link is not null
             link.connect();
-            workspace.notifyListeners(new WorkspaceEvent(workspace, RenderableBlock.getRenderableBlock(link.getPlugBlockID()).getParentWidget(), link, WorkspaceEvent.BLOCKS_CONNECTED));
+            workspace.notifyListeners(new WorkspaceEvent(workspace, workspace.getEnv().getRenderableBlock(link.getPlugBlockID()).getParentWidget(), link, WorkspaceEvent.BLOCKS_CONNECTED));
 
         }
         if (node.getAfterNode() != null) {
             BlockConnector socket = block.getAfterConnector(); //assume has after connector
             BlockNode child = node.getAfterNode();
             RenderableBlock childRenderable = makeRenderable(workspace, child, widget);
-            Block childBlock = Block.getBlock(childRenderable.getBlockID());
+            Block childBlock = workspace.getEnv().getBlock(childRenderable.getBlockID());
 
             //link blocks
             BlockLink link;
@@ -557,7 +557,7 @@ public class BlockUtilities {
                 link = null;
             }//assume link is not null
             link.connect();
-            workspace.notifyListeners(new WorkspaceEvent(workspace, RenderableBlock.getRenderableBlock(link.getPlugBlockID()).getParentWidget(), link, WorkspaceEvent.BLOCKS_CONNECTED));
+            workspace.notifyListeners(new WorkspaceEvent(workspace, workspace.getEnv().getRenderableBlock(link.getPlugBlockID()).getParentWidget(), link, WorkspaceEvent.BLOCKS_CONNECTED));
 
         }
         return renderable;
