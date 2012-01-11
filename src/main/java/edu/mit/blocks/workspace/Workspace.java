@@ -55,6 +55,12 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
 		return this.env;
 	}
 
+    /**
+     * Single Workspace instance. This is only kept for compatibility
+     */
+    @Deprecated
+    private static Workspace ws = new Workspace();
+
     /** WorkspaceListeners that monitor:
      * block: added, removed, dropped, label changed, connected, disconnected
      * workspace: scrolled, zoom changed
@@ -100,9 +106,9 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
      */
     private BlockCanvas blockCanvas = new BlockCanvas(this);
 
-    /** blockCanvasLayer allows for static components to be laid out beside the block canvas.  One example of
+    /** blockCanvasLayer allows for static components to be laid out beside the block canvas.  One example of 
      * such a component would be a static block factory.  In user testing, we found that novice users performed
-     * better with a static block factory than one in which they could drag around and toggle the visibility
+     * better with a static block factory than one in which they could drag around and toggle the visibility 
      * of. */
     private JSplitPane blockCanvasLayer;
 
@@ -112,7 +118,7 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
     private MiniMap miniMap;
     private FactoryManager factory;
     private final FocusTraversalManager focusManager;
-
+    
     private final TypeBlockManager typeBlockManager;
 
     /// RENDERING LAYERS ///
@@ -132,35 +138,34 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
         this.factory = new FactoryManager(this);
         this.addWorkspaceListener(this.factory);
         this.blockCanvas.getHorizontalModel().addChangeListener(this);
-        for (final Explorer exp : this.factory.getNavigator().getExplorers()) {
+        for (final Explorer exp : factory.getNavigator().getExplorers()) {
             exp.addListener(this);
         }
 
         this.miniMap = new MiniMap(this);
         this.addWidget(this.miniMap, true, true);
         this.addComponentListener(new ComponentAdapter() {
-            @Override
-			public void componentResized(ComponentEvent e) {
-                Workspace.this.miniMap.repositionMiniMap();
-                Workspace.this.blockCanvas.reformBlockCanvas();
-                Workspace.this.blockCanvasLayer.setSize(getSize());
-                Workspace.this.blockCanvasLayer.validate();
+            public void componentResized(ComponentEvent e) {
+                miniMap.repositionMiniMap();
+                blockCanvas.reformBlockCanvas();
+                blockCanvasLayer.setSize(getSize());
+                blockCanvasLayer.validate();
             }
         });
 
-        this.blockCanvasLayer = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
-                this.factory.getJComponent(), this.blockCanvas.getJComponent());
-        this.blockCanvasLayer.setOneTouchExpandable(true);
-        this.blockCanvasLayer.setDividerSize(6);
-        add(this.blockCanvasLayer, BLOCK_LAYER);
+        blockCanvasLayer = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
+                factory.getJComponent(), blockCanvas.getJComponent());
+        blockCanvasLayer.setOneTouchExpandable(true);
+        blockCanvasLayer.setDividerSize(6);
+        add(blockCanvasLayer, BLOCK_LAYER);
         validate();
         addPageAt(Page.getBlankPage(this), 0, false);
 
-        this.workspaceWidgets.add(this.factory);
+        this.workspaceWidgets.add(factory);
 
         this.focusManager = new FocusTraversalManager(this);
-
-        this.typeBlockManager = new TypeBlockManager(this, this.blockCanvas);
+        
+        this.typeBlockManager = new TypeBlockManager(this, blockCanvas);
     }
 
     /*
@@ -173,31 +178,31 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
     public void explorerEventOccurred(ExplorerEvent event) {
         final Explorer exp = event.getSource();
         if (event.getEventType() == 1) {
-            for (final Page p : this.blockCanvas.getLeftmostPages(exp.getSelectedCanvasWidth())) {
+            for (final Page p : blockCanvas.getLeftmostPages(exp.getSelectedCanvasWidth())) {
                 p.disableMinimize();
             }
         } else if (event.getEventType() == 2) {
-            for (final Page p : this.blockCanvas.getLeftmostPages(exp.getSelectedCanvasWidth())) {
+            for (final Page p : blockCanvas.getLeftmostPages(exp.getSelectedCanvasWidth())) {
                 p.enableMinimize();
             }
         }
     }
 
     public Dimension getCanvasSize() {
-        return this.blockCanvas.getCanvas().getSize();
+        return blockCanvas.getCanvas().getSize();
     }
 
     public Dimension getCanvasOffset() {
-        return new Dimension(this.blockCanvas.getHorizontalModel().getValue() - this.blockCanvas.getJComponent().getX(),
-                this.blockCanvas.getVerticalModel().getValue() - this.blockCanvas.getJComponent().getY());
+        return new Dimension(blockCanvas.getHorizontalModel().getValue() - blockCanvas.getJComponent().getX(),
+                blockCanvas.getVerticalModel().getValue() - blockCanvas.getJComponent().getY());
     }
 
     public Page getPageNamed(String pageName) {
-        return this.blockCanvas.getPageNamed(pageName);
+        return blockCanvas.getPageNamed(pageName);
     }
 
     public BlockCanvas getBlockCanvas() {
-        return this.blockCanvas;
+        return blockCanvas;
     }
 
     /**
@@ -212,15 +217,15 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
      * @return FocusTraversalManager instance
      */
     public FocusTraversalManager getFocusManager() {
-        return this.focusManager;
+        return focusManager;
     }
 
     /**
-     * Disables the MiniMap from canvas
+     * Disables the MiniMap from canvas 
      *
      */
     public void disableMiniMap() {
-        this.miniMap.hideMiniMap();
+        miniMap.hideMiniMap();
     }
     ////////////////
     // WIDGETS
@@ -234,20 +239,20 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
      * @return the WorkspaceWidget currently at the specified point
      */
     public WorkspaceWidget getWidgetAt(Point point) {
-        Iterator<WorkspaceWidget> it = this.workspaceWidgets.iterator();
+        Iterator<WorkspaceWidget> it = workspaceWidgets.iterator();
         //TODO: HUGE HACK, get rid of this. bascally, the facotry has priority
-        if (this.factory.contains(
-                SwingUtilities.convertPoint((JComponent) this, point, this.factory.getJComponent()).x,
-                SwingUtilities.convertPoint((JComponent) this, point, this.factory.getJComponent()).y)) {
-            return this.factory;
+        if (factory.contains(
+                SwingUtilities.convertPoint((JComponent) this, point, factory.getJComponent()).x,
+                SwingUtilities.convertPoint((JComponent) this, point, factory.getJComponent()).y)) {
+            return factory;
         }
         WorkspaceWidget widget = null;
         while (it.hasNext()) {
             //convert point to the widgets' coordinate system
             widget = it.next();
-            this.p = SwingUtilities.convertPoint((JComponent) this, point, widget.getJComponent());
+            p = SwingUtilities.convertPoint((JComponent) this, point, widget.getJComponent());
             //test if widget contains point and widget is visible
-            if (widget.contains(this.p.x, this.p.y) && widget.getJComponent().isVisible()) {
+            if (widget.contains(p.x, p.y) && widget.getJComponent().isVisible()) {
                 return widget; // because these are sorted by draw depth, the first hit is on top
             }
         }
@@ -257,9 +262,9 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
 
     /**
      * This helper method retuns a fractional "depth" representing the overall
-     * z-order of a component in the workspace.  For example, a component with
+     * z-order of a component in the workspace.  For example, a component with 
      * a "drawDepth" of 1.9 is most likely the first child (rendered on top of,
-     * remember) a component with z-order 2 in this container.  1.99 means the
+     * remember) a component with z-order 2 in this container.  1.99 means the 
      * first child of the first child, and so on.
      * @param c - the Component whose draw depth is required.  MUST be an eventual child of the Workspace.
      * @return the fractional "drawDepth" of the Component c.
@@ -301,10 +306,10 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
     /**
      * Adds the specified widget to this Workspace
      * @param widget the desired widget to add
-     * @param floatOverCanvas if true, the Workspace will add and render this widget such that it "floats"
+     * @param floatOverCanvas if true, the Workspace will add and render this widget such that it "floats" 
      * above the canvas and its set of blocks.  If false, the widget will be laid out beside the canvas.  This feature
      * only applies if the specified widget is added graphically to the workspace (addGraphically = true)
-     * @param addGraphically  a Swing dependent parameter to tell the Workspace whether or not to add
+     * @param addGraphically  a Swing dependent parameter to tell the Workspace whether or not to add 
      * the specified widget as a child component.  This parameter should be false for widgets that have a
      * parent already specified
      */
@@ -316,12 +321,12 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
                 revalidate();
                 repaint();
             } else {
-                this.blockCanvas.getJComponent().setPreferredSize(new Dimension(
-                        this.blockCanvas.getWidth() - widget.getJComponent().getWidth(),
-                        this.blockCanvasLayer.getHeight()));
+                blockCanvas.getJComponent().setPreferredSize(new Dimension(
+                        blockCanvas.getWidth() - widget.getJComponent().getWidth(),
+                        blockCanvasLayer.getHeight()));
             }
         }
-        boolean success = this.workspaceWidgets.add(widget);
+        boolean success = workspaceWidgets.add(widget);
         if (!success) {
             System.err.println("not able to add: " + widget);
         }
@@ -332,7 +337,7 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
      * @param widget the desired widget to remove
      */
     public void removeWidget(WorkspaceWidget widget) {
-        this.workspaceWidgets.remove(widget);
+        workspaceWidgets.remove(widget);
         this.remove((JComponent) widget);
     }
 
@@ -341,7 +346,7 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
      * @return an unmodifiable Iterable over all the WorkspaceWidgets
      */
     public Iterable<WorkspaceWidget> getWorkspaceWidgets() {
-        return Collections.unmodifiableSet(this.workspaceWidgets);
+        return Collections.unmodifiableSet(workspaceWidgets);
     }
 
     /**
@@ -356,7 +361,7 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
      */
     public Iterable<RenderableBlock> getRenderableBlocks() {
         //TODO: performance issue, must iterate through all blocks
-        return this.blockCanvas.getBlocks();
+        return blockCanvas.getBlocks();
     }
 
     /**
@@ -372,7 +377,7 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
     public Iterable<Block> getBlocks() {
         //TODO: performance issue, must iterate through all blocks
         final ArrayList<Block> blocks = new ArrayList<Block>();
-        for (final RenderableBlock renderable : this.blockCanvas.getBlocks()) {
+        for (final RenderableBlock renderable : blockCanvas.getBlocks()) {
             blocks.add(getEnv().getBlock(renderable.getBlockID()));
         }
         return blocks;
@@ -393,7 +398,7 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
     public Iterable<RenderableBlock> getRenderableBlocksFromGenus(String genusName) {
         //TODO: performance issue, must iterate through all blocks
         ArrayList<RenderableBlock> blocks = new ArrayList<RenderableBlock>();
-        for (RenderableBlock block : this.blockCanvas.getBlocks()) {
+        for (RenderableBlock block : blockCanvas.getBlocks()) {
             if (getEnv().getBlock(block.getBlockID()).getGenusName().equals(genusName)) {
                 blocks.add(block);
             }
@@ -416,7 +421,7 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
     public Iterable<Block> getBlocksFromGenus(String genusName) {
         //TODO: performance issue, must iterate through all blocks
         ArrayList<Block> blocks = new ArrayList<Block>();
-        for (RenderableBlock renderable : this.blockCanvas.getBlocks()) {
+        for (RenderableBlock renderable : blockCanvas.getBlocks()) {
             Block block = getEnv().getBlock(renderable.getBlockID());
             if (block.getGenusName().equals(genusName)) {
                 blocks.add(block);
@@ -426,35 +431,35 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
     }
 
     /**
-     * Returns the top level blocks in the Workspace (blocks that are
+     * Returns the top level blocks in the Workspace (blocks that are 
      * parents of stacks)
-     * @return the top level blocks in the Workspace
+     * @return the top level blocks in the Workspace 
      */
     public Iterable<RenderableBlock> getTopLevelBlocks() {
-        return this.blockCanvas.getTopLevelBlocks();
+        return blockCanvas.getTopLevelBlocks();
     }
 
     /**
-     * Cleans up all the blocks within the block canvas using the default
-     * arrangement algorithm.
+     * Cleans up all the blocks within the block canvas using the default 
+     * arrangement algorithm.  
      * TODO ria for now its the naive arranger that uses just the y-coor.
      */
     public void cleanUpAllBlocks() {
-        this.blockCanvas.arrangeAllBlocks();
+        blockCanvas.arrangeAllBlocks();
     }
 
     /**
      * calls TypeBlockManager to copy the highlighted blocks on the canvas
      */
     public void copyBlocks() {
-        this.typeBlockManager.copyBlock(this);
+        typeBlockManager.copyBlock(this);
     }
 
     /**
      * calls TypeBlockManager to pastes the highlighted blocks on the canvas
      */
     public void pasteBlocks() {
-        this.typeBlockManager.pasteBlock(this);
+        typeBlockManager.pasteBlock(this);
     }
 
     //////////////////////////
@@ -466,8 +471,8 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
     public void addWorkspaceListener(WorkspaceListener listener) {
         if (listener != null) {
             // warn of duplicate adds
-            assert (!this.workspaceListeners.contains(listener)) : "WorkspaceListener " + listener.toString() + " has already been added.";
-            this.workspaceListeners.add(listener);
+            assert (!workspaceListeners.contains(listener)) : "WorkspaceListener " + listener.toString() + " has already been added.";
+            workspaceListeners.add(listener);
         }
     }
 
@@ -477,7 +482,7 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
      */
     public void removeWorkspaceListener(WorkspaceListener listener) {
         if (listener != null) {
-            this.workspaceListeners.remove(listener);
+            workspaceListeners.remove(listener);
         }
     }
 
@@ -486,7 +491,7 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
      * @param event
      */
     public void notifyListeners(WorkspaceEvent event) {
-        for (WorkspaceListener wl : this.workspaceListeners) {
+        for (WorkspaceListener wl : workspaceListeners) {
             wl.workspaceEventOccurred(event);
         }
     }
@@ -498,18 +503,18 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
      * Enables TypeBLocking if and only if enabled == true
      */
     public void enableTypeBlocking(boolean enabled) {
-        this.typeBlockManager.setEnabled(enabled);
+        typeBlockManager.setEnabled(enabled);
     }
-
+    
     /**
      * The type block manager, if defined.
      * @return The manager.
      * @see {@link #enableTypeBlocking(boolean)}
      */
     public TypeBlockManager getTypeBlockManager() {
-        return this.typeBlockManager;
+        return typeBlockManager;
     }
-
+    
     ///////////////////
     // WORKSPACE ZOOM
     ///////////////////
@@ -573,11 +578,11 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
      * @return the current workspace zoom
      */
     public double getCurrentWorkspaceZoom() {
-        return this.zoom;
+        return zoom;
     }
 
     /**
-     * Resets the workspace zoom to the default level
+     * Resets the workspace zoom to the default level 
      *
      */
     public void setWorkspaceZoomToDefault() {
@@ -585,16 +590,15 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
     }
 
     public void scrollToComponent(JComponent c) {
-        this.blockCanvas.scrollToComponent(c);
+        blockCanvas.scrollToComponent(c);
     }
 
-    @Override
-	public void stateChanged(ChangeEvent e) {
-        List<Explorer> explorers = this.factory.getNavigator().getExplorers();
+    public void stateChanged(ChangeEvent e) {
+        List<Explorer> explorers = factory.getNavigator().getExplorers();
         for (Explorer exp : explorers) {
-            List<Page> leftMostPages = this.blockCanvas.getLeftmostPages(exp.getSelectedCanvasWidth());
+            List<Page> leftMostPages = blockCanvas.getLeftmostPages(exp.getSelectedCanvasWidth());
             boolean expanded = exp.anyCanvasSelected();
-            for (Page p : this.blockCanvas.getPages()) {
+            for (Page p : blockCanvas.getPages()) {
                 if (expanded) {
                     p.setHide(false);
                 }
@@ -615,7 +619,7 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
      * @param page the desired page to add
      */
     public void addPage(Page page) {
-        addPage(page, this.blockCanvas.numOfPages());
+        addPage(page, blockCanvas.numOfPages());
     }
 
     /**
@@ -623,7 +627,7 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
      * @param page the desired page to add
      */
     public void addPage(Page page, int position) {
-        //this method assumes that this addPage was a user or file loading
+        //this method assumes that this addPage was a user or file loading 
         //event in which case a page added event should be thrown
         addPageAt(page, position, true);
     }
@@ -637,34 +641,34 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
      * 		  where 0 is the leftmost page
      */
     public void putPage(Page page, int position) {
-        if (this.blockCanvas.hasPageAt(position)) {
+        if (blockCanvas.hasPageAt(position)) {
             removePageAt(position);
         }
-        addPageAt(page, this.blockCanvas.numOfPages(), true);
+        addPageAt(page, blockCanvas.numOfPages(), true);
     }
 
     /**
      * Adds a Page in the specified position, where position 0 is the leftmost page
      * @param page - the desired Page to add
      * @param index - the desired position of the page
-     * @param fireWorkspaceEvent if set to true, will fire a WorkspaceEvent that a
+     * @param fireWorkspaceEvent if set to true, will fire a WorkspaceEvent that a 
      * Page was added
      */
     private void addPageAt(Page page, int index, boolean fireWorkspaceEvent) {
-        this.blockCanvas.addPage(page, index);
-        this.workspaceWidgets.add(page);
+        blockCanvas.addPage(page, index);
+        workspaceWidgets.add(page);
         if (fireWorkspaceEvent) {
             notifyListeners(new WorkspaceEvent(this, page, WorkspaceEvent.PAGE_ADDED));
         }
     }
 
     /**
-     * Removes the specified page from the Workspace at the specified position,
+     * Removes the specified page from the Workspace at the specified position, 
      * where position 0 is the left most page
      * @param position
      */
     public void removePageAt(int position) {
-        removePage(this.blockCanvas.getPageAt(position));
+        removePage(blockCanvas.getPageAt(position));
     }
 
     /**
@@ -672,12 +676,12 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
      * @param page the desired page to remove
      */
     public void removePage(Page page) {
-        boolean success = this.workspaceWidgets.remove(page);
+        boolean success = workspaceWidgets.remove(page);
         if (!success) {
             System.out.println("Page: " + page + ", was NOT removed successfully");
         }
         notifyListeners(new WorkspaceEvent(this, page, WorkspaceEvent.PAGE_REMOVED));
-        this.blockCanvas.removePage(page);
+        blockCanvas.removePage(page);
     }
 
     /**
@@ -686,23 +690,23 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
      * @param newName the String name to change the page name to
      */
     public void renamePage(String oldName, String newName) {
-        Page renamedPage = this.blockCanvas.renamePage(oldName, newName);
+        Page renamedPage = blockCanvas.renamePage(oldName, newName);
         //TODO ria HACK TO GET DRAWERS AND PAGE IN SYNC
         //as a rule, all relevant data like pages and drawers should be updated before
         //an event is released because the listeners make assumptions on the state
         //of the data.  in the future, have the page rename its drawer
-        this.factory.renameDynamicDrawer(oldName, newName);
+        factory.renameDynamicDrawer(oldName, newName);
         notifyListeners(new WorkspaceEvent(this, renamedPage, oldName, WorkspaceEvent.PAGE_RENAMED));
     }
 
     /**
      * Returns the number of pages contained within this.  By default
      * will always have a page even if a page was not specified.  The page
-     * will just be blank.
+     * will just be blank.  
      * @return the number of pages contained within this
      */
     public int getNumPages() {
-        return this.blockCanvas.numOfPages();
+        return blockCanvas.numOfPages();
     }
 
     /**
@@ -720,27 +724,27 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
     }
 
     /**
-     * Marks the page of the specified name as being selected.  The workspace
-     * view may shift to that page.
+     * Marks the page of the specified name as being selected.  The workspace 
+     * view may shift to that page. 
      * @param page the Page selected
      * @param byUser true if Page was selected by the User
      */
     public void pageSelected(Page page, boolean byUser) {
-        this.blockCanvas.switchViewToPage(page);
+        blockCanvas.switchViewToPage(page);
     }
 
     public FactoryManager getFactoryManager() {
-        return this.factory;
+        return factory;
     }
 
     /**
-     * Returns an unmodifiable Iterable of all the SearchableContainers within this
+     * Returns an unmodifiable Iterable of all the SearchableContainers within this 
      * workspace.
      */
     public Iterable<SearchableContainer> getAllSearchableContainers() {
-        ArrayList<SearchableContainer> containers = new ArrayList<SearchableContainer>(this.factory.getSearchableContainers());
+        ArrayList<SearchableContainer> containers = new ArrayList<SearchableContainer>(factory.getSearchableContainers());
 
-        for (WorkspaceWidget w : this.workspaceWidgets) {
+        for (WorkspaceWidget w : workspaceWidgets) {
             if (w instanceof SearchableContainer) {
                 containers.add((SearchableContainer) w);
             }
@@ -770,20 +774,20 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
     // SAVING AND LOADING //
     ////////////////////////
     /**
-     * Returns the node of this.  Currently returns the BlockCanvas
+     * Returns the node of this.  Currently returns the BlockCanvas 
      * node only.
      * @return the node of this.
      */
     public Node getSaveNode(Document document) {
-    	return this.blockCanvas.getSaveNode(document);
+    	return blockCanvas.getSaveNode(document);
     }
 
     /**
      * Loads the workspace with the following content:
      * - RenderableBlocks and their associated Block instances that reside
      *   within the BlockCanvas
-     * @param newRoot the XML Element containing the new desired content.  Some of the
-     * content in newRoot may override the content in originalLangRoot.  (For now,
+     * @param newRoot the XML Element containing the new desired content.  Some of the 
+     * content in newRoot may override the content in originalLangRoot.  (For now, 
      * pages are automatically overwritten.  In the future, will allow drawers
      * to be optionally overriden or new drawers to be inserted.)
      * @param originalLangRoot the original language/workspace specification content
@@ -792,17 +796,17 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
     public void loadWorkspaceFrom(Element newRoot, Element originalLangRoot) {
         if (newRoot != null) {
             //load pages, page drawers, and their blocks from save file
-            this.blockCanvas.loadSaveString(newRoot);
-            //load the block drawers specified in the file (may contain
+            blockCanvas.loadSaveString(newRoot);
+            //load the block drawers specified in the file (may contain 
             //custom drawers) and/or the lang def file if the contents specify
-            PageDrawerLoadingUtils.loadBlockDrawerSets(this, originalLangRoot, this.factory);
-            PageDrawerLoadingUtils.loadBlockDrawerSets(this, newRoot, this.factory);
+            PageDrawerLoadingUtils.loadBlockDrawerSets(this, originalLangRoot, factory);
+            PageDrawerLoadingUtils.loadBlockDrawerSets(this, newRoot, factory);
             loadWorkspaceSettings(newRoot);
         } else {
             //load from original language/workspace root specification
-            this.blockCanvas.loadSaveString(originalLangRoot);
+            blockCanvas.loadSaveString(originalLangRoot);
             //load block drawers and their content
-            PageDrawerLoadingUtils.loadBlockDrawerSets(this, originalLangRoot, this.factory);
+            PageDrawerLoadingUtils.loadBlockDrawerSets(this, originalLangRoot, factory);
             loadWorkspaceSettings(originalLangRoot);
         }
 
@@ -810,8 +814,8 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
 
     /**
      * Loads the settings for this Workspace.  Settings include
-     * specification of programming environment features such as
-     * the search bar, minimap, or zooming.
+     * specification of programming environment features such as 
+     * the search bar, minimap, or zooming.  
      * @param root
      */
     private void loadWorkspaceSettings(Element root) {
@@ -850,14 +854,14 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
      * - all the live blocks in the BlockCanvas.
      * - all the pages on the BlockCanvas
      * - all its BlockDrawers and the RB's that reside within them
-     * - clears all the BlockDrawer bars of its drawer references and
+     * - clears all the BlockDrawer bars of its drawer references and 
      *   their associated buttons
      * - clears all RenderableBlock instances (which clears their associated
      *   Block instances.)
-     * Note: we want to get rid of all RendereableBlocks and their
-     * references.
-     *
-     * Want to get the Workspace ready to load another workspace
+     * Note: we want to get rid of all RendereableBlocks and their 
+     * references.  
+     * 
+     * Want to get the Workspace ready to load another workspace 
      */
     public void reset() {
         //we can't iterate and remove widgets at the same time so
@@ -866,16 +870,16 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
         //we clear and re-add the widgets we want to keep
         ArrayList<WorkspaceWidget> widgetsToRemove = new ArrayList<WorkspaceWidget>();
         ArrayList<WorkspaceWidget> widgetsToKeep = new ArrayList<WorkspaceWidget>();
-        for (WorkspaceWidget w : this.workspaceWidgets) {
+        for (WorkspaceWidget w : workspaceWidgets) {
             if (w instanceof Page) {
                 widgetsToRemove.add(w);
             } else {
                 widgetsToKeep.add(w);
             }
         }
-        this.workspaceWidgets.clear();
-        this.workspaceWidgets.addAll(widgetsToKeep);
-        this.workspaceWidgets.add(this.factory);
+        workspaceWidgets.clear();
+        workspaceWidgets.addAll(widgetsToKeep);
+        workspaceWidgets.add(factory);
 
         //We now reset the widgets we removed.
         //Doing this for each one gets costly.
@@ -894,11 +898,11 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
         }
 
         //We now reset, the blockcanvas, the factory, and the renderableblocks
-        this.blockCanvas.reset();
+        blockCanvas.reset();
         addPageAt(Page.getBlankPage(this), 0, false); //TODO: System expects PAGE_ADDED event
-        this.factory.reset();
+        factory.reset();
 
-        this.env.resetAll();
+        env.resetAll();
 
         revalidate();
     }
@@ -912,13 +916,11 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
         public Object blockCanvasState;
     }
 
-    @Override
-	public Object getState() {
+    public Object getState() {
         return null;
     }
 
-    @Override
-	public void loadState(Object memento) {
+    public void loadState(Object memento) {
         assert memento instanceof WorkspaceState : "";
         if (memento instanceof WorkspaceState) {
             WorkspaceState state = (WorkspaceState) memento;
@@ -928,7 +930,7 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
                 toBeUpdated.loadState(state.blockStates.get(blockID));
             }
             //Load the canvas state
-            this.blockCanvas.loadState(state.blockCanvasState);
+            blockCanvas.loadState(state.blockCanvasState);
         }
     }
 
@@ -941,13 +943,11 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
     /******************************************
      * RBParent implemented methods
      ******************************************/
-    @Override
-	public void addToBlockLayer(Component c) {
+    public void addToBlockLayer(Component c) {
         this.add(c, DRAGGED_BLOCK_LAYER);
     }
 
-    @Override
-	public void addToHighlightLayer(Component c) {
+    public void addToHighlightLayer(Component c) {
         this.add(c, DRAGGED_BLOCK_HIGHLIGHT_LAYER);
     }
 }
