@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -43,7 +42,6 @@ import edu.mit.blocks.codeblocks.BlockConnectorShape;
 import edu.mit.blocks.codeblocks.BlockLink;
 import edu.mit.blocks.codeblocks.BlockLinkChecker;
 import edu.mit.blocks.codeblocks.BlockShape;
-import edu.mit.blocks.codeblocks.BlockStub;
 import edu.mit.blocks.codeblocks.InfixBlockShape;
 import edu.mit.blocks.codeblocks.JComponentDragHandler;
 import edu.mit.blocks.codeblocks.rendering.BlockShapeUtil;
@@ -82,11 +80,6 @@ public class RenderableBlock extends JComponent implements SearchableElement, Mo
     /** The alpha level while dragging - lower means more transparent */
     private static final float DRAGGING_ALPHA = 0.66F;
 
-
-    /** Mapping from blockID to the corresponding RenderableBlock instance */
-    @Deprecated
-    //the map has been moved to the Workspace and is not static anymore
-    private static final Map<Long, RenderableBlock> ALL_RENDERABLE_BLOCKS = new HashMap<Long, RenderableBlock>();
     ///////////////////////
     //COMPONENT FIELDS
     
@@ -445,22 +438,6 @@ public class RenderableBlock extends JComponent implements SearchableElement, Mo
         }
         this.revalidate();
 
-    }
-
-    /**
-     * Clears all renderable block instances and all
-     * block instances
-	 *
-	 * @deprecated: use workspace.getEnv().resetAll() instead (this call will also the whole workspace environment)
-     */
-    @Deprecated
-    public static void reset() {
-        //System.out.println("reseting all renderable blocks");
-        ALL_RENDERABLE_BLOCKS.clear();
-        BlockUtilities.reset();
-        Block.reset();
-        BlockStub.reset();
-        System.gc();
     }
 
     public JComponentDragHandler getDragHandler() {
@@ -908,18 +885,6 @@ public class RenderableBlock extends JComponent implements SearchableElement, Mo
      */
     public void ignoreDefaultArguments() {
         linkedDefArgsBefore = true;
-    }
-
-    /**
-     * Returns the Renderable specified by blockID; null if RenderableBlock does not exist
-     * @param blockID the block id of the desired RenderableBlock
-     * @return the Renderable specified by blockID; null if RenderableBlock does not exist
-	 *
-	 * @deprecated: use workspace.getEnv().<same method name> instead
-     */
-	 @Deprecated
-    public static RenderableBlock getRenderableBlock(Long blockID) {
-        return ALL_RENDERABLE_BLOCKS.get(blockID);
     }
 
     ////////////////////////

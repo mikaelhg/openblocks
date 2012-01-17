@@ -55,12 +55,6 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
 		return this.env;
 	}
 
-    /**
-     * Single Workspace instance. This is only kept for compatibility
-     */
-    @Deprecated
-    private static Workspace ws = new Workspace();
-
     /** WorkspaceListeners that monitor:
      * block: added, removed, dropped, label changed, connected, disconnected
      * workspace: scrolled, zoom changed
@@ -186,16 +180,6 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
                 p.enableMinimize();
             }
         }
-    }
-
-    /**
-     * Returns the one <code>Workspace</code> instance
-     * @return the one <code>Workspace</code> instance
-     * @deprecated There can now be more than one instance of a workspace.
-     */
-    @Deprecated
-    public static Workspace getInstance() {
-        return ws;
     }
 
     public Dimension getCanvasSize() {

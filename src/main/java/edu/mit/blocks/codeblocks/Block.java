@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -32,19 +31,9 @@ import edu.mit.blocks.workspace.WorkspaceEnvironment;
  */
 public class Block implements ISupportMemento {
 
-    /** The ID that is to be assigned to the next new block */
-    private static long NEXT_ID = 1;
-
-	// all used IDs are stored in this HashSet - replaces the keySet of ALL_BLOCKS (deprecated) for IDs management aspects
-    private static HashSet<Long> ALL_IDS = new HashSet<Long>();
-
     //Defines a NULL id for a Block
     public static final Long NULL = Long.valueOf(-1);
-    
-    /** A universal hashmap of all the Block instances*/
-    @Deprecated
-    private final static HashMap<Long, Block> ALL_BLOCKS = new HashMap<Long, Block>();
-    
+
     //block identifying information
     private final Long blockID;
     private String label;
@@ -111,13 +100,6 @@ public class Block implements ISupportMemento {
         //other threads could access this block from getBlock()
         workspace.getEnv().addBlock(this);
 
-        //if this assigned id value equals the next id to automatically assign
-        // a new block, increment the next id value by 1
-        if (id.longValue() == NEXT_ID) {
-            NEXT_ID++;
-        }
-        ALL_IDS.add(id);
-
         sockets = new ArrayList<BlockConnector>();
         argumentDescriptions = new ArrayList<String>();
         //copy connectors from BlockGenus
@@ -173,15 +155,9 @@ public class Block implements ISupportMemento {
      */
     public Block(Workspace workspace, String genusName, String label, boolean linkToStubs) {
         //more will go into constructor;
-        this(workspace, NEXT_ID, genusName, label, linkToStubs);
-
-        NEXT_ID++;
-
-        while (ALL_IDS.contains(NEXT_ID)) {
-            NEXT_ID++;
-        }
+        this(workspace, workspace.getEnv().getNextBlockID(), genusName, label, linkToStubs);
     }
-    
+
     /**
      * Constructs a new <code>Block</code> instance.  Using the genusName specified 
      * of this Block's corresponding BlockGenus, this constructor populates this Block
@@ -192,15 +168,9 @@ public class Block implements ISupportMemento {
      */
     public Block(Workspace workspace, String genusName, String label) {
         //more will go into constructor;
-        this(workspace, NEXT_ID, genusName, label, true);
-
-        NEXT_ID++;
-
-        while (ALL_IDS.contains(NEXT_ID)) {
-            NEXT_ID++;
-        }
+        this(workspace, workspace.getEnv().getNextBlockID(), genusName, label, true);
     }
-    
+
     /**
      * Constructs a new <code>Block</code> instance.  Using the genusName specified 
      * of this Block's corresponding BlockGenus, this constructor populates this Block
@@ -225,30 +195,7 @@ public class Block implements ISupportMemento {
     public Block(Workspace workspace, String genusName, boolean linkToStubs) {
         this(workspace, genusName, workspace.getEnv().getGenusWithName(genusName).getInitialLabel(), linkToStubs);
     }
-    
-    /**
-     * Returns the Block instance with the specified blockID
-     * @param blockID
-     * @return the Block instance with the specified blockID
-	 *
-	 * @deprecated: use workspace.getEnv().<same method name> instead
-     */
-    @Deprecated
-    public static Block getBlock(Long blockID) {
-        return ALL_BLOCKS.get(blockID);
-    }
-    
-    /**
-     * Clears all block instances and resets id assigment.
-	 *
-	 * @deprecated: use workspace.getEnv().<same method name> instead
-     */
-    @Deprecated
-    public static void reset() {
-        ALL_BLOCKS.clear();
-        NEXT_ID = 1;
-    }
-    
+
     ///////////////////
     //BLOCK prop
     ///////////////////
@@ -1456,7 +1403,7 @@ public class Block implements ISupportMemento {
             //load attributes
             nameMatcher = attrExtractor.matcher(node.getAttributes().getNamedItem("id").toString());
             if (nameMatcher.find()) {
-                id = translateLong(Long.parseLong(nameMatcher.group(1)), idMapping);
+                id = translateLong(workspace, Long.parseLong(nameMatcher.group(1)), idMapping);
             }
             nameMatcher = attrExtractor.matcher(node.getAttributes().getNamedItem("genus-name").toString());
             if (nameMatcher.find()) {
@@ -1484,9 +1431,9 @@ public class Block implements ISupportMemento {
                 } else if (child.getNodeName().equals("CompilerErrorMsg")) {
                     badMsg = child.getTextContent();
                 } else if (child.getNodeName().equals("BeforeBlockId")) {
-                    beforeID = translateLong(Long.parseLong(child.getTextContent()), idMapping);
+                    beforeID = translateLong(workspace, Long.parseLong(child.getTextContent()), idMapping);
                 } else if (child.getNodeName().equals("AfterBlockId")) {
-                    afterID = translateLong(Long.parseLong(child.getTextContent()), idMapping);
+                    afterID = translateLong(workspace, Long.parseLong(child.getTextContent()), idMapping);
                 } else if (child.getNodeName().equals("Plug")) {
                     NodeList plugs = child.getChildNodes(); //there should only one child
                     Node plugNode;
@@ -1591,26 +1538,19 @@ public class Block implements ISupportMemento {
         
         return null;
     }
-    
-    public static Long translateLong(Long input, HashMap<Long, Long> mapping) {
+
+    public static Long translateLong(Workspace workspace, Long input, HashMap<Long, Long> mapping) {
         if (mapping == null) {
             return input;
         }
         if (mapping.containsKey(input)) {
             return mapping.get(input);
         }
-        Long newID = Long.valueOf(NEXT_ID++);
+        Long newID = Long.valueOf(workspace.getEnv().getNextBlockID());
         mapping.put(input, newID);
         return newID;
     }
-    
-    //Temp code so compiler can see all blocks
-    //TODO remove when a more appropriate method exists for the workspace
-	@Deprecated
-    public static Iterable<Block> getAllBlocks() {
-        return ALL_BLOCKS.values();
-    }
-    
+
     /***********************************
     * State Saving Stuff for Undo/Redo *
     ***********************************/

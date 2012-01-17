@@ -184,15 +184,6 @@ public class BlockStub extends Block {
     }
 
     /**
-     * Clears all the mappings between parents and stubs.
-     */
-    @Deprecated
-    public static void reset() {
-        //parentNameToBlockStubs.clear();
-        //parentNameToParentBlock.clear();
-    }
-
-    /**
      * Returns a list of the block ids of the specified parent's stubs
      * @param blockID
      */

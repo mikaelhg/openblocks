@@ -32,14 +32,7 @@ import edu.mit.blocks.workspace.WorkspaceEnvironment;
 public class BlockGenus {
     
     private static final String EMPTY_STRING = "";
-    
-    // mapping of genus names to BlockGenus objects
-    // only BlockGenus may add to this map
-    
-    // moved in the WorkspaceEnvironemnt
-    @Deprecated
-    private static Map<String, BlockGenus> nameToGenus = new HashMap<String, BlockGenus>();
-    
+
     private final WorkspaceEnvironment env;
     
     private String genusName;
@@ -137,26 +130,6 @@ public class BlockGenus {
         this.sockets = new ArrayList<BlockConnector>(genusToCopy.sockets);
         this.stubList = new ArrayList<String>(genusToCopy.stubList);
         this.expandGroups = genusToCopy.expandGroups;   // doesn't change
-    }
-
-    /**
-     * Resets all the Block Genuses of current language.
-     *
-     *@deprecated Moved to {@link WorkspaceEnvironment}
-     */
-    public static void resetAllGenuses() {
-        nameToGenus.clear();
-    }
-
-    /**
-     * Returns the BlockGenus with the specified name; null if this name does not exist
-     * @param name the name of the desired BlockGenus  
-     * @return the BlockGenus with the specified name; null if this name does not exist
-     * 
-     * @deprecated moved to {@link WorkspaceEnvironment}
-     */
-    public static BlockGenus getGenusWithName(String name) {
-        return BlockGenus.nameToGenus.get(name);
     }
 
     /**
