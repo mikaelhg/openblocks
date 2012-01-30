@@ -503,7 +503,7 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
     /**
      * The type block manager, if defined.
      * @return The manager.
-     * @see {@link #enableTypeBlocking(boolean)}
+     * @see #enableTypeBlocking(boolean)
      */
     public TypeBlockManager getTypeBlockManager() {
         return typeBlockManager;

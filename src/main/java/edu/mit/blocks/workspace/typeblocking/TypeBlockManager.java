@@ -99,7 +99,7 @@ public class TypeBlockManager {
      * Convenience Methods										*
     -----------------------------------------------------------*/
     /**
-     * @returns true if and only if block is invalid (null or ID==-1)
+     * @return true if and only if block is invalid (null or ID==-1)
      */
     private static boolean invalidBlockID(Long blockID) {
         if (blockID == null) {
@@ -331,7 +331,7 @@ public class TypeBlockManager {
      * @param widget
      * @param container
      *
-     * @requries renderable != null && renderable.blockID != null && renderable.blockID != Block.NULL
+     * @requires renderable != null && renderable.blockID != null && renderable.blockID != Block.NULL
      * 			 && widget != null && container != null
      * @modifies renderable && children blocks connected to renderable
      * @effects removes renderable from container and widget and re-renders
@@ -827,7 +827,7 @@ public class TypeBlockManager {
      *				Block.getBlock(block.getBlockID()).getGenusName() == null ||
      *				Block.getBlock(block.getBlockID()).getGenusName().length() == 0 ||
      *				Block.getBlock(block.getBlockID()).getBlockLabel() == null
-     * @modfies Objects modified by this method is undefined
+     * @modifies Objects modified by this method is undefined
      * @effects The effects of this method is unknown
      */
     private void addBlock(RenderableBlock block) {

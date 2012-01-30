@@ -498,7 +498,7 @@ public class BlockStub extends Block {
     }
 
     /**
-     * @returns current information about block
+     * @return current information about block
      */
     public String toString() {
         return "Block Stub +" + getBlockID() + ": " + getBlockLabel() + " with sockets: " + getSockets() + " and plug: " + getPlug();

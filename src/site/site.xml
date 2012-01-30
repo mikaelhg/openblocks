@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Maven">
+    <bannerLeft>
+        <name>openblocks</name>
+        <href>https://github.com/mikaelhg/openblocks</href>
+    </bannerLeft>
+    <body>
+        <links>
+            <item name="Project" href="https://github.com/mikaelhg/openblocks" />
+            <item name="Repository" href="https://github.com/mikaelhg/openblocks.git" />
+        </links>
+        <menu name="OpenBlocks">
+            <item name="Introduction" href="index.html"/>
+            <item name="Language Definition" href="language.html"/>
+        </menu>
+        <menu ref="reports"/>
+    </body>
+</project>

@@ -166,7 +166,7 @@ public class LinkFinderUtil {
     }
 
     /**
-     * @param block
+     * @param blockID
      * @return true iff block is invalid (points to a null instance of Block)
      */
     private static boolean invalidBlock(Long blockID) {

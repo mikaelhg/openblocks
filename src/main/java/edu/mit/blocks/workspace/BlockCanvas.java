@@ -96,38 +96,38 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
     //////////////////////////////
     //Rendering View Accessor	//
     //////////////////////////////
-    /** @returns X Coordinate of BlockCanvas graphical representation */
+    /** @return X Coordinate of BlockCanvas graphical representation */
     public int getX() {
         return scrollPane.getX();
     }
 
-    /** @returns Y coordinate of BlockCanvas graphical representation */
+    /** @return Y coordinate of BlockCanvas graphical representation */
     public int getY() {
         return scrollPane.getY();
     }
 
-    /** @returns width of BlockCanvas graphical representation */
+    /** @return width of BlockCanvas graphical representation */
     public int getWidth() {
         return scrollPane.getWidth();
     }
 
-    /** @returns height of BlockCanvas graphical representation */
+    /** @return height of BlockCanvas graphical representation */
     public int getHeight() {
         return scrollPane.getHeight();
     }
 
-    /** @returns vertical scroll bar bounding range model.  MAY BE NULL */
+    /** @return vertical scroll bar bounding range model.  MAY BE NULL */
     public BoundedRangeModel getVerticalModel() {
         return scrollPane.getVerticalModel();
     }
 
-    /** @returns horizontal scroll bar bounding range model.  MAY BE NULL */
+    /** @return horizontal scroll bar bounding range model.  MAY BE NULL */
     public BoundedRangeModel getHorizontalModel() {
         return scrollPane.getHorizontalModel();
     }
 
     /**
-     * @returns the Swing Container that holds all the graphical panels of
+     * @return the Swing Container that holds all the graphical panels of
      * 			all the pages in this Blockcanvas
      */
     public JComponent getCanvas() {
@@ -135,15 +135,15 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
     }
 
     /**
-     * @returns JComponent representation of this
-     * @warning Please take special care in useing this method, as it exposes
+     * Warning: Please take special care in useing this method, as it exposes
      * 			implementation details.
+     * @return JComponent representation of this
      */
     public JComponent getJComponent() {
         return scrollPane;
     }
 
-    /** @returns string representation of this */
+    /** @return string representation of this */
     public String toString() {
         return "BlockCanvas " + pages.size() + " pages.";
     }
@@ -215,7 +215,7 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
     //Page Mutators/Accessors	//
     //////////////////////////////
     /**
-     * @returns the number of Pages.
+     * @return the number of Pages.
      */
     public int numOfPages() {
         return pages.size();
@@ -345,7 +345,7 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
      * @param position - 0 is the left most page
      * 
      * @requires none
-     * @returns the page that was removed or null if non was removed.
+     * @return the page that was removed or null if non was removed.
      * @modifies this.pages
      * @effects If the position is within bounds, then remove
      * 			the page located at the specified position.
@@ -362,7 +362,7 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
     /**
      * @param page the desired page to switch view to
      * 
-     * @requries page != null
+     * @requires page != null
      * @modifies the ghorizontal boundedrangemodel of this blockcanvas
      * @effects Switches the canvas view to the specified page.
      */
@@ -394,7 +394,7 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
     ////////////////////////////////
     //PageChangeListener Interface//
     ////////////////////////////////
-    /** @override PageChangeListener.update() */
+    /** @overrides PageChangeListener.update() */
     public void update() {
         this.reformBlockCanvas(); // just repaint and it'll all look right again
     }
@@ -500,7 +500,7 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
     //////////////////////////////
     //REDO/UNOD					//
     //////////////////////////////
-    /** @override ISupportMomento.getState */
+    /** @overrides ISupportMomento.getState */
     public Object getState() {
         Map<String, Object> pageStates = new HashMap<String, Object>();
         for (Page page : pages) {
@@ -509,7 +509,7 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
         return pageStates;
     }
 
-    /** @override ISupportMomento.loadState() */
+    /** @overrides ISupportMomento.loadState() */
     @SuppressWarnings("unchecked")
     public void loadState(Object memento) {
         assert (memento instanceof HashMap) : "ISupportMemento contract violated in BlockCanvas";

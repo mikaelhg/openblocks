@@ -306,7 +306,7 @@ public class BlockConnectorShape {
      * _lineTo and _curveTo are relative to the starting point of the the data connection to be drawn.
      * 
      * @param blockPath is the current GeneralPath to be appended
-     * @param socketShape is the integer representing the kind and style of socket to be drawn
+     * @param connectionShape is the integer representing the kind and style of connection to be drawn
      * @param startFromTop true if end of the current generalPath is at the top of the data connection to be drawn
      * @param convexRight true if curve drawn points to the right
      */

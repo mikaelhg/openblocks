@@ -231,7 +231,7 @@ public class CGlassScrollPane extends CScrollPane implements KeyListener {
     }
 
     /**
-     * @ovverride CScrollPane.getVerticalModel
+     * @overrides CScrollPane.getVerticalModel
      */
     @Override
     public BoundedRangeModel getVerticalModel() {
@@ -239,7 +239,7 @@ public class CGlassScrollPane extends CScrollPane implements KeyListener {
     }
 
     /**
-     * @ovverride CScrollPane.getHorizontalModel
+     * @overrides CScrollPane.getHorizontalModel
      */
     @Override
     public BoundedRangeModel getHorizontalModel() {
@@ -247,7 +247,7 @@ public class CGlassScrollPane extends CScrollPane implements KeyListener {
     }
 
     /**
-     * @ovverride CScrollPane.scrollRectToVisible
+     * @overrides CScrollPane.scrollRectToVisible
      */
     @Override
     public void scrollRectToVisible(Rectangle contentRect) {
@@ -255,7 +255,7 @@ public class CGlassScrollPane extends CScrollPane implements KeyListener {
     }
 
     /**
-     * @ovverride CScrollPane.setScrollingUnit
+     * @overrides CScrollPane.setScrollingUnit
      */
     @Override
     public void setScrollingUnit(int x) {
@@ -264,7 +264,7 @@ public class CGlassScrollPane extends CScrollPane implements KeyListener {
     }
 
     /**
-     * @override CScrollPane.mouseWheelMoved
+     * @overrides CScrollPane.mouseWheelMoved
      * TODO: This is duplicate code (In Hover, Glass, and Tackless ScollPanes)
      * For MACs only: Horizontal scroll events are delivered
      * to JScrollPanes as Shift+ScrollWheel events AUTOMATICALLY,

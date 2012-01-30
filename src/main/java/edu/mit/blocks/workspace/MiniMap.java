@@ -94,7 +94,7 @@ public class MiniMap extends JPanel implements WorkspaceWidget, MouseListener, M
     private final Workspace workspace;
 
     /**
-     * @effect  constructs a MiniMap, M, such that
+     * @effects  constructs a MiniMap, M, such that
      * 			M.blockCanvas = The current blockcanvas in Workspace &&
      * 			M.blocks = M.blockCanvas.getBlocks &&
      * 			M.comments = Set of all M.blockCanvas.getBlocks.getComment &&
@@ -118,8 +118,8 @@ public class MiniMap extends JPanel implements WorkspaceWidget, MouseListener, M
     }
 
     /**
-     * @modies this.preferredSize && this.size && this.isVisible
-     * @effect mutates this MiniMap by making it invisible
+     * @modifies this.preferredSize && this.size && this.isVisible
+     * @effects mutates this MiniMap by making it invisible
      */
     public void hideMiniMap() {
         this.setSize(0, 0);
@@ -231,7 +231,7 @@ public class MiniMap extends JPanel implements WorkspaceWidget, MouseListener, M
     }
 
     /**
-     * @effect Renders a JComponent by drawing a rectangle around
+     * @effects Renders a JComponent by drawing a rectangle around
      * 		   its bounding box (rescaled to fit MiniMap) using
      * 		   the given graphics context
      */
@@ -262,9 +262,9 @@ public class MiniMap extends JPanel implements WorkspaceWidget, MouseListener, M
 
     /**
      * Scales i to current aspect ratio.
-     * @param p
+     * @param x
      *
-     * @requires p != null
+     * @requires x != null
      * @return new Point that is a copy of "p" tranformed
      * 			 by (this.transformX, this.transformY)
      */

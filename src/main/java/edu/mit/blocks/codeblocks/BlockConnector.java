@@ -104,7 +104,6 @@ public class BlockConnector implements ISupportMemento {
     /**
      * Constucts a new <code>BlockConnector</code> by copying the connector information
      * from the specified con.  Copies the con's connector label and kind.
-     * @param workspace The workspace this connector is created in 
      * @param con the BlockConnector to copy from
      */
     public BlockConnector(BlockConnector con) {

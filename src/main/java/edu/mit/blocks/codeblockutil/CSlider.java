@@ -88,7 +88,7 @@ public class CSlider extends JPanel implements MouseListener, MouseMotionListene
      * @param right - the value representing the right side of the slider
      * @param value - this.value
      * @param setTicks - boolean representing whether there should be ticks
-     * @param setTickNumber - the value representing the number of ticks desired
+     * @param numTicks - the value representing the number of ticks desired
      *
      * @requires min(left, right)<value<max(left, right)
      * @effects Constructs a CSlider such that this.left = left, this.right=right
@@ -107,8 +107,9 @@ public class CSlider extends JPanel implements MouseListener, MouseMotionListene
      * @param right - the value representing the right side of the slider
      * @param value - this.value
      * @param setTicks - boolean representing whether there should be ticks
-     * @param setTickNumber - the value representing the number of ticks desired
+     * @param numTicks - the value representing the number of ticks desired
      * @param startMark - turn the mark for the start of the thumb on
+     * @param startMarkLabel - what the label for the start point is
      *
      * @requires min(left, right)<value<max(left, right)
      * @effects Constructs a CSlider such that this.left = left, this.right=right

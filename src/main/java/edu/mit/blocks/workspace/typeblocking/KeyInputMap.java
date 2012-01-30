@@ -69,11 +69,12 @@ public class KeyInputMap {
      * 		3.  It should parse the key event and drop down the
      * 			appropriate block as well as make the needed
      * 			connections.
+     *
+     * Both Key_Pressed and Kep_Types events
+     * must pass through here
      * @requires key!=null
      * @param workspace The workspace in use
      * @param key
-     * @assumptions	Both Key_Pressed and Kep_Types events
-     * must pass through here
      */
     public static void processKeyChar(Workspace workspace, KeyEvent key) {
 

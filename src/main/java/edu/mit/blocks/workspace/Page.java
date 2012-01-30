@@ -349,7 +349,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
     }
 
     /**
-     * @returns icon of this.  MAY BE NULL
+     * @return icon of this.  MAY BE NULL
      */
     public Image getIcon() {
         return this.pageJComponent.getImage();
@@ -365,7 +365,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
     /**
      * @param newName - the new name of this page.
      *
-     * @requries newName != null
+     * @requires newName != null
      * @modifies this.name
      * @effects sets the name of this page to be newName.
      */
@@ -517,7 +517,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
 
     /**
      * @modifies this.miniPixelWidth
-     * @ffects sets the minimumPixelWidth such that the following condition holds:
+     * @effects sets the minimumPixelWidth such that the following condition holds:
      * 			DEFAULT_MINIMUMWIDTH < new minimumPixelWidth &&
      * 			for each block, b, in this page's set of blocks {
      * 				b.x+b.width < new minimumPixelWidth}
@@ -568,7 +568,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
         Page.zoom = newZoom;
     }
 
-    /** @ovverride Zoomable.getZoomLevel() */
+    /** @overrides Zoomable.getZoomLevel() */
     public static double getZoomLevel() {
         return Page.zoom;
     }
@@ -576,7 +576,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
     //////////////////////////////
     //WORKSPACEWIDGET METHODS 	//
     //////////////////////////////
-    /** @ovverride WorkspaceWidget.blockDropped() */
+    /** @overrides WorkspaceWidget.blockDropped() */
     public void blockDropped(RenderableBlock block) {
         //add to view at the correct location
         Component oldParent = block.getParent();
@@ -587,7 +587,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
         this.pageJComponent.revalidate();
     }
 
-    /** @ovverride WorkspaceWidget.blockDragged() */
+    /** @overrides WorkspaceWidget.blockDragged() */
     public void blockDragged(RenderableBlock block) {
         if (mouseIsInPage == false) {
             mouseIsInPage = true;
@@ -595,7 +595,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
         }
     }
 
-    /** @ovverride WorkspaceWidget.blockEntered() */
+    /** @overrides WorkspaceWidget.blockEntered() */
     public void blockEntered(RenderableBlock block) {
         if (mouseIsInPage == false) {
             mouseIsInPage = true;
@@ -603,13 +603,13 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
         }
     }
 
-    /** @ovverride WorkspaceWidget.blockExited() */
+    /** @overrides WorkspaceWidget.blockExited() */
     public void blockExited(RenderableBlock block) {
         mouseIsInPage = false;
         this.pageJComponent.repaint();
     }
 
-    /** @ovverride WorkspaceWidget.addBlock() */
+    /** @overrides WorkspaceWidget.addBlock() */
     public void addBlock(RenderableBlock block) {
         //update parent widget if dropped block
         WorkspaceWidget oldParent = block.getParentWidget();
@@ -657,7 +657,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
      * @modifies this page's set of blocks
      * @effects Add the collection of blocks internally and graphically,
      * 			delaying graphicalupdates until all of the blocks have been added.
-     * @ovverride WorkspaceWidget.blockEntered()
+     * @overrides WorkspaceWidget.blockEntered()
      */
     public void addBlocks(Collection<RenderableBlock> blocks) {
         for (RenderableBlock block : blocks) {
@@ -667,12 +667,12 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
         this.pageJComponent.revalidate();
     }
 
-    /** @ovverride WorkspaceWidget.removeBlock() */
+    /** @overrides WorkspaceWidget.removeBlock() */
     public void removeBlock(RenderableBlock block) {
         this.pageJComponent.remove(block);
     }
 
-    /** @ovverride WorkspaceWidget.getJComponent() */
+    /** @overrides WorkspaceWidget.getJComponent() */
     public JComponent getJComponent() {
         return this.pageJComponent;
     }
@@ -684,12 +684,12 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
         return (RBParent) this.pageJComponent;
     }
 
-    /** @ovverride WorkspaceWidget.contains() */
+    /** @overrides WorkspaceWidget.contains() */
     public boolean contains(int x, int y) {
         return this.pageJComponent.contains(x, y);
     }
 
-    /** @ovverride WorkspaceWidget.contains() */
+    /** @overrides WorkspaceWidget.contains() */
     public boolean contains(Point p) {
         return this.contains(p.x, p.y);
     }
@@ -702,12 +702,12 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
     //////////////////////////////////
     // SearchableContainer Methods	//
     //////////////////////////////////
-    /** @ovverride SearchableContainer.getSearchableElements */
+    /** @overrides SearchableContainer.getSearchableElements */
     public Iterable<RenderableBlock> getSearchableElements() {
         return getBlocks();
     }
 
-    /** @ovverride SearchableContainer.updateContainerSearchResults */
+    /** @overrides SearchableContainer.updateContainerSearchResults */
     public void updateContainsSearchResults(boolean containsSearchResults) {
         // Do nothing, at least for now
     }
@@ -852,7 +852,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
         public Map<Long, Object> renderableBlocks = new HashMap<Long, Object>();
     }
 
-    /** @override ISupportMomento.getState */
+    /** @overrides ISupportMomento.getState */
     public Object getState() {
         PageState state = new PageState();
         //Populate basic page information
@@ -867,7 +867,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
         return state;
     }
 
-    /** @override ISupportMomento.loadState() */
+    /** @overrides ISupportMomento.loadState() */
     public void loadState(Object memento) {
         assert (memento instanceof PageState) : "ISupportMemento contract violated in Page";
         if (memento instanceof PageState) {
@@ -1173,13 +1173,13 @@ class PageJComponent extends JLayeredPane implements RBParent {
     //////////////////////////////////
     //RBParent implemented methods	//
     //////////////////////////////////
-    /** @override RBParent.addToBlockLayer() */
+    /** @overrides RBParent.addToBlockLayer() */
     public void addToBlockLayer(Component c) {
         this.add(c, BLOCK_LAYER);
 
     }
 
-    /** @override RBParent.addToHighlightLayer() */
+    /** @overrides RBParent.addToHighlightLayer() */
     public void addToHighlightLayer(Component c) {
         this.add(c, HIGHLIGHT_LAYER);
     }

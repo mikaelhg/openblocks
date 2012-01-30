@@ -560,7 +560,7 @@ public class FactoryManager implements WorkspaceWidget, ComponentListener, Works
     //Block Methods//
     /////////////////
     /**
-     * @returns set of blocks found in drawer with the specified name.
+     * @return set of blocks found in drawer with the specified name.
      * 			If no blocks are found in the drawer, return an empty set.
      * 			If no Drawers are found with specified name, return empty set.
      */
