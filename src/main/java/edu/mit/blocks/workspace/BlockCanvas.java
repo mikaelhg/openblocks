@@ -27,19 +27,20 @@ import edu.mit.blocks.codeblockutil.CHoverScrollPane;
 import edu.mit.blocks.codeblockutil.CScrollPane;
 import edu.mit.blocks.codeblockutil.CScrollPane.ScrollPolicy;
 import edu.mit.blocks.renderable.RenderableBlock;
+import org.w3c.dom.NodeList;
 
 /**
- * A BlockCanvas is a container of Pages and is a scrollable 
- * panel.  When a page is added to a BlockCanvas, that 
- * particular new page must be added to both the data 
- * structure holding the set of pages and the scrollable 
+ * A BlockCanvas is a container of Pages and is a scrollable
+ * panel.  When a page is added to a BlockCanvas, that
+ * particular new page must be added to both the data
+ * structure holding the set of pages and the scrollable
  * panel that renders the page.
- * 
- * A BlockCanvas is also a PageChangeListener.  When any 
- * pages are changed, the Blockcanvas must update itself 
+ *
+ * A BlockCanvas is also a PageChangeListener.  When any
+ * pages are changed, the Blockcanvas must update itself
  * appropriately to reflect this change.
- * 
- * As of the current implementation, the BlockCanvas must 
+ *
+ * As of the current implementation, the BlockCanvas must
  * have at least one Page when it becomes visible (that is,
  * when its viewable JComponent becomes visible).
  */
@@ -57,6 +58,8 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
     private CScrollPane scrollPane;
     /** The workspace in use */
     private final Workspace workspace;
+
+    private boolean collapsible = false;
 
     //////////////////////////////
     //Constructor/Destructor	//
@@ -219,7 +222,7 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
 
     /**
      * @param position - 0 is the left most position
-     * 
+     *
      * @requires none
      * @return true if there exists a page at the specified position
      */
@@ -229,7 +232,7 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
 
     /**
      * @param position - 0 is the left most position
-     * 
+     *
      * @requires none
      * @return page at position or null if non exists at position
      */
@@ -243,7 +246,7 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
 
     /**
      * @param name - name of page
-     * 
+     *
      * @requires none
      * @return  FIRST page with matchng name (if more than
      * 			one page has matching name, it returns the first) or null
@@ -267,7 +270,7 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
 
     /**
      * @param page the page to add to the BlockCanvas
-     * 
+     *
      * @requires page != null
      * @modifies this.pages
      * @effects Adds the given page to the rightmost side of the BlockCanvas
@@ -279,14 +282,14 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
     /**
      * @param page - page to be added
      * @param position - the index at which to add the page where 0 is rightmost
-     * 
+     *
      * @requires none
      * @modifies this.pages
      * @effects Inserts the specified page at the specified position.
      * 			Shifts the element currently at that position (if any)
      * 			and any subsequent elements to the right (adds one to
      * 			their current position).
-     * @throws RuntimeException if (position < 0 || position > pages.size() || page == null) 
+     * @throws RuntimeException if (position < 0 || position > pages.size() || page == null)
      */
     public void addPage(Page page, int position) {
         if (page == null) {
@@ -305,7 +308,7 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
 
     /**
      * @param page - the page to be removed
-     * 
+     *
      * @requires page != null
      * @modifies this.pages
      * @effects Removes the given Page from the BlockCanvas.
@@ -339,7 +342,7 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
 
     /**
      * @param position - 0 is the left most page
-     * 
+     *
      * @requires none
      * @return the page that was removed or null if non was removed.
      * @modifies this.pages
@@ -357,7 +360,7 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
 
     /**
      * @param page the desired page to switch view to
-     * 
+     *
      * @requires page != null
      * @modifies the ghorizontal boundedrangemodel of this blockcanvas
      * @effects Switches the canvas view to the specified page.
@@ -369,7 +372,7 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
     /**
      * @param oldName - the original name of the page
      * @param newName - the String name to rename the page to
-     * 
+     *
      * @requires oldName != null && newName != null
      * @return 	If a matching page was found, return the renamed Page.
      * 			Otherwise, return null.
@@ -433,35 +436,34 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
     //Saving and Loading		//
     //////////////////////////////
     /**
-     * Returns an XML node describing all the blocks and pages within 
+     * Returns an XML node describing all the blocks and pages within
      * the BlockCanvas
      * @return Node or {@code null} if there are no pages
      */
     public Node getSaveNode(Document document) {
-    	if (pages.size() > 0) {
-    		// TODO ria just do BLOCKS, CHECK OUT HOW SAVING WILL BE LIKE WITH REFACTORING
-    		Element pageElement = document.createElement("Pages");
-    		if (Workspace.everyPageHasDrawer) {
-    			pageElement.setAttribute("drawer-with-page", "yes");
-    		}
-    		
-    		for (Page page: pages) {
-    			Node pageNode = page.getSaveNode(document);
-    			pageElement.appendChild(pageNode);
-    		}
-    		
-    		return pageElement;
-    	}
-    	
-    	return null;
+        if (pages.size() > 0) {
+            // TODO ria just do BLOCKS, CHECK OUT HOW SAVING WILL BE LIKE WITH REFACTORING
+            Element pageElement = document.createElement("Pages");
+            if (Workspace.everyPageHasDrawer) {
+                pageElement.setAttribute("drawer-with-page", "yes");
+            }
+            pageElement.setAttribute("collapsible-pages", collapsible ? "yes" : "no");
+            for (Page page : pages) {
+                Node pageNode = page.getSaveNode(document);
+                pageElement.appendChild(pageNode);
+            }
+            return pageElement;
+        }
+
+        return null;
     }
 
     /**
-     * Loads all the RenderableBlocks and their associated Blocks that 
+     * Loads all the RenderableBlocks and their associated Blocks that
      * reside within the block canvas.  All blocks will have their nessary
      * data populated including connection information, stubs, etc.
-     * Note: This method should only be called if this language only uses the 
-     * BlockCanvas to work with blocks and no pages. Otherwise, workspace live blocks 
+     * Note: This method should only be called if this language only uses the
+     * BlockCanvas to work with blocks and no pages. Otherwise, workspace live blocks
      * are loaded from Pages.
      * @param root the Document Element containing the desired information
      */
@@ -471,6 +473,15 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
         //load pages, page drawers, and their blocks from save file
         //PageDrawerManager.loadPagesAndDrawers(root);
         PageDrawerLoadingUtils.loadPagesAndDrawers(workspace, root, workspace.getFactoryManager());
+
+        final NodeList pagesRoot = root.getElementsByTagName("Pages");
+        if (pagesRoot != null && pagesRoot.getLength() > 0) {
+            final Node pagesNode = pagesRoot.item(0);
+            if (pagesNode != null) {
+                collapsible = PageDrawerLoadingUtils.getBooleanValue(pagesNode, "collapsible-pages");
+            }
+        }
+
         int screenWidth = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width;
         int canvasWidth = canvas.getPreferredSize().width;
         if (canvasWidth < screenWidth) {

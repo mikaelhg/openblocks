@@ -1,2 +1,7 @@
 build/
 target/
+.classpath
+.idea
+.project
+.settings
+openblocks.iml
