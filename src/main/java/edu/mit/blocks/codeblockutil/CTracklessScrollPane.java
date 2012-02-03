@@ -21,10 +21,8 @@ import java.awt.geom.RoundRectangle2D;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 

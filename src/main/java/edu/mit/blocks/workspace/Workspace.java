@@ -48,11 +48,12 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
 
     private static final long serialVersionUID = 328149080422L;
 
-    /**
-     * Single Workspace instance. This is only kept for compatibility
-     */
-    @Deprecated
-    private static Workspace ws = new Workspace();
+	// the environment wrapps all the components of a workspace (Blocks, RenderableBlocks, BlockStubs, BlockGenus)
+    private final WorkspaceEnvironment env = new WorkspaceEnvironment();
+
+    public WorkspaceEnvironment getEnv() {
+		return this.env;
+	}
 
     /** WorkspaceListeners that monitor:
      * block: added, removed, dropped, label changed, connected, disconnected
@@ -179,16 +180,6 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
                 p.enableMinimize();
             }
         }
-    }
-
-    /**
-     * Returns the one <code>Workspace</code> instance
-     * @return the one <code>Workspace</code> instance
-     * @deprecated There can now be more than one instance of a workspace.
-     */
-    @Deprecated
-    public static Workspace getInstance() {
-        return ws;
     }
 
     public Dimension getCanvasSize() {
@@ -381,7 +372,7 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
         //TODO: performance issue, must iterate through all blocks
         final ArrayList<Block> blocks = new ArrayList<Block>();
         for (final RenderableBlock renderable : blockCanvas.getBlocks()) {
-            blocks.add(Block.getBlock(renderable.getBlockID()));
+            blocks.add(getEnv().getBlock(renderable.getBlockID()));
         }
         return blocks;
     }
@@ -402,7 +393,7 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
         //TODO: performance issue, must iterate through all blocks
         ArrayList<RenderableBlock> blocks = new ArrayList<RenderableBlock>();
         for (RenderableBlock block : blockCanvas.getBlocks()) {
-            if (Block.getBlock(block.getBlockID()).getGenusName().equals(genusName)) {
+            if (getEnv().getBlock(block.getBlockID()).getGenusName().equals(genusName)) {
                 blocks.add(block);
             }
         }
@@ -425,7 +416,7 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
         //TODO: performance issue, must iterate through all blocks
         ArrayList<Block> blocks = new ArrayList<Block>();
         for (RenderableBlock renderable : blockCanvas.getBlocks()) {
-            Block block = Block.getBlock(renderable.getBlockID());
+            Block block = getEnv().getBlock(renderable.getBlockID());
             if (block.getGenusName().equals(genusName)) {
                 blocks.add(block);
             }
@@ -455,14 +446,14 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
      * calls TypeBlockManager to copy the highlighted blocks on the canvas
      */
     public void copyBlocks() {
-        TypeBlockManager.copyBlock(this);
+        typeBlockManager.copyBlock(this);
     }
 
     /**
      * calls TypeBlockManager to pastes the highlighted blocks on the canvas
      */
     public void pasteBlocks() {
-        TypeBlockManager.pasteBlock(this);
+        typeBlockManager.pasteBlock(this);
     }
 
     //////////////////////////
@@ -904,7 +895,9 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
         blockCanvas.reset();
         addPageAt(Page.getBlankPage(this), 0, false); //TODO: System expects PAGE_ADDED event
         factory.reset();
-        RenderableBlock.reset();
+
+        env.resetAll();
+
         revalidate();
     }
 
@@ -927,7 +920,7 @@ public class Workspace extends JLayeredPane implements ISupportMemento, RBParent
             WorkspaceState state = (WorkspaceState) memento;
             //Load the blocks state
             for (Long blockID : state.blockStates.keySet()) {
-                Block toBeUpdated = Block.getBlock(blockID);
+                Block toBeUpdated = getEnv().getBlock(blockID);
                 toBeUpdated.loadState(state.blockStates.get(blockID));
             }
             //Load the canvas state

@@ -130,10 +130,10 @@ public class BlockLink {
             lastPlugBlockID = socket.getBlockID();
 
             // break the link between the socket block and the block in that socket
-            Block plugBlock = Block.getBlock(lastPlugBlockID);
+            Block plugBlock = workspace.getEnv().getBlock(lastPlugBlockID);
             BlockConnector plugBlockPlug = BlockLinkChecker.getPlugEquivalent(plugBlock);
             if (plugBlockPlug != null && plugBlockPlug.hasBlock()) {
-                Block socketBlock = Block.getBlock(plugBlockPlug.getBlockID());
+                Block socketBlock = workspace.getEnv().getBlock(plugBlockPlug.getBlockID());
                 BlockLink link = BlockLink.getBlockLink(workspace, plugBlock, socketBlock, plugBlockPlug, socket);
                 link.disconnect();
                 //don't tell the block about the disconnect like we would normally do, because
@@ -141,7 +141,7 @@ public class BlockLink {
                 // since the inserted block will be filling whatever socket was vacated by this
                 // broken link.
                 //NOTIFY WORKSPACE LISTENERS OF DISCONNECTION (not sure if this is great because the connection is immediately replaced)
-                workspace.notifyListeners(new WorkspaceEvent(workspace, RenderableBlock.getRenderableBlock(socketBlock.getBlockID()).getParentWidget(), link, WorkspaceEvent.BLOCKS_DISCONNECTED));
+                workspace.notifyListeners(new WorkspaceEvent(workspace, workspace.getEnv().getRenderableBlock(socketBlock.getBlockID()).getParentWidget(), link, WorkspaceEvent.BLOCKS_DISCONNECTED));
             }
         }
         if (plug.hasBlock()) {
@@ -157,7 +157,7 @@ public class BlockLink {
         socket.setConnectorBlockID(plugBlockID);
 
         //notify renderable block of connection so it can redraw with stretching
-        RenderableBlock socketRB = RenderableBlock.getRenderableBlock(socketBlockID);
+        RenderableBlock socketRB = workspace.getEnv().getRenderableBlock(socketBlockID);
         socketRB.blockConnected(socket, plugBlockID);
 
         if (clickSound != null) {
