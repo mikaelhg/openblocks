@@ -6,6 +6,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.PopupMenu;
@@ -1014,6 +1015,10 @@ public class RenderableBlock extends JComponent implements SearchableElement, Mo
      * dimensions of this and set the isLoading flag to false
      */
     public void redrawFromTop() {
+    	if (GraphicsEnvironment.isHeadless()) {
+    		return;
+    	}
+    	
         isLoading = false;
         for (BlockConnector socket : BlockLinkChecker.getSocketEquivalents(getBlock())) {
 
@@ -1112,6 +1117,11 @@ public class RenderableBlock extends JComponent implements SearchableElement, Mo
      * Clears the BufferedImage of this and repaint this entirely
      */
     public void repaintBlock() {
+    	if (GraphicsEnvironment.isHeadless()) {
+    		// if headless, nothing to do
+    		return;
+    	}
+    	
         clearBufferedImage();
 
         if (this.isVisible()) {
@@ -1207,6 +1217,11 @@ public class RenderableBlock extends JComponent implements SearchableElement, Mo
      * if the buffer has been cleared.
      */
     private void updateBuffImg() {
+    	if (GraphicsEnvironment.isHeadless()) {
+    		// don't do anything if there is no UI
+    		return;
+    	}
+    	
         //if label text has changed, then resync labels/sockets and reform shape
         if (!synchronizeLabelsAndSockets()) {
             reformBlockShape();//if updateLabels is true, we don't need to reform AGAIN
