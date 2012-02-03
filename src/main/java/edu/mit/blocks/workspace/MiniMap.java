@@ -20,7 +20,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import edu.mit.blocks.codeblocks.Block;
 import edu.mit.blocks.codeblocks.BlockConnector;
 import edu.mit.blocks.renderable.Comment;
 import edu.mit.blocks.renderable.RenderableBlock;
@@ -417,8 +416,8 @@ public class MiniMap extends JPanel implements WorkspaceWidget, MouseListener, M
         dropped on different places.  Need to find a way to drop according the
         widget of the top block of the stack...*/
         RenderableBlock socketBlock;
-        for (BlockConnector con : (Block.getBlock(block.getBlockID()).getSockets())) {
-            socketBlock = RenderableBlock.getRenderableBlock(con.getBlockID());
+        for (BlockConnector con : (workspace.getEnv().getBlock(block.getBlockID()).getSockets())) {
+            socketBlock = block.getWorkspace().getEnv().getRenderableBlock(con.getBlockID());
             if (socketBlock != null) {
                 w = socketBlock.getParentWidget();
             }

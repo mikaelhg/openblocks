@@ -26,7 +26,7 @@ public class InfixRule implements LinkRule, WorkspaceListener {
         //first assume that block1 is a parent with children
         Block parent = block1; //block1 is parent
         BlockConnector psocket = socket1;
-        Block child = Block.getBlock(socket1.getBlockID()); //child is the block1's socket block
+        Block child = block1.workspace.getEnv().getBlock(socket1.getBlockID()); //child is the block1's socket block
         Block newblock = block2; //the new block that is being dragged to added on top is block2
         BlockConnector nplug = socket2;
         if (child != null && // make sure child' isn't null
@@ -49,7 +49,7 @@ public class InfixRule implements LinkRule, WorkspaceListener {
         //now assume that block2 is a parent with children
         parent = block2; //block1 is parent
         psocket = socket2;
-        child = Block.getBlock(socket2.getBlockID()); //child is the block1's socket block
+        child = block1.getWorkspace().getEnv().getBlock(socket2.getBlockID()); //child is the block1's socket block
         newblock = block1; //the new block that is being dragged to added on top is block2
         nplug = socket1;
         if (child != null && // make sure child' isn't null
@@ -83,15 +83,15 @@ public class InfixRule implements LinkRule, WorkspaceListener {
             if (link == null) {
                 return;
             }
-            Block oldchild = Block.getBlock(link.getLastBlockID());
+            Block oldchild = e.getWorkspace().getEnv().getBlock(link.getLastBlockID());
             if (invalidBlock(oldchild)) {
                 return;
             }
-            Block newchild = Block.getBlock(link.getPlugBlockID());
+            Block newchild = e.getWorkspace().getEnv().getBlock(link.getPlugBlockID());
             if (invalidBlock(newchild)) {
                 return;
             }
-            Block parent = Block.getBlock(link.getSocketBlockID());
+            Block parent = e.getWorkspace().getEnv().getBlock(link.getSocketBlockID());
             if (invalidBlock(parent)) {
                 return;
             }
@@ -101,7 +101,7 @@ public class InfixRule implements LinkRule, WorkspaceListener {
             if (!newchild.hasPlug()) {
                 return;
             }
-            Block newChildPlug = Block.getBlock(newchild.getPlug().getBlockID());
+            Block newChildPlug = e.getWorkspace().getEnv().getBlock(newchild.getPlug().getBlockID());
             if (invalidBlock(newChildPlug)) {
                 return;
             }

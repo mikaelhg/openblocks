@@ -51,7 +51,7 @@ public class BlockDropAnimator implements ActionListener {
             //if parent block exist, then preform automatic linking
             childBlock.setLocation(focusPoint);
             if (parentBlock != null && parentBlock.getBlockID() != null && !parentBlock.getBlockID().equals(Block.NULL)) {
-                BlockLink link = LinkFinderUtil.connectBlocks(workspace, Block.getBlock(childBlock.getBlockID()), Block.getBlock(parentBlock.getBlockID()));
+                BlockLink link = LinkFinderUtil.connectBlocks(workspace, workspace.getEnv().getBlock(childBlock.getBlockID()), workspace.getEnv().getBlock(parentBlock.getBlockID()));
                 if (link == null) {
                     dropBlock(childBlock);
                     childBlock.repaintBlock();
@@ -62,12 +62,12 @@ public class BlockDropAnimator implements ActionListener {
                     dropBlock(childBlock);
 
                     workspace.notifyListeners(new WorkspaceEvent(
-                            workspace, 
-                            RenderableBlock.getRenderableBlock(link.getPlugBlockID()).getParentWidget(),
+                            workspace,
+                            workspace.getEnv().getRenderableBlock(link.getPlugBlockID()).getParentWidget(),
                             link, WorkspaceEvent.BLOCKS_CONNECTED));
-                    RenderableBlock.getRenderableBlock(link.getSocketBlockID()).moveConnectedBlocks();
-                    RenderableBlock.getRenderableBlock(link.getSocketBlockID()).repaintBlock();
-                    RenderableBlock.getRenderableBlock(link.getSocketBlockID()).repaint();
+                    workspace.getEnv().getRenderableBlock(link.getSocketBlockID()).moveConnectedBlocks();
+                    workspace.getEnv().getRenderableBlock(link.getSocketBlockID()).repaintBlock();
+                    workspace.getEnv().getRenderableBlock(link.getSocketBlockID()).repaint();
                 }
             } else {
                 dropBlock(childBlock);
@@ -77,7 +77,7 @@ public class BlockDropAnimator implements ActionListener {
 
             //stop the timer
             timer.stop();
-            if (Block.getBlock(childBlock.getBlockID()).getGenusName().equals("number")) {
+            if (workspace.getEnv().getBlock(childBlock.getBlockID()).getGenusName().equals("number")) {
                 childBlock.switchToLabelEditingMode(false);
             } else {
                 childBlock.switchToLabelEditingMode(true);

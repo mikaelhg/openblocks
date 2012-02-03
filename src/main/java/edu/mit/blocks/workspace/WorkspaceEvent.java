@@ -201,29 +201,29 @@ public class WorkspaceEvent {
             case PAGE_REMOVED:
                 return "WorkspaceEvent(PAGE_REMOVED: " + widget + ")";
             case BLOCK_ADDED:
-                return "WorkspaceEvent(BLOCK_ADDED: " + Block.getBlock(blockID) + ")";
+                return "WorkspaceEvent(BLOCK_ADDED: " + workspace.getEnv().getBlock(blockID) + ")";
             case BLOCK_REMOVED:
-                return "WorkspaceEvent(BLOCK_REMOVED: " + Block.getBlock(blockID) + ")";
+                return "WorkspaceEvent(BLOCK_REMOVED: " + workspace.getEnv().getBlock(blockID) + ")";
             case BLOCKS_CONNECTED:
                 return "WorkspaceEvent(BLOCKS_CONNECTED: " + link + ")";
             case BLOCKS_DISCONNECTED:
                 return "WorkspaceEvent(BLOCKS_DISCONNECTED: " + link + ")";
             case BLOCK_STACK_COMPILED:
-                return "WorkspaceEvent(BLOCK_STACK_COMPILED: " + Block.getBlock(blockID) + ")";
+                return "WorkspaceEvent(BLOCK_STACK_COMPILED: " + workspace.getEnv().getBlock(blockID) + ")";
             case PAGE_RENAMED:
                 return "WorkspaceEvent(PAGE_RENAMED: " + widget + ")";
             case PAGE_RESIZED:
                 return "WorkspaceEvent(PAGE_RESIZED: " + widget + ")";
             case BLOCK_RENAMED:
-                return "WorkspaceEvent(BLOCK_RENAMED: " + Block.getBlock(blockID) + ")";
+                return "WorkspaceEvent(BLOCK_RENAMED: " + workspace.getEnv().getBlock(blockID) + ")";
             case BLOCK_MOVED:
                 if (link == null) {
-                    return "WorkspaceEvent(BLOCK_MOVED: " + Block.getBlock(blockID) + ")";
+                    return "WorkspaceEvent(BLOCK_MOVED: " + workspace.getEnv().getBlock(blockID) + ")";
                 } else {
                     return "WorkspaceEvent(BLOCK_MOVED: " + link + ")";
                 }
             case BLOCK_GENUS_CHANGED:
-                return "WorkspaceEvent(BLOCK_GENUS_CHANGED: " + Block.getBlock(blockID) + ")";
+                return "WorkspaceEvent(BLOCK_GENUS_CHANGED: " + workspace.getEnv().getBlock(blockID) + ")";
             case WORKSPACE_FINISHED_LOADING:
                 return "WorkspaceEvent(WORKSPACE_FINISHED_LOADING)";
             default:

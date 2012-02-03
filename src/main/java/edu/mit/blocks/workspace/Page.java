@@ -151,10 +151,10 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
      * 			7) The set of blocks is empty.
      */
     public Page(Workspace workspace, String name, int pageWidth, int pageHeight, String pageDrawer) {
-        this(workspace, name, pageWidth, pageHeight, pageDrawer, true, null);
+        this(workspace, name, pageWidth, pageHeight, pageDrawer, true, null, true);
     }
 
-    public Page(Workspace workspace, String name, int pageWidth, int pageHeight, String pageDrawer, boolean inFullview, Color defaultColor) {
+    public Page(Workspace workspace, String name, int pageWidth, int pageHeight, String pageDrawer, boolean inFullview, Color defaultColor, boolean isCollapsible) {
         super();
         this.workspace = workspace;
         this.defaultColor = defaultColor;
@@ -171,7 +171,9 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
 
         this.fullview = inFullview;
         this.collapse = new CollapseButton(inFullview, name);
-        this.pageJComponent.add(collapse);
+        if (isCollapsible) {
+            this.pageJComponent.add(collapse);
+        }
         this.pageJComponent.setFullView(inFullview);
     }
 
@@ -285,7 +287,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
     public Collection<RenderableBlock> getTopLevelBlocks() {
         List<RenderableBlock> topBlocks = new ArrayList<RenderableBlock>();
         for (RenderableBlock renderable : this.getBlocks()) {
-            Block block = Block.getBlock(renderable.getBlockID());
+            Block block = workspace.getEnv().getBlock(renderable.getBlockID());
             if (block.getPlug() == null || block.getPlugBlockID() == null || block.getPlugBlockID().equals(Block.NULL)) {
                 if (block.getBeforeConnector() == null || block.getBeforeBlockID() == null || block.getBeforeBlockID().equals(Block.NULL)) {
                     topBlocks.add(renderable);
@@ -377,8 +379,8 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
 
         //iterate through blocks and update the ones that are page label enabled
         for (RenderableBlock block : this.getBlocks()) {
-            if (Block.getBlock(block.getBlockID()).isPageLabelSetByPage()) {
-                Block.getBlock(block.getBlockID()).setPageLabel(this.getPageName());
+            if (workspace.getEnv().getBlock(block.getBlockID()).isPageLabelSetByPage()) {
+            	workspace.getEnv().getBlock(block.getBlockID()).setPageLabel(this.getPageName());
                 block.repaintBlock();
             }
         }
@@ -628,8 +630,8 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
         block.setHighlightParent(this.getRBParent());
 
         //if block has page labels enabled, in other words, if it can, then set page label to this
-        if (Block.getBlock(block.getBlockID()).isPageLabelSetByPage()) {
-            Block.getBlock(block.getBlockID()).setPageLabel(this.getPageName());
+        if (workspace.getEnv().getBlock(block.getBlockID()).isPageLabelSetByPage()) {
+        	workspace.getEnv().getBlock(block.getBlockID()).setPageLabel(this.getPageName());
         }
 
         //notify block to link default args if it has any
@@ -776,7 +778,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
                 //add internallly
                 workspace.notifyListeners(new WorkspaceEvent(workspace, this, rb.getBlockID(), WorkspaceEvent.BLOCK_ADDED));
                 if (importingPage) {
-                    Block.getBlock(rb.getBlockID()).setFocus(false);
+                	workspace.getEnv().getBlock(rb.getBlockID()).setFocus(false);
                     rb.resetHighlight();
                     rb.clearBufferedImage();
                 }

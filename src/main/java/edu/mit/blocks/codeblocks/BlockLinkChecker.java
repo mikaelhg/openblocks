@@ -96,7 +96,7 @@ public class BlockLinkChecker {
      * or null if no such matching exists.
      */
     public static BlockLink getLink(Workspace workspace, RenderableBlock rblock1, Iterable<RenderableBlock> otherBlocks) {
-        Block block1 = Block.getBlock(rblock1.getBlockID());
+        Block block1 = workspace.getEnv().getBlock(rblock1.getBlockID());
         BlockConnector closestSocket1 = null;
         BlockConnector closestSocket2 = null;
         Block closestBlock2 = null;
@@ -105,7 +105,7 @@ public class BlockLinkChecker {
 
         for (RenderableBlock rblock2 : otherBlocks) {
             BlockConnector currentPlug = getPlugEquivalent(block1);
-            Block block2 = Block.getBlock(rblock2.getBlockID());
+            Block block2 = workspace.getEnv().getBlock(rblock2.getBlockID());
             if (block1.equals(block2) || !rblock1.isVisible() || !rblock2.isVisible() || rblock1.isCollapsed() || rblock2.isCollapsed()) {
                 continue;
             }
@@ -166,7 +166,7 @@ public class BlockLinkChecker {
      * or null if no such matching exists.
      */
     public static BlockLink getWeakLink(Workspace workspace, RenderableBlock rblock1, Iterable<RenderableBlock> otherBlocks) {
-        Block block1 = Block.getBlock(rblock1.getBlockID());
+        Block block1 = workspace.getEnv().getBlock(rblock1.getBlockID());
         BlockConnector closestSocket1 = null;
         BlockConnector closestSocket2 = null;
         Block closestBlock2 = null;
@@ -175,7 +175,7 @@ public class BlockLinkChecker {
 
         for (RenderableBlock rblock2 : otherBlocks) {
             BlockConnector currentPlug = getPlugEquivalent(block1);
-            Block block2 = Block.getBlock(rblock2.getBlockID());
+            Block block2 = workspace.getEnv().getBlock(rblock2.getBlockID());
             if (block1.equals(block2) || !rblock1.isVisible() || !rblock2.isVisible()) {
                 continue;
             }

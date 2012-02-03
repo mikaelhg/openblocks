@@ -75,7 +75,7 @@ public class BlockShape {
         if (rb != null) {
             this.rb = rb;
             this.blockID = rb.getBlockID();
-            this.block = Block.getBlock(blockID);
+            this.block = rb.getWorkspace().getEnv().getBlock(blockID);
         } else {
             System.out.println("Cannot create shape of null RenderableBlock.");
         }
