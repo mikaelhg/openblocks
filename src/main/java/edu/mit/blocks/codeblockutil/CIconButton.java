@@ -3,7 +3,6 @@ package edu.mit.blocks.codeblockutil;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -17,8 +16,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
-
-import javax.swing.JFrame;
 
 /**
  * A CIconButton is a swing-compatible widget that allows clients
