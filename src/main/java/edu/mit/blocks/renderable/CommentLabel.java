@@ -19,7 +19,7 @@ public class CommentLabel extends BlockControlLabel {
     private final Workspace workspace;
 
     public CommentLabel(Workspace workspace, long blockID) {
-        super(blockID);
+        super(workspace, blockID);
         this.workspace = workspace;
         this.setBackground(Color.darkGray);
         this.setOpaque(true);
@@ -28,8 +28,8 @@ public class CommentLabel extends BlockControlLabel {
     /**
      * setup current visual state of button
      */
-    public void update() {
-        RenderableBlock rb = RenderableBlock.getRenderableBlock(getBlockID());
+	public void update() {
+        RenderableBlock rb = workspace.getEnv().getRenderableBlock(getBlockID());
 
         if (rb != null) {
             int x = 5;
@@ -81,7 +81,7 @@ public class CommentLabel extends BlockControlLabel {
      */
     public void mouseClicked(MouseEvent e) {
         toggle();
-        RenderableBlock rb = RenderableBlock.getRenderableBlock(getBlockID());
+        RenderableBlock rb = workspace.getEnv().getRenderableBlock(getBlockID());
         rb.getComment().setVisible(isActive());
         workspace.notifyListeners(new WorkspaceEvent(workspace, rb.getComment().getCommentSource().getParentWidget(), WorkspaceEvent.BLOCK_COMMENT_VISBILITY_CHANGE));
         update();
@@ -94,10 +94,10 @@ public class CommentLabel extends BlockControlLabel {
      * Implement MouseListener interface
      * highlight button state
      */
-    public void mouseEntered(MouseEvent e) {
+	public void mouseEntered(MouseEvent e) {
         super.mouseEntered(e);
         this.setBorder(BorderFactory.createLineBorder(Color.yellow));
-        Comment comment = RenderableBlock.getRenderableBlock(getBlockID()).getComment();
+        Comment comment = workspace.getEnv().getRenderableBlock(getBlockID()).getComment();
         comment.setVisible(true);
         comment.showOnTop();
     }
@@ -106,10 +106,10 @@ public class CommentLabel extends BlockControlLabel {
      * Implement MouseListener interface
      * de-highlight button state
      */
-    public void mouseExited(MouseEvent e) {
+	public void mouseExited(MouseEvent e) {
         super.mouseExited(e);
         this.setBorder(BorderFactory.createLineBorder(Color.gray));
-        Comment comment = RenderableBlock.getRenderableBlock(getBlockID()).getComment();
+        Comment comment = workspace.getEnv().getRenderableBlock(getBlockID()).getComment();
         if (!isActive()) {
             comment.setVisible(false);
         }

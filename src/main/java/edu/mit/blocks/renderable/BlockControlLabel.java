@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 import edu.mit.blocks.codeblocks.BlockConnectorShape;
+import edu.mit.blocks.workspace.Workspace;
 
 /**
  * BlockControlLabel is a basic Label that exists on a given block that is used to control a property that may be toggled between two states.  This class should be extended to handle the particular states that are toggled.
@@ -20,6 +21,8 @@ import edu.mit.blocks.codeblocks.BlockConnectorShape;
  *
  */
 class BlockControlLabel extends JLabel implements MouseListener {
+
+	protected Workspace workspace;
 
     private static final long serialVersionUID = 1L;
     private boolean active = false;
@@ -30,7 +33,8 @@ class BlockControlLabel extends JLabel implements MouseListener {
      * this must be added to the block by the method creating this Label.
      * @param blockID
      */
-    BlockControlLabel(long blockID) {
+    BlockControlLabel(Workspace workspace,long blockID) {
+    	this.workspace = workspace;
         this.blockID = blockID;
         this.setFont(new Font("Courier", Font.BOLD, (int) (14)));
         this.setForeground(new Color(255, 255, 255));
@@ -46,7 +50,7 @@ class BlockControlLabel extends JLabel implements MouseListener {
      * setup current visual state of button
      */
     public void update() {
-        RenderableBlock rb = RenderableBlock.getRenderableBlock(blockID);
+        RenderableBlock rb = workspace.getEnv().getRenderableBlock(blockID);
 
         if (rb != null) {
             int x = 0;

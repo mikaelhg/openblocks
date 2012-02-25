@@ -13,14 +13,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.mit.blocks.codeblocks.Block;
-import edu.mit.blocks.codeblocks.BlockGenus;
 import edu.mit.blocks.renderable.FactoryRenderableBlock;
 import edu.mit.blocks.renderable.RenderableBlock;
 
 /**
  * Utilities class that provides the loading and saving of
  * pages and drawers
- *
+ * 
  * @author An Ho
  *
  */
@@ -103,15 +102,18 @@ public class PageDrawerLoadingUtils {
                 }
             }
 
+            // whether pages should show a control to collapse them or not
+            boolean collapsiblePages = getBooleanValue(pagesNode, "collapsible-pages");
+            
             Page page;
             NodeList pages = pagesNode.getChildNodes();
             Node pageNode;
-            String pageName;
-            String pageDrawer;
-            Color pageColor;
-            boolean pageInFullView;
-            int pageWidth;
-            String pageId;
+            String pageName = "";
+            String pageDrawer = null;
+            Color pageColor = null;
+            boolean pageInFullView = true;
+            int pageWidth = -1;
+            String pageId = null;
             for (int i = 0; i < pages.getLength(); i++) { //find them
                 pageNode = pages.item(i);
                 if (pageNode.getNodeName().equals("Page")) { // a page entry
@@ -121,7 +123,7 @@ public class PageDrawerLoadingUtils {
                     pageDrawer = getNodeValue(pageNode, "page-drawer");
                     pageInFullView = getBooleanValue(pageNode, "page-infullview");
                     pageId = getNodeValue(pageNode, "page-id");
-                    page = new Page(workspace, pageName, pageWidth, 0, pageDrawer, pageInFullView, pageColor);
+                    page = new Page(workspace, pageName, pageWidth, 0, pageDrawer, pageInFullView, pageColor, collapsiblePages);
                     page.setPageId(pageId);
 
                     NodeList pageNodes = pageNode.getChildNodes();
@@ -140,7 +142,7 @@ public class PageDrawerLoadingUtils {
                                     Node genusMember = genusMembers.item(j);
                                     if (genusMember.getNodeName().equals("BlockGenusMember")) {
                                         genusName = genusMember.getTextContent();
-                                        assert BlockGenus.getGenusWithName(genusName) != null : "Unknown BlockGenus: " + genusName;
+                                        assert workspace.getEnv().getGenusWithName(genusName) != null : "Unknown BlockGenus: " + genusName;
                                         Block block = new Block(workspace, genusName);
                                         drawerBlocks.add(new FactoryRenderableBlock(workspace, manager, block.getBlockID()));
                                     }
@@ -207,6 +209,14 @@ public class PageDrawerLoadingUtils {
 
                         //get drawer's color:
                         Node colorNode = drawerNode.getAttributes().getNamedItem("button-color");
+//    					if(colorNode == null){
+//    						buttonColor = Color.blue;
+//    						System.out.println("Loading a drawer without defined color: ");
+//    						for(int ai=0; ai<drawerNode.getAttributes().getLength(); ai++){
+//        						System.out.println("\t"+drawerNode.getAttributes().item(ai).getNodeName()+
+//        								", "+drawerNode.getAttributes().item(ai).getNodeValue());
+//        					}
+//    					}else{    	
                         if (colorNode != null) {
                             nameMatcher = attrExtractor.matcher(colorNode.toString());
                             if (nameMatcher.find()) { //will be true
@@ -229,7 +239,7 @@ public class PageDrawerLoadingUtils {
                             blockNode = drawerBlocks.item(k);
                             if (blockNode.getNodeName().equals("BlockGenusMember")) {
                                 String genusName = blockNode.getTextContent();
-                                assert BlockGenus.getGenusWithName(genusName) != null : "Unknown BlockGenus: " + genusName;
+                                assert workspace.getEnv().getGenusWithName(genusName) != null : "Unknown BlockGenus: " + genusName;
                                 Block newBlock;
                                 //don't link factory blocks to their stubs because they will
                                 //forever remain inside the drawer and never be active

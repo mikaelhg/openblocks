@@ -818,7 +818,7 @@ public class FactoryManager implements WorkspaceWidget, ComponentListener, Works
         if (event.getEventType() == WorkspaceEvent.BLOCK_ADDED) {
             if (event.getSourceWidget() instanceof Page) {
                 Page page = (Page) event.getSourceWidget();
-                Block block = Block.getBlock(event.getSourceBlockID());
+                Block block = workspace.getEnv().getBlock(event.getSourceBlockID());
                 //block may not be null if this is a block added event
                 if (block.hasStubs()) {
                     for (BlockStub stub : block.getFreshStubs()) {
@@ -830,10 +830,10 @@ public class FactoryManager implements WorkspaceWidget, ComponentListener, Works
             }
         } else if (event.getEventType() == WorkspaceEvent.BLOCK_REMOVED) {
             //may not be removing a null stanc eof block, so DO NOT check for it
-            Block block = Block.getBlock(event.getSourceBlockID());
+            Block block = workspace.getEnv().getBlock(event.getSourceBlockID());
             if (block.hasStubs()) {
-                for (Long stub : BlockStub.getStubsOfParent(block.getBlockID())) {
-                    RenderableBlock rb = RenderableBlock.getRenderableBlock(stub);
+                for (Long stub : BlockStub.getStubsOfParent(event.getWorkspace(), block)) {
+                    RenderableBlock rb = workspace.getEnv().getRenderableBlock(stub);
                     if (rb != null && !rb.getBlockID().equals(Block.NULL)
                             && rb.getParentWidget() != null && rb.getParentWidget().equals(this)) {
                         //rb.getParent() should not be null
@@ -845,10 +845,10 @@ public class FactoryManager implements WorkspaceWidget, ComponentListener, Works
             }
             this.relayoutBlocks();
         } else if (event.getEventType() == WorkspaceEvent.BLOCK_MOVED) {
-            Block block = Block.getBlock(event.getSourceBlockID());
+            Block block = workspace.getEnv().getBlock(event.getSourceBlockID());
             if (block != null && block.hasStubs()) {
-                for (Long stub : BlockStub.getStubsOfParent(block.getBlockID())) {
-                    RenderableBlock rb = RenderableBlock.getRenderableBlock(stub);
+                for (Long stub : BlockStub.getStubsOfParent(event.getWorkspace() ,block)) {
+                    RenderableBlock rb = workspace.getEnv().getRenderableBlock(stub);
                     if (rb != null && !rb.getBlockID().equals(Block.NULL)
                             && rb.getParentWidget() != null && rb.getParentWidget().equals(this)) {
                         //rb.getParent() should not be null

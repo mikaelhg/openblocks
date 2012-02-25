@@ -336,7 +336,7 @@ public class BlockConnector implements ISupportMemento {
             if (opt_item != null) {
                 nameMatcher = attrExtractor.matcher(opt_item.toString());
                 if (nameMatcher.find()) {
-                    idConnected = Block.translateLong(Long.parseLong(nameMatcher.group(1)), idMapping);
+                    idConnected = Block.translateLong(workspace, Long.parseLong(nameMatcher.group(1)), idMapping);
                 }
             }
             opt_item = node.getAttributes().getNamedItem("label-editable");

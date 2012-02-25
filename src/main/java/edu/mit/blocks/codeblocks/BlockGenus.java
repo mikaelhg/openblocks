@@ -22,6 +22,7 @@ import org.w3c.dom.NodeList;
 import edu.mit.blocks.renderable.BlockImageIcon;
 import edu.mit.blocks.renderable.BlockImageIcon.ImageLocation;
 import edu.mit.blocks.workspace.Workspace;
+import edu.mit.blocks.workspace.WorkspaceEnvironment;
 
 /**
  * A genus describes the properties that define a block.  For example, fd is a block genus 
@@ -31,11 +32,9 @@ import edu.mit.blocks.workspace.Workspace;
 public class BlockGenus {
     
     private static final String EMPTY_STRING = "";
-    
-    // mapping of genus names to BlockGenus objects
-    // only BlockGenus may add to this map
-    private static Map<String, BlockGenus> nameToGenus = new HashMap<String, BlockGenus>();
 
+    private final WorkspaceEnvironment env;
+    
     private String genusName;
     private Color color;
     private String kind;
@@ -88,17 +87,21 @@ public class BlockGenus {
      * Only BlockGenus can create BlockGenus objects, specifically only the function that loads
      * BlockGenuses information from the loadString can create BlockGenuses objects
      */
-    private BlockGenus() {
+    private BlockGenus(WorkspaceEnvironment workspaceEnvironment) {
+    	env = workspaceEnvironment;
     }
 
     /**
      * Constructs a BlockGenus copy with the specified genusName
      * @param genusName
      */
-    private BlockGenus(String genusName, String newGenusName) {
+    private BlockGenus(WorkspaceEnvironment workspaceEnvironment, String genusName, String newGenusName) {
+    
+    	env = workspaceEnvironment;
+    
         assert !genusName.equals(newGenusName) : "BlockGenuses must have unique names: " + genusName;
 
-        BlockGenus genusToCopy = BlockGenus.getGenusWithName(genusName);
+        BlockGenus genusToCopy = env.getGenusWithName(genusName);
 
         this.genusName = newGenusName;
         this.areSocketsExpandable = genusToCopy.areSocketsExpandable;
@@ -127,23 +130,6 @@ public class BlockGenus {
         this.sockets = new ArrayList<BlockConnector>(genusToCopy.sockets);
         this.stubList = new ArrayList<String>(genusToCopy.stubList);
         this.expandGroups = genusToCopy.expandGroups;   // doesn't change
-    }
-
-    /**
-     * Resets all the Block Genuses of current language.
-     *
-     */
-    public static void resetAllGenuses() {
-        nameToGenus.clear();
-    }
-
-    /**
-     * Returns the BlockGenus with the specified name; null if this name does not exist
-     * @param name the name of the desired BlockGenus  
-     * @return the BlockGenus with the specified name; null if this name does not exist
-     */
-    public static BlockGenus getGenusWithName(String name) {
-        return BlockGenus.nameToGenus.get(name);
     }
 
     /**
@@ -568,7 +554,7 @@ public class BlockGenus {
                                 if (nameMatcher.find()) {
                                     defargname = nameMatcher.group(1);
                                 }
-                                assert BlockGenus.nameToGenus.get(defargname) != null : "Unknown BlockGenus: " + defargname;
+                                assert workspace.getEnv().getGenusWithName(defargname) != null : "Unknown BlockGenus: " + defargname;
                                 //warning: if this block genus does not have an editable label, the label being loaded does not
                                 //have an affect
                                 opt_item = defarg.getAttributes().getNamedItem("label");
@@ -749,7 +735,7 @@ public class BlockGenus {
                         //this stub for this genus deviates from generic stub  
                         //generate genus by copying one of generic ones
 
-                        BlockGenus newStubGenus = new BlockGenus(stubGenus, stubGenus + genus.genusName);
+                        BlockGenus newStubGenus = new BlockGenus(genus.env, stubGenus, stubGenus + genus.genusName);
                         //load unique stub genus properties
                         NodeList stubChildren = stub.getChildNodes();
                         for (int n = 0; n < stubChildren.getLength(); n++) {
@@ -758,7 +744,7 @@ public class BlockGenus {
                                 loadLangDefProperties(stubChild.getChildNodes(), newStubGenus);
                             }
                         }
-                        nameToGenus.put(newStubGenus.genusName, newStubGenus);
+                        genus.env.addBlockGenus(newStubGenus);
                         genus.stubList.add(newStubGenus.genusName);
                     } else {
                         //not a unique stub, add generic stub
@@ -775,6 +761,8 @@ public class BlockGenus {
      * @param root the Element carrying the specifications of the BlockGenuses
      */
     public static void loadBlockGenera(Workspace workspace, Element root) {
+    	WorkspaceEnvironment env = workspace.getEnv();
+    
         Pattern attrExtractor = Pattern.compile("\"(.*)\"");
         Matcher nameMatcher;
         NodeList genusNodes = root.getElementsByTagName("BlockGenus"); //look for genus
@@ -784,14 +772,14 @@ public class BlockGenus {
             genusNode = genusNodes.item(i);
             if (genusNode.getNodeName().equals("BlockGenus")) {
                 /// LOAD BLOCK GENUS PROPERTIES ///
-                BlockGenus newGenus = new BlockGenus();
+                BlockGenus newGenus = new BlockGenus(env);
                 //first, parse out the attributes
                 nameMatcher = attrExtractor.matcher(genusNode.getAttributes().getNamedItem("name").toString());
                 if (nameMatcher.find()) {
                     newGenus.genusName = nameMatcher.group(1);
                 }
                 //assert that no other genus has this name
-                assert nameToGenus.get(newGenus.genusName) == null : "Block genus names must be unique.  A block genus already exists with this name: " + newGenus.genusName;
+                assert env.getGenusWithName(newGenus.genusName) == null : "Block genus names must be unique.  A block genus already exists with this name: " + newGenus.genusName;
                 nameMatcher = attrExtractor.matcher(genusNode.getAttributes().getNamedItem("color").toString());
                 if (nameMatcher.find()) { //will be true
                     col = new StringTokenizer(nameMatcher.group(1));
@@ -908,7 +896,7 @@ public class BlockGenus {
                 }
 
                 //System.out.println("Added "+newGenus.toString());
-                nameToGenus.put(newGenus.genusName, newGenus);
+                env.addBlockGenus(newGenus);
             }
 
         }
@@ -927,8 +915,8 @@ public class BlockGenus {
                 member = family.getChildNodes().item(j);
                 if (member.getNodeName().equals("FamilyMember")) { //a family member entry
                     name = member.getTextContent();
-                    assert BlockGenus.nameToGenus.get(name) != null : "Unknown BlockGenus: " + name;
-                    assert !BlockGenus.nameToGenus.get(name).isLabelEditable : "Genus " + name + " is in a family, but its name is editable";
+                    assert env.getGenusWithName(name) != null : "Unknown BlockGenus: " + name;
+                    assert !env.getGenusWithName(name).isLabelEditable : "Genus " + name + " is in a family, but its name is editable";
                     famList.add(name);
                 }
 
@@ -938,7 +926,7 @@ public class BlockGenus {
                     ArrayList<String> newFamList = new ArrayList<String>(famList);
                     newFamList.remove(memName); //filter out current memName, so that only 
                     //sibling names are included
-                    BlockGenus.nameToGenus.get(memName).familyList = newFamList;
+                    env.getGenusWithName(memName).familyList = newFamList;
                 }
             }
             famList.clear();

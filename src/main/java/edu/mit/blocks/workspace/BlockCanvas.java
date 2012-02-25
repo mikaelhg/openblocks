@@ -2,6 +2,7 @@ package edu.mit.blocks.workspace;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.PopupMenu;
 import java.awt.event.MouseEvent;
@@ -21,6 +22,7 @@ import javax.swing.SwingUtilities;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import edu.mit.blocks.codeblockutil.CGraphite;
 import edu.mit.blocks.codeblockutil.CHoverScrollPane;
@@ -482,12 +484,16 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
             }
         }
 
-        int screenWidth = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width;
-        int canvasWidth = canvas.getPreferredSize().width;
-        if (canvasWidth < screenWidth) {
-            Page p = pages.get(pages.size() - 1);
-            p.addPixelWidth(screenWidth - canvasWidth);
-            PageChangeEventManager.notifyListeners();
+        // FIXME: this UI code should not be here, fails unit tests that run in headless mode
+        // As a workaround, only execute if we have a UI
+        if (!GraphicsEnvironment.isHeadless()) {
+        	int screenWidth = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width;
+        	int canvasWidth = canvas.getPreferredSize().width;
+        	if (canvasWidth < screenWidth) {
+        		Page p = pages.get(pages.size() - 1);
+        		p.addPixelWidth(screenWidth - canvasWidth);
+        		PageChangeEventManager.notifyListeners();
+        	}
         }
     }
 
