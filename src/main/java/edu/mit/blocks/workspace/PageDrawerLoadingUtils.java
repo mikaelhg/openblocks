@@ -19,9 +19,8 @@ import edu.mit.blocks.renderable.RenderableBlock;
 /**
  * Utilities class that provides the loading and saving of
  * pages and drawers
- * 
- * @author An Ho
  *
+ * @author An Ho
  */
 public class PageDrawerLoadingUtils {
 
@@ -88,32 +87,30 @@ public class PageDrawerLoadingUtils {
             Node opt_item = pagesNode.getAttributes().getNamedItem("drawer-with-page");
             if (opt_item != null) {
                 Matcher nameMatcher = attrExtractor.matcher(opt_item.toString());
-                if (nameMatcher.find()) //will be true
-                {
+                if (nameMatcher.find()) {
                     Workspace.everyPageHasDrawer = nameMatcher.group(1).equals("yes") ? true : false;
                 }
             }
             opt_item = pagesNode.getAttributes().getNamedItem("is-blank-page");
             if (opt_item != null) {
                 Matcher nameMatcher = attrExtractor.matcher(opt_item.toString());
-                if (nameMatcher.find()) //will be true
-                {
+                if (nameMatcher.find()) {
                     isBlankPage = nameMatcher.group(1).equals("yes") ? true : false;
                 }
             }
 
             // whether pages should show a control to collapse them or not
             boolean collapsiblePages = getBooleanValue(pagesNode, "collapsible-pages");
-            
+
             Page page;
             NodeList pages = pagesNode.getChildNodes();
             Node pageNode;
-            String pageName = "";
-            String pageDrawer = null;
-            Color pageColor = null;
-            boolean pageInFullView = true;
-            int pageWidth = -1;
-            String pageId = null;
+            String pageName;
+            String pageDrawer;
+            Color pageColor;
+            boolean pageInFullView;
+            int pageWidth;
+            String pageId;
             for (int i = 0; i < pages.getLength(); i++) { //find them
                 pageNode = pages.item(i);
                 if (pageNode.getNodeName().equals("Page")) { // a page entry
@@ -209,14 +206,6 @@ public class PageDrawerLoadingUtils {
 
                         //get drawer's color:
                         Node colorNode = drawerNode.getAttributes().getNamedItem("button-color");
-//    					if(colorNode == null){
-//    						buttonColor = Color.blue;
-//    						System.out.println("Loading a drawer without defined color: ");
-//    						for(int ai=0; ai<drawerNode.getAttributes().getLength(); ai++){
-//        						System.out.println("\t"+drawerNode.getAttributes().item(ai).getNodeName()+
-//        								", "+drawerNode.getAttributes().item(ai).getNodeValue());
-//        					}
-//    					}else{    	
                         if (colorNode != null) {
                             nameMatcher = attrExtractor.matcher(colorNode.toString());
                             if (nameMatcher.find()) { //will be true

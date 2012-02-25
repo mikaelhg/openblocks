@@ -23,16 +23,16 @@ import edu.mit.blocks.codeblockutil.GraphicsManager;
  * This class can be used to add dragging capability to any JComponents.
  * It contains the methods and data members needed to support automatic dragging,
  * and contains methods to impliment both MouseListener, MouseMotionListener.
- * In general, any existing JComponent can be made to be draggable simple by 
+ * In general, any existing JComponent can be made to be draggable simple by
  * creating an instance of JComponentDragHandler (passing a reference to itself)
  * and registering the JComponentDragHandler as the listener for all mouse events.
- * 
+ *
  * Classes that need similar, but not identical, behavior, or that need to add
  * functionality to the mouse methods here can create an inner class that extends
  * this class.  In this way the inner class can maintain the functionality of
  * JComponentDragHandler while also having access to data members and methods
  * of its enclosing class for the purposes of extension.
- * 
+ *
  * @author Daniel <djwendel@mit.edu>
  *
  */
@@ -84,11 +84,11 @@ public class JComponentDragHandler implements MouseListener, MouseMotionListener
     }
 
     private static Cursor createHandCursor(String location, String cursorName) {
-    	if (GraphicsEnvironment.isHeadless()) {
-    		// return default hand cursor if headless
-    		return Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
-    	}
-    	
+        if (GraphicsEnvironment.isHeadless()) {
+            // return default hand cursor if headless
+            return Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
+        }
+
         java.net.URL handURL = JComponentDragHandler.class.getResource(location);
         assert handURL != null : "Can not find hand cursor image " + cursorName;
         ImageIcon handicon = new ImageIcon(handURL);

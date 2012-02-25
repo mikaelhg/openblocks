@@ -36,58 +36,58 @@ import edu.mit.blocks.codeblockutil.CToolTip;
 import edu.mit.blocks.renderable.RenderableBlock;
 
 /**
- * A Page serves as both an abstract container of blocks 
- * and also a graphical panel that renders its collection 
- * of blocks.  Abstractly, a page has seven abstract fields: 
- * a color, a name, a font, a drawer, width, a height, 
- * and a set of blocks.  How it renders these abstract fields 
- * depends on the state of the page, including: zoom level, 
+ * A Page serves as both an abstract container of blocks
+ * and also a graphical panel that renders its collection
+ * of blocks.  Abstractly, a page has seven abstract fields:
+ * a color, a name, a font, a drawer, width, a height,
+ * and a set of blocks.  How it renders these abstract fields
+ * depends on the state of the page, including: zoom level,
  * and minimumPixelWidth.
- * 
- * A Page exists as a WorkspaceWidget, a SearchableContainer, 
- * ISupportMemento, an RBParent, a Zoomable object, and a JPanel.  
- * As a WorkspaceWidget, it can add, remove, blocks and manage 
- * block manipulations within itself.  As a searchableContainer, 
- * it can notify users that certain blocks have been queried.  
- * As an ISupportMomento, it can undo the current values of 
+ *
+ * A Page exists as a WorkspaceWidget, a SearchableContainer,
+ * ISupportMemento, an RBParent, a Zoomable object, and a JPanel.
+ * As a WorkspaceWidget, it can add, remove, blocks and manage
+ * block manipulations within itself.  As a searchableContainer,
+ * it can notify users that certain blocks have been queried.
+ * As an ISupportMomento, it can undo the current values of
  * abstract fields.  As an RBParent, it can highlight blocks.
- * 
- * Since a Page is both a Zoomable object and JPanel, Pages 
- * separate its abstract model and view by allowing clients 
- * to mutate its abstract fields directly.  But clients must 
- * remember to reform the pages in order to synchronize the 
+ *
+ * Since a Page is both a Zoomable object and JPanel, Pages
+ * separate its abstract model and view by allowing clients
+ * to mutate its abstract fields directly.  But clients must
+ * remember to reform the pages in order to synchronize the
  * data between the model and view.
- * 
- * A page's abstract color is rendered the same no matter 
- * what state the page is in.  A page's abstract name is 
- * rendered thrice centered at every fourth of the page.  
- * The name is rendered with a size depending on the zoom 
- * level of that page (it tries to maintain a constant aspect 
- * ratio).  The drawer name is not rendered.  The width and 
- * height of the page is rendered differently depending on 
- * the zoom level and minimumPixelWidth.  Using the zoom level, 
- * it tries to maintain a constant aspect ratio but the 
- * absolute sizes varies with a bigger/smaller zoom level.  
- * the minimumPixelWidth limits the width from going below 
- * a certain size, no matter what the system tries to set 
- * the abstract width to be.  Finally the set of blocks are 
- * rendered directly onto the page with the same transformation 
+ *
+ * A page's abstract color is rendered the same no matter
+ * what state the page is in.  A page's abstract name is
+ * rendered thrice centered at every fourth of the page.
+ * The name is rendered with a size depending on the zoom
+ * level of that page (it tries to maintain a constant aspect
+ * ratio).  The drawer name is not rendered.  The width and
+ * height of the page is rendered differently depending on
+ * the zoom level and minimumPixelWidth.  Using the zoom level,
+ * it tries to maintain a constant aspect ratio but the
+ * absolute sizes varies with a bigger/smaller zoom level.
+ * the minimumPixelWidth limits the width from going below
+ * a certain size, no matter what the system tries to set
+ * the abstract width to be.  Finally the set of blocks are
+ * rendered directly onto the page with the same transformation
  * as the ones imposed on the width and height of the page.
- * 
- * As an implementation detail, a page tries to maintain a 
- * separation between its abstract states and its view.  
- * Clients of Pages should use reform*() methods to validate 
- * information between the abstract states and view.  Clients 
- * of Pages are warned against accessing Page.getJComponent(), 
- * as the method provides clients a way to unintentionally mutate 
+ *
+ * As an implementation detail, a page tries to maintain a
+ * separation between its abstract states and its view.
+ * Clients of Pages should use reform*() methods to validate
+ * information between the abstract states and view.  Clients
+ * of Pages are warned against accessing Page.getJComponent(),
+ * as the method provides clients a way to unintentionally mutate
  * an implementation specific detail of Pages.
- * 
+ *
  * A Page implements ExplorerListener i.e. it listens for possible changes in
- * an explorer that affects the display of the page. When an explorer event 
+ * an explorer that affects the display of the page. When an explorer event
  * happens the page changes its display accordingly
  */
 public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemento {
-    
+
     /** The workspace in use */
     private final Workspace workspace;
 
@@ -269,6 +269,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
     /**
      * @return all the RenderableBlocks that reside within this page
      */
+    @Override
     public Collection<RenderableBlock> getBlocks() {
         List<RenderableBlock> blocks = new ArrayList<RenderableBlock>();
         for (Component block : this.pageJComponent.getComponents()) {
@@ -380,7 +381,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
         //iterate through blocks and update the ones that are page label enabled
         for (RenderableBlock block : this.getBlocks()) {
             if (workspace.getEnv().getBlock(block.getBlockID()).isPageLabelSetByPage()) {
-            	workspace.getEnv().getBlock(block.getBlockID()).setPageLabel(this.getPageName());
+                workspace.getEnv().getBlock(block.getBlockID()).setPageLabel(this.getPageName());
                 block.repaintBlock();
             }
         }
@@ -558,7 +559,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
     //////////////////////////////
     /**
      * @param newZoom - the new zoom level
-     * 
+     *
      * @requires zoom != 0
      * @modifies zoom level
      * @effects Sets all the Zoomable Pages in contained in this BlockCanvas and
@@ -577,6 +578,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
     //WORKSPACEWIDGET METHODS 	//
     //////////////////////////////
     /** @overrides WorkspaceWidget.blockDropped() */
+    @Override
     public void blockDropped(RenderableBlock block) {
         //add to view at the correct location
         Component oldParent = block.getParent();
@@ -588,6 +590,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
     }
 
     /** @overrides WorkspaceWidget.blockDragged() */
+    @Override
     public void blockDragged(RenderableBlock block) {
         if (mouseIsInPage == false) {
             mouseIsInPage = true;
@@ -596,6 +599,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
     }
 
     /** @overrides WorkspaceWidget.blockEntered() */
+    @Override
     public void blockEntered(RenderableBlock block) {
         if (mouseIsInPage == false) {
             mouseIsInPage = true;
@@ -604,12 +608,14 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
     }
 
     /** @overrides WorkspaceWidget.blockExited() */
+    @Override
     public void blockExited(RenderableBlock block) {
         mouseIsInPage = false;
         this.pageJComponent.repaint();
     }
 
     /** @overrides WorkspaceWidget.addBlock() */
+    @Override
     public void addBlock(RenderableBlock block) {
         //update parent widget if dropped block
         WorkspaceWidget oldParent = block.getParentWidget();
@@ -631,7 +637,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
 
         //if block has page labels enabled, in other words, if it can, then set page label to this
         if (workspace.getEnv().getBlock(block.getBlockID()).isPageLabelSetByPage()) {
-        	workspace.getEnv().getBlock(block.getBlockID()).setPageLabel(this.getPageName());
+            workspace.getEnv().getBlock(block.getBlockID()).setPageLabel(this.getPageName());
         }
 
         //notify block to link default args if it has any
@@ -647,7 +653,6 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
         this.reformBlockPosition(block);
 
         this.pageJComponent.setComponentZOrder(block, 0);
-        //this.pageJComponent.revalidate();
     }
 
     /**
@@ -659,6 +664,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
      * 			delaying graphicalupdates until all of the blocks have been added.
      * @overrides WorkspaceWidget.blockEntered()
      */
+    @Override
     public void addBlocks(Collection<RenderableBlock> blocks) {
         for (RenderableBlock block : blocks) {
             this.addBlock(block);
@@ -668,11 +674,13 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
     }
 
     /** @overrides WorkspaceWidget.removeBlock() */
+    @Override
     public void removeBlock(RenderableBlock block) {
         this.pageJComponent.remove(block);
     }
 
     /** @overrides WorkspaceWidget.getJComponent() */
+    @Override
     public JComponent getJComponent() {
         return this.pageJComponent;
     }
@@ -685,6 +693,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
     }
 
     /** @overrides WorkspaceWidget.contains() */
+    @Override
     public boolean contains(int x, int y) {
         return this.pageJComponent.contains(x, y);
     }
@@ -695,6 +704,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
     }
 
     /** Returns string representation of this */
+    @Override
     public String toString() {
         return "Page name: " + getPageName() + " page color " + getPageColor() + " page width " + getAbstractWidth() + " page drawer " + pageDrawer;
     }
@@ -703,11 +713,13 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
     // SearchableContainer Methods	//
     //////////////////////////////////
     /** @overrides SearchableContainer.getSearchableElements */
+    @Override
     public Iterable<RenderableBlock> getSearchableElements() {
         return getBlocks();
     }
 
     /** @overrides SearchableContainer.updateContainerSearchResults */
+    @Override
     public void updateContainsSearchResults(boolean containsSearchResults) {
         // Do nothing, at least for now
     }
@@ -735,33 +747,6 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
                     // save the loaded blocks to add later
                     loadedBlocks.add(rb);
                 }
-
-                /*				// now that the blocks are loaded, add them to the page.
-                for (RenderableBlock rb : loadedBlocks) {
-                if(rb != null){
-                //add graphically
-                getRBParent().addToBlockLayer(rb);
-                rb.setHighlightParent(this.getRBParent());
-                //System.out.println("loading rb to canvas: "+rb+" at: "+rb.getBounds());
-                //add internallly
-                workspace.notifyListeners(new WorkspaceEvent(this, rb.getBlockID(), WorkspaceEvent.BLOCK_ADDED));
-                if (importingPage) {
-                Block.getBlock(rb.getBlockID()).setFocus(false);
-                rb.resetHighlight();
-                rb.clearBufferedImage();
-                }
-                }
-                }
-
-                //now we need to redraw all the blocks now that all renderable blocks
-                //within this page have been loaded, to update the socket dimensions of
-                //blocks, etc.
-                for (RenderableBlock rb : this.getTopLevelBlocks()) {
-                rb.redrawFromTop();
-                }
-                this.pageJComponent.revalidate();
-                this.pageJComponent.repaint();
-                 */
                 break;  //should only have one set of page blocks
             }
         }
@@ -804,33 +789,31 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
 
     public Node getSaveNode(Document document) {
     	Element pageElement = document.createElement("Page");
-    	
+
     	pageElement.setAttribute("page-name", getPageName());
     	pageElement.setAttribute("page-color", getPageColor().getRed() + " " + getPageColor().getGreen() + " " + getPageColor().getBlue());
     	pageElement.setAttribute("page-width", String.valueOf((int)getAbstractWidth()));
-    	if (fullview) {
-    		pageElement.setAttribute("page-infullview", "yes");
-    	}
-    	else {
-    		pageElement.setAttribute("page-infullview", "no");
-    	}
-    	if (pageDrawer != null) {
-    		pageElement.setAttribute("page-drawer", pageDrawer);
-    	}
-    	if (pageId != null) {
-    		pageElement.setAttribute("page-id", pageId);
-    	}
-    	
+        if (fullview) {
+            pageElement.setAttribute("page-infullview", "yes");
+        } else {
+            pageElement.setAttribute("page-infullview", "no");
+        }
+        if (pageDrawer != null) {
+            pageElement.setAttribute("page-drawer", pageDrawer);
+        }
+        if (pageId != null) {
+            pageElement.setAttribute("page-id", pageId);
+        }
+
         //retrieve save strings of blocks within this Page
         Collection<RenderableBlock> blocks = this.getBlocks();
         if (blocks.size() > 0) {
-        	Element pageBlocksElement = document.createElement("PageBlocks");
+            Element pageBlocksElement = document.createElement("PageBlocks");
             for (RenderableBlock rb : blocks) {
-            	pageBlocksElement.appendChild(rb.getSaveNode(document));
+                pageBlocksElement.appendChild(rb.getSaveNode(document));
             }
             pageElement.appendChild(pageBlocksElement);
         }
-    	
     	return pageElement;
     }
 
@@ -853,6 +836,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
     }
 
     /** @overrides ISupportMomento.getState */
+    @Override
     public Object getState() {
         PageState state = new PageState();
         //Populate basic page information
@@ -868,6 +852,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
     }
 
     /** @overrides ISupportMomento.loadState() */
+    @Override
     public void loadState(Object memento) {
         assert (memento instanceof PageState) : "ISupportMemento contract violated in Page";
         if (memento instanceof PageState) {
@@ -953,6 +938,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
             loadBounds(inFullview);
         }
 
+        @Override
         public JToolTip createToolTip() {
             return new CToolTip(new Color(0xFFFFDD));
         }
@@ -1007,6 +993,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
             g2.drawRoundRect(3, 3, w - 6, w - 6 + charSet.length * (FONT_SIZE + 3), 3, 3);
         }
 
+        @Override
         public void paintComponent(Graphics g) {
             int w = this.getWidth();
 
@@ -1061,6 +1048,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
             }
         }
 
+        @Override
         public void mouseClicked(MouseEvent e) {
 
             if ((!Page.this.hideMinimize)) {
@@ -1076,6 +1064,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
             }
         }
 
+        @Override
         public void mousePressed(MouseEvent e) {
             if ((!Page.this.hideMinimize)) {
                 pressed = true;
@@ -1086,6 +1075,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
         public void mouseDragged(MouseEvent e) {
         }
 
+        @Override
         public void mouseReleased(MouseEvent e) {
             if ((!Page.this.hideMinimize)) {
                 pressed = false;
@@ -1096,6 +1086,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
         public void mouseMoved(MouseEvent e) {
         }
 
+        @Override
         public void mouseEntered(MouseEvent e) {
             if ((!Page.this.hideMinimize)) {
                 focus = true;
@@ -1103,6 +1094,7 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
             }
         }
 
+        @Override
         public void mouseExited(MouseEvent e) {
             if ((!Page.this.hideMinimize)) {
                 focus = false;
@@ -1140,6 +1132,7 @@ class PageJComponent extends JLayeredPane implements RBParent {
     /**
      * renders this JComponent
      */
+    @Override
     public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         //paint page
@@ -1174,12 +1167,14 @@ class PageJComponent extends JLayeredPane implements RBParent {
     //RBParent implemented methods	//
     //////////////////////////////////
     /** @overrides RBParent.addToBlockLayer() */
+    @Override
     public void addToBlockLayer(Component c) {
         this.add(c, BLOCK_LAYER);
 
     }
 
     /** @overrides RBParent.addToHighlightLayer() */
+    @Override
     public void addToHighlightLayer(Component c) {
         this.add(c, HIGHLIGHT_LAYER);
     }
@@ -1201,6 +1196,7 @@ class BlockStackSorterUtil {
             //this naive ordering will also fail if two blocks have the same coordinates
             new Comparator<RenderableBlock>() {
 
+        @Override
         public int compare(RenderableBlock rb1, RenderableBlock rb2) {
             if (rb1 == rb2) {
                 return 0;

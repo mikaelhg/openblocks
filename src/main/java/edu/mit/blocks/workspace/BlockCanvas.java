@@ -145,6 +145,7 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
     }
 
     /** @return string representation of this */
+    @Override
     public String toString() {
         return "BlockCanvas " + pages.size() + " pages.";
     }
@@ -396,6 +397,7 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
     //PageChangeListener Interface//
     ////////////////////////////////
     /** @overrides PageChangeListener.update() */
+    @Override
     public void update() {
         this.reformBlockCanvas(); // just repaint and it'll all look right again
     }
@@ -487,13 +489,13 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
         // FIXME: this UI code should not be here, fails unit tests that run in headless mode
         // As a workaround, only execute if we have a UI
         if (!GraphicsEnvironment.isHeadless()) {
-        	int screenWidth = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width;
-        	int canvasWidth = canvas.getPreferredSize().width;
-        	if (canvasWidth < screenWidth) {
-        		Page p = pages.get(pages.size() - 1);
-        		p.addPixelWidth(screenWidth - canvasWidth);
-        		PageChangeEventManager.notifyListeners();
-        	}
+            int screenWidth = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width;
+            int canvasWidth = canvas.getPreferredSize().width;
+            if (canvasWidth < screenWidth) {
+                Page p = pages.get(pages.size() - 1);
+                p.addPixelWidth(screenWidth - canvasWidth);
+                PageChangeEventManager.notifyListeners();
+            }
         }
     }
 

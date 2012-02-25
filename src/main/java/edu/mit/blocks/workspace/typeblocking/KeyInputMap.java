@@ -12,7 +12,7 @@ import edu.mit.blocks.workspace.typeblocking.TypeBlockManager.Direction;
  * The KeyInputMap manages the processing of particular keys
  * and delegates the task of performing an action to the
  * TypeBlockManager.
- * 
+ *
  * In a sense, the KeyInputMap assists in mapping a character to
  * an Action.
  */
@@ -80,7 +80,7 @@ public class KeyInputMap {
 
 //=====================================================================
 //======Process COUPLED Virtual Key Modifers + ALPHANUMERIC character
-//=====================================================================	
+//=====================================================================
         //handle virtual modifiers: CONTROL DOWN or COMMAND (FOR MAC) DOWN
         if ((key.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0) {
             //if(key.getModifiers() == Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()){
@@ -121,10 +121,10 @@ public class KeyInputMap {
 //=====================================================================
         switch (key.getKeyCode()) {
             case KeyEvent.VK_DELETE:
-            workspace.getTypeBlockManager().automateBlockDeletion(workspace);
+                workspace.getTypeBlockManager().automateBlockDeletion(workspace);
                 return;
             case KeyEvent.VK_BACK_SPACE:
-            workspace.getTypeBlockManager().automateBlockDeletion(workspace);
+                workspace.getTypeBlockManager().automateBlockDeletion(workspace);
                 return;
             case KeyEvent.VK_DOWN:
                 TypeBlockManager.automateFocusTraversal(workspace, Direction.DOWN);
@@ -163,21 +163,21 @@ public class KeyInputMap {
         if (KeyInputMap.DEFAULT_ENABLED) {
             //for the special negative sign
             if (key.getKeyChar() == '-') {
-            workspace.getTypeBlockManager().automateNegationInsertion(workspace);
+                workspace.getTypeBlockManager().automateNegationInsertion(workspace);
                 return;
             }
             if (key.getKeyChar() == 'x' || key.getKeyChar() == 'X') {
-            workspace.getTypeBlockManager().automateMultiplication(workspace, key.getKeyChar());
+                workspace.getTypeBlockManager().automateMultiplication(workspace, key.getKeyChar());
                 return;
             }
             if (key.getKeyChar() == '+') {
-            workspace.getTypeBlockManager().automateAddition(workspace, key.getKeyChar());
+                workspace.getTypeBlockManager().automateAddition(workspace, key.getKeyChar());
                 return;
             }
             //For all other special default input mappings
             for (Character keyChar : KeyInputMap.defaultInputMap.keySet()) {
                 if (keyChar.equals(key.getKeyChar())) {
-                workspace.getTypeBlockManager().automateBlockInsertion(
+                    workspace.getTypeBlockManager().automateBlockInsertion(
                             workspace,
                             KeyInputMap.defaultInputMap.get(keyChar)[0],
                             KeyInputMap.defaultInputMap.get(keyChar)[1]);
@@ -191,7 +191,7 @@ public class KeyInputMap {
 //=====================================================================
         for (Character keyChar : KeyInputMap.customInputMap.keySet()) {
             if (keyChar.equals(key.getKeyChar())) {
-            workspace.getTypeBlockManager().automateBlockInsertion(
+                workspace.getTypeBlockManager().automateBlockInsertion(
                         workspace,
                         KeyInputMap.customInputMap.get(keyChar)[0],
                         KeyInputMap.customInputMap.get(keyChar)[1]);
@@ -203,10 +203,10 @@ public class KeyInputMap {
 //======Process AlphaNumeric Key Inputs
 //=====================================================================
         if (Character.isLetterOrDigit(key.getKeyChar())) {
-        workspace.getTypeBlockManager().automateAutoComplete(workspace, key.getKeyChar());
+            workspace.getTypeBlockManager().automateAutoComplete(workspace, key.getKeyChar());
         } // takes care of the +, -, = ... when not set to automated block placements
         else {
-        workspace.getTypeBlockManager().automateAutoComplete(workspace, key.getKeyChar());
+            workspace.getTypeBlockManager().automateAutoComplete(workspace, key.getKeyChar());
         }
     }
 }

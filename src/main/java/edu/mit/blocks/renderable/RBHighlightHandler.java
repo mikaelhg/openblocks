@@ -72,6 +72,7 @@ public class RBHighlightHandler extends JComponent implements ComponentListener,
         repaint();
     }
 
+    @Override
     public void repaint() {
         if (rb.isVisible()) {
             if (blockArea == null || blockArea != rb.getBlockArea() || (rb.getBlock() != null && rb.getBlock().hasFocus() != hasFocus)) {
@@ -90,6 +91,7 @@ public class RBHighlightHandler extends JComponent implements ComponentListener,
         super.repaint();
     }
 
+    @Override
     public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
 
@@ -115,10 +117,10 @@ public class RBHighlightHandler extends JComponent implements ComponentListener,
     }
 
     public void updateImage() {
-    	if (GraphicsEnvironment.isHeadless()) {
-    		return;
-    	}
-    	
+        if (GraphicsEnvironment.isHeadless()) {
+            return;
+        }
+
         // cache the focus so it'll know when it needs to redraw later.
         hasFocus = rb.getBlock().hasFocus();
 
@@ -140,7 +142,7 @@ public class RBHighlightHandler extends JComponent implements ComponentListener,
         if (!rb.isVisible()) {
             GraphicsManager.recycleGCCompatibleImage(hImage);
             hImage = null;
-            return; // if we're not highlighting, destroy the image and just return        	
+            return; // if we're not highlighting, destroy the image and just return
         }
 
         hImage = GraphicsManager.getGCCompatibleImage(rb.getBlockWidth() + HIGHLIGHT_STROKE_WIDTH, rb.getBlockHeight() + HIGHLIGHT_STROKE_WIDTH);
@@ -170,18 +172,22 @@ public class RBHighlightHandler extends JComponent implements ComponentListener,
     /************************************************************
      * ComponentListener methods for when the RB moves or resizes
      ************************************************************/
+    @Override
     public void componentResized(ComponentEvent arg0) {
         repaint();
     }
 
+    @Override
     public void componentMoved(ComponentEvent arg0) {
         repaint();
     }
 
+    @Override
     public void componentShown(ComponentEvent arg0) {
         repaint();
     }
 
+    @Override
     public void componentHidden(ComponentEvent arg0) {
         GraphicsManager.recycleGCCompatibleImage(hImage);
         hImage = null;
@@ -191,6 +197,7 @@ public class RBHighlightHandler extends JComponent implements ComponentListener,
      * HierarchyListener method for the RB is added to or removed
      * from a parent component
      *************************************************************/
+    @Override
     public void hierarchyChanged(HierarchyEvent he) {
         if (rb.getParent() == null) {
             this.removeFromParent();

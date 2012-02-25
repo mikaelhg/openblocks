@@ -66,8 +66,8 @@ public class WorkspaceController {
     protected SearchBar searchBar;
 
     public Workspace getWorkspace() {
-		return this.workspace;
-	}
+        return this.workspace;
+    }
 
     //flag to indicate if a new lang definition file has been set
     private boolean langDefDirty = true;

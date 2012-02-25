@@ -25,33 +25,43 @@ import edu.mit.blocks.workspace.WorkspaceEvent;
  * BlockLabel is a region on a block in which text is displayed and possibly edited.  The
  * location and font of a BlockLabel is specified in BlockShape and the text displayed is specified
  * by a Block, BlockLabel is the gateway for text to be rendered and modified.
- * 
+ *
  * The key nature of a BlockLabel is that it is a JLabel when being viewed, and a JTextField
  * when it is being edited.
- * 
+ *
  * During mouse move, entered and exited events a white border is toggled around the label
- * for particular blocks. This white border helps to suggest editable labels for blocks that 
+ * for particular blocks. This white border helps to suggest editable labels for blocks that
  * have this enabled.
  */
 public class BlockLabel implements MouseListener, MouseMotionListener, KeyListener {
 
     /**Enum for the differnt types of labels in codeblocks */
     public enum Type {
-
         NAME_LABEL, PAGE_LABEL, PORT_LABEL, DATA_LABEL
     }
     public final static Font blockFontSmall_Bold = new Font("Arial", Font.BOLD, 7);
+
     public final static Font blockFontMedium_Bold = new Font("Arial", Font.BOLD, 10);
+
     public final static Font blockFontLarge_Bold = new Font("Arial", Font.BOLD, 12);
+
     public final static Font blockFontSmall_Plain = new Font("Arial", Font.PLAIN, 7);
+
     public final static Font blockFontMedium_Plain = new Font("Arial", Font.PLAIN, 10);
+
     public final static Font blockFontLarge_Plain = new Font("Arial", Font.PLAIN, 12);
+
     private LabelWidget widget;
+
     /** These keys inputs are delegated back to renderable block */
     private final char[] validOperators = {'-', '+', '/', '*', '=', '<', '>', 'x', 'X'};
+
     private Long blockID;
+
     private BlockLabel.Type labelType;
+
     private double zoom = 1.0;
+
     protected final Workspace workspace;
 
     /**
@@ -235,7 +245,7 @@ public class BlockLabel implements MouseListener, MouseMotionListener, KeyListen
         if ((this.labelType.equals(BlockLabel.Type.NAME_LABEL) || this.labelType.equals(BlockLabel.Type.PORT_LABEL))
                 && workspace.getEnv().getBlock(blockID).isLabelEditable()) {
             if (this.labelType.equals(BlockLabel.Type.NAME_LABEL)) {
-            	workspace.getEnv().getBlock(blockID).setBlockLabel(text);
+                workspace.getEnv().getBlock(blockID).setBlockLabel(text);
             }
             BlockConnector plug = workspace.getEnv().getBlock(blockID).getPlug();
             // Check if we're connected to a block. If we are and the the block we're connected to
@@ -280,56 +290,64 @@ public class BlockLabel implements MouseListener, MouseMotionListener, KeyListen
                 && BlockUtilities.isLabelValid(workspace, blockID, text);
     }
 
+    @Override
 	public void mouseClicked(MouseEvent e) {
         if (!((e.getClickCount() == 1) && widget.isEditable())) {
-        	workspace.getEnv().getRenderableBlock(blockID).processMouseEvent(SwingUtilities.convertMouseEvent(widget, e, widget.getParent()));
-        }
-    }
-	public void mousePressed(MouseEvent e) {
-        if (widget.getParent() != null && widget.getParent() instanceof MouseListener) {
-        	workspace.getEnv().getRenderableBlock(blockID).processMouseEvent(SwingUtilities.convertMouseEvent(widget, e, widget.getParent()));
+            workspace.getEnv().getRenderableBlock(blockID).processMouseEvent(SwingUtilities.convertMouseEvent(widget, e, widget.getParent()));
         }
     }
 
-	public void mouseReleased(MouseEvent e) {
+    @Override
+    public void mousePressed(MouseEvent e) {
         if (widget.getParent() != null && widget.getParent() instanceof MouseListener) {
-        	workspace.getEnv().getRenderableBlock(blockID).processMouseEvent(SwingUtilities.convertMouseEvent(widget, e, widget.getParent()));
+            workspace.getEnv().getRenderableBlock(blockID).processMouseEvent(SwingUtilities.convertMouseEvent(widget, e, widget.getParent()));
         }
     }
 
-	public void mouseEntered(MouseEvent e) {
+    @Override
+    public void mouseReleased(MouseEvent e) {
         if (widget.getParent() != null && widget.getParent() instanceof MouseListener) {
-        	workspace.getEnv().getRenderableBlock(blockID)
-            .processMouseEvent(SwingUtilities.convertMouseEvent(widget, e,
-            		widget.getParent()));
+            workspace.getEnv().getRenderableBlock(blockID).processMouseEvent(SwingUtilities.convertMouseEvent(widget, e, widget.getParent()));
         }
     }
 
-	public void mouseExited(MouseEvent e) {
+    @Override
+    public void mouseEntered(MouseEvent e) {
         if (widget.getParent() != null && widget.getParent() instanceof MouseListener) {
-        	workspace.getEnv().getRenderableBlock(blockID).processMouseEvent(SwingUtilities.convertMouseEvent(widget, e, widget.getParent()));
+            workspace.getEnv().getRenderableBlock(blockID).processMouseEvent(SwingUtilities.convertMouseEvent(widget, e,
+                    widget.getParent()));
         }
     }
 
-	public void mouseDragged(MouseEvent e) {
+    @Override
+    public void mouseExited(MouseEvent e) {
+        if (widget.getParent() != null && widget.getParent() instanceof MouseListener) {
+            workspace.getEnv().getRenderableBlock(blockID).processMouseEvent(SwingUtilities.convertMouseEvent(widget, e, widget.getParent()));
+        }
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
         if (widget.getParent() != null && widget.getParent() instanceof MouseMotionListener) {
             ((MouseMotionListener) widget.getParent()).mouseDragged(SwingUtilities.convertMouseEvent(widget, e, widget.getParent()));
         }
     }
 
-	public void mouseMoved(MouseEvent e) {
+    @Override
+    public void mouseMoved(MouseEvent e) {
     }
 
-	public void keyPressed(KeyEvent e) {
+    @Override
+    public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_ESCAPE:
-            	workspace.getEnv().getRenderableBlock(blockID).requestFocus();
+                workspace.getEnv().getRenderableBlock(blockID).requestFocus();
                 return;
             case KeyEvent.VK_ENTER:
-            	workspace.getEnv().getRenderableBlock(blockID).requestFocus();
+                workspace.getEnv().getRenderableBlock(blockID).requestFocus();
                 return;
             case KeyEvent.VK_TAB:
-            	workspace.getEnv().getRenderableBlock(blockID).processKeyPressed(e);
+                workspace.getEnv().getRenderableBlock(blockID).processKeyPressed(e);
                 return;
         }
         if (workspace.getEnv().getBlock(this.blockID).getGenusName().equals("number")) {
@@ -338,16 +356,18 @@ public class BlockLabel implements MouseListener, MouseMotionListener, KeyListen
             }
             for (char c : validOperators) {
                 if (e.getKeyChar() == c) {
-                	workspace.getEnv().getRenderableBlock(blockID).processKeyPressed(e);
+                    workspace.getEnv().getRenderableBlock(blockID).processKeyPressed(e);
                     return;
                 }
             }
         }
     }
 
+    @Override
     public void keyReleased(KeyEvent e) {
     }
 
+    @Override
     public void keyTyped(KeyEvent e) {
     }
 }

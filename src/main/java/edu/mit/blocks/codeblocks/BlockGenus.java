@@ -25,16 +25,16 @@ import edu.mit.blocks.workspace.Workspace;
 import edu.mit.blocks.workspace.WorkspaceEnvironment;
 
 /**
- * A genus describes the properties that define a block.  For example, fd is a block genus 
- * that describes all forward block instances in Starlogo.  The BlockGenus class stores all the immutable 
- * properties and socket information of a genus. 
+ * A genus describes the properties that define a block.  For example, fd is a block genus
+ * that describes all forward block instances in Starlogo.  The BlockGenus class stores all the immutable
+ * properties and socket information of a genus.
  */
 public class BlockGenus {
-    
+
     private static final String EMPTY_STRING = "";
 
     private final WorkspaceEnvironment env;
-    
+
     private String genusName;
     private Color color;
     private String kind;
@@ -42,7 +42,7 @@ public class BlockGenus {
     private String labelPrefix = EMPTY_STRING;
     private String labelSuffix = EMPTY_STRING;
     private String blockDescription;
-    
+
     private boolean isStarter;
     private boolean isTerminator;
     private boolean isLabelEditable;
@@ -53,42 +53,42 @@ public class BlockGenus {
     private boolean areSocketsExpandable;
     //is this genus an infix operater - checks if it has two bottom sockets
     private boolean isInfix;
-    
+
     //connector information
     private BlockConnector plug = null;
     private List<BlockConnector> sockets = new ArrayList<BlockConnector>();
     private BlockConnector before = null;
     private BlockConnector after = null;
-    
+
     //list of family genuses names (i.e. fd, bk are in the same family)
-    private List<String> familyList = new ArrayList<String>();  
-    
+    private List<String> familyList = new ArrayList<String>();
+
     //list of type of stub genuses this genus has
     private List<String> stubList = new ArrayList<String>();
-    
+
     //mapping of ImageLocations to BlockImageIcons.  only one BlockImageIcon instance per ImageLocation
     private Map<ImageLocation, BlockImageIcon> blockImageMap = new HashMap<ImageLocation, BlockImageIcon>();
-    
+
     //hashmap of language specific properties.
     private Map<String, String> properties = new HashMap<String, String>();
-    
+
     //Set of argument index to desciptions.
     //Argument index to argument description relationship
     //may not be inferred as one-to-one
     private List<String> argumentDescriptions = new ArrayList<String>();
-    
-    /** 
+
+    /**
      * The expand-groups. A list is used instead of a map, because we don't
      * expect a lot of groups in one block.
      */
     private List<List<BlockConnector>> expandGroups = new ArrayList<List<BlockConnector>>();
-    
+
     /**
      * Only BlockGenus can create BlockGenus objects, specifically only the function that loads
      * BlockGenuses information from the loadString can create BlockGenuses objects
      */
     private BlockGenus(WorkspaceEnvironment workspaceEnvironment) {
-    	env = workspaceEnvironment;
+        env = workspaceEnvironment;
     }
 
     /**
@@ -96,9 +96,9 @@ public class BlockGenus {
      * @param genusName
      */
     private BlockGenus(WorkspaceEnvironment workspaceEnvironment, String genusName, String newGenusName) {
-    
-    	env = workspaceEnvironment;
-    
+
+        env = workspaceEnvironment;
+
         assert !genusName.equals(newGenusName) : "BlockGenuses must have unique names: " + genusName;
 
         BlockGenus genusToCopy = env.getGenusWithName(genusName);
@@ -135,7 +135,7 @@ public class BlockGenus {
     /**
      * Returns the siblings of this genus.  If this genus has no siblings, returns an empty list.
      * Each element in the list is the block genus name of a sibling.
-     * Note: For a genus to have siblings, its label must be uneditable.  An editable label 
+     * Note: For a genus to have siblings, its label must be uneditable.  An editable label
      * interferes with the drop down menu widget that blocks with siblings have.
      * @return the siblings of this genus.
      */
@@ -145,7 +145,7 @@ public class BlockGenus {
 
     /**
      * Returns true if this genus has siblings; false otherwise.
-     * Note: For a genus to have siblings, its label must be uneditable.  An editable label 
+     * Note: For a genus to have siblings, its label must be uneditable.  An editable label
      * interferes with the drop down menu widget that blocks with siblings have.
      * @return true if this genus has siblings; false otherwise.
      */
@@ -154,9 +154,9 @@ public class BlockGenus {
     }
 
     /**
-     * Returns a list of the stub kinds (or stub genus names) of this; if this genus does not have any stubs, 
-     * returns an empty list 
-     * @return a list of the stub kinds (or stub genus names) of this; if this genus does not have any stubs, 
+     * Returns a list of the stub kinds (or stub genus names) of this; if this genus does not have any stubs,
+     * returns an empty list
+     * @return a list of the stub kinds (or stub genus names) of this; if this genus does not have any stubs,
      * returns an empty list
      */
     public Iterable<String> getStubList() {
@@ -188,9 +188,9 @@ public class BlockGenus {
     }
 
     /**
-     * Returns true if this block is a data block a.k.a. a primitive (i.e. number, string, boolean); 
+     * Returns true if this block is a data block a.k.a. a primitive (i.e. number, string, boolean);
      * false otherwise
-     * @return Returns true if this block is a data block a.k.a. a primitive (i.e. number, string, boolean); 
+     * @return Returns true if this block is a data block a.k.a. a primitive (i.e. number, string, boolean);
      * false otherwise
      */
     public boolean isDataBlock() {
@@ -198,9 +198,9 @@ public class BlockGenus {
     }
 
     /**
-     * Returns true iff this block is a function block, which takes in an input and produces an 
+     * Returns true iff this block is a function block, which takes in an input and produces an
      * output. (i.e. math blocks, arctan, add to list); false otherwise.
-     * @return true iff this block is a function block, which takes in an input and produces an 
+     * @return true iff this block is a function block, which takes in an input and produces an
      * output. (i.e. math blocks, arctan, add to list); false otherwise.
      */
     public boolean isFunctionBlock() {
@@ -254,25 +254,25 @@ public class BlockGenus {
     }
 
     /**
-     * Returns true if this genus has a "before" connector; false otherwise.  
-     * @return true is this genus has a "before" connector; false otherwise.  
+     * Returns true if this genus has a "before" connector; false otherwise.
+     * @return true is this genus has a "before" connector; false otherwise.
      */
     public boolean hasBeforeConnector() {
         return !isStarter;
     }
 
     /**
-     * Returns true if this genus has a "after" connector; false otherwise.  
-     * @return true if this genus has a "after" connector; false otherwise.  
+     * Returns true if this genus has a "after" connector; false otherwise.
+     * @return true if this genus has a "after" connector; false otherwise.
      */
     public boolean hasAfterConnector() {
         return !isTerminator;
     }
 
     /**
-     * Returns true if the value of this genus is contained within the label of this; false 
+     * Returns true if the value of this genus is contained within the label of this; false
      * otherwise
-     * @return true if the value of this genus is contained within the label of this; false 
+     * @return true if the value of this genus is contained within the label of this; false
      * otherwise
      */
     public boolean isLabelValue() {
@@ -288,8 +288,8 @@ public class BlockGenus {
     }
 
     /**
-     * Returns true iff this genus can have page label. 
-     * @return true iff this genus can have page label 
+     * Returns true iff this genus can have page label.
+     * @return true iff this genus can have page label
      */
     public boolean isPageLabelSetByPage() {
         return isPageLabelEnabled;
@@ -393,7 +393,7 @@ public class BlockGenus {
 
     /**
      * Returns the value of the specified language dependent property
-     * @param property the property to look up 
+     * @param property the property to look up
      * @return the value of the specified language dependent property; null if property does not exist
      */
     public String getProperty(String property) {
@@ -432,14 +432,14 @@ public class BlockGenus {
         return after;
     }
 
-    /** 
+    /**
      * Returns the expand groups of this. Not modifiable.
      */
     public List<List<BlockConnector>> getExpandGroups() {
         return Collections.unmodifiableList(expandGroups);
     }
 
-    /** 
+    /**
      * Return the expand-group for the given group. Can be null if group
      * doesn't exist.
      */
@@ -732,7 +732,7 @@ public class BlockGenus {
                         stubGenus = nameMatcher.group(1);
                     }
                     if (stub.hasChildNodes()) {
-                        //this stub for this genus deviates from generic stub  
+                        //this stub for this genus deviates from generic stub
                         //generate genus by copying one of generic ones
 
                         BlockGenus newStubGenus = new BlockGenus(genus.env, stubGenus, stubGenus + genus.genusName);
@@ -762,7 +762,7 @@ public class BlockGenus {
      */
     public static void loadBlockGenera(Workspace workspace, Element root) {
     	WorkspaceEnvironment env = workspace.getEnv();
-    
+
         Pattern attrExtractor = Pattern.compile("\"(.*)\"");
         Matcher nameMatcher;
         NodeList genusNodes = root.getElementsByTagName("BlockGenus"); //look for genus
@@ -924,7 +924,7 @@ public class BlockGenus {
             if (famList.size() > 0) {
                 for (String memName : famList) {
                     ArrayList<String> newFamList = new ArrayList<String>(famList);
-                    newFamList.remove(memName); //filter out current memName, so that only 
+                    newFamList.remove(memName); //filter out current memName, so that only
                     //sibling names are included
                     env.getGenusWithName(memName).familyList = newFamList;
                 }

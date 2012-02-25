@@ -81,7 +81,7 @@ public class AutoCompletePanel extends JPanel implements MouseListener, MouseMot
         menu.setLayoutOrientation(JList.VERTICAL);
         CTracklessScrollPane menuPane = new CTracklessScrollPane(menu,
                 7, new Color(75, 50, 0), BACKGROUND) {
-
+            @Override
             public Insets getInsets() {
                 return new Insets(MARGIN, 0, 0, 0);
             }
@@ -101,10 +101,12 @@ public class AutoCompletePanel extends JPanel implements MouseListener, MouseMot
         this.addFocusListener(new FocusListener() {
             //pass focus onto editor
 
+            @Override
             public void focusGained(FocusEvent e) {
                 editor.requestFocus();
             }
 
+            @Override
             public void focusLost(FocusEvent e) {
             }
         });
@@ -128,6 +130,7 @@ public class AutoCompletePanel extends JPanel implements MouseListener, MouseMot
         this.addMouseMotionListener(this);
     }
 
+    @Override
     public void paint(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         int w = this.getWidth();
@@ -148,21 +151,25 @@ public class AutoCompletePanel extends JPanel implements MouseListener, MouseMot
         super.paint(g);
     }
 
+    @Override
     public Insets getInsets() {
         return new Insets(MARGIN, MARGIN, MARGIN, MARGIN);
     }
     private boolean resizing = false;
 
+    @Override
     public void mousePressed(MouseEvent e) {
         if (e.getX() > (this.getWidth() - 2 * MARGIN) && e.getY() > (this.getHeight() - 2 * MARGIN)) {
             resizing = true;
         }
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
         resizing = false;
     }
 
+    @Override
     public void mouseDragged(MouseEvent e) {
         if (resizing) {
             preferredWidth = e.getX() > MINIMUM_WIDTH ? e.getX() : MINIMUM_WIDTH;
@@ -171,15 +178,19 @@ public class AutoCompletePanel extends JPanel implements MouseListener, MouseMot
         }
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
     }
 
+    @Override
     public void mouseMoved(MouseEvent e) {
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
     }
 
@@ -229,7 +240,7 @@ public class AutoCompletePanel extends JPanel implements MouseListener, MouseMot
 
     /**
      * Should display whatever block was last selected in menu.
-     * @param workspace 
+     * @param workspace
      */
     private void displayBlock(Workspace workspace) {
         Object obj = menu.getSelectedValue();
@@ -247,14 +258,14 @@ public class AutoCompletePanel extends JPanel implements MouseListener, MouseMot
                 // if "+" then pass the two labels in
                 if (obj.toString().equals(TypeBlockManager.NUMBER_PLUS_OPERATION_LABEL)
                         || obj.toString().equals(TypeBlockManager.TEXT_PLUS_OPERATION_LABEL)) {
-                workspace.getTypeBlockManager().automateBlockInsertion(workspace, (TextualFactoryBlock) obj, obj.toString());
+                    workspace.getTypeBlockManager().automateBlockInsertion(workspace, (TextualFactoryBlock) obj, obj.toString());
                     // if starts with quote (is a string block)
                 } else if (obj.toString().startsWith(TypeBlockManager.QUOTE_LABEL)) {
                     String[] quote = obj.toString().split(TypeBlockManager.QUOTE_LABEL);
                     workspace.getTypeBlockManager().automateBlockInsertion(workspace, (TextualFactoryBlock) obj, quote[1]);
                     // otherwise, don't pass a label in
                 } else {
-                workspace.getTypeBlockManager().automateBlockInsertion(workspace, (TextualFactoryBlock) obj);
+                    workspace.getTypeBlockManager().automateBlockInsertion(workspace, (TextualFactoryBlock) obj);
                 }
             }
         }

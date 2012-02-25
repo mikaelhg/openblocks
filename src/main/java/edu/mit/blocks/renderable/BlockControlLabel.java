@@ -22,7 +22,7 @@ import edu.mit.blocks.workspace.Workspace;
  */
 class BlockControlLabel extends JLabel implements MouseListener {
 
-	protected Workspace workspace;
+    protected Workspace workspace;
 
     private static final long serialVersionUID = 1L;
     private boolean active = false;
@@ -33,8 +33,8 @@ class BlockControlLabel extends JLabel implements MouseListener {
      * this must be added to the block by the method creating this Label.
      * @param blockID
      */
-    BlockControlLabel(Workspace workspace,long blockID) {
-    	this.workspace = workspace;
+    BlockControlLabel(Workspace workspace, long blockID) {
+        this.workspace = workspace;
         this.blockID = blockID;
         this.setFont(new Font("Courier", Font.BOLD, (int) (14)));
         this.setForeground(new Color(255, 255, 255));

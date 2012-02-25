@@ -8,10 +8,10 @@ import edu.mit.blocks.codeblocks.BlockConnectorShape;
 import edu.mit.blocks.workspace.Workspace;
 
 /**
- * CollapseLabel is a label that can be added to a renderable block that 
- * will cause all blocks after this block to be hidden from view when 
+ * CollapseLabel is a label that can be added to a renderable block that
+ * will cause all blocks after this block to be hidden from view when
  * the isCollapsed parameter is true.
- * 
+ *
  *
  */
 class CollapseLabel extends BlockControlLabel {
@@ -25,7 +25,8 @@ class CollapseLabel extends BlockControlLabel {
     /**
      * setup current visual state of button
      */
-	public void update() {
+    @Override
+    public void update() {
         RenderableBlock rb = workspace.getEnv().getRenderableBlock(getBlockID());
 
         if (rb != null) {
@@ -91,7 +92,7 @@ class CollapseLabel extends BlockControlLabel {
 
     /**
      * Collapse the block corresponding to @param blockID and the blocks
-     * connect to its sockets. 
+     * connect to its sockets.
      * @param blockID
      */
     void collapseBlock(long blockID) {
@@ -125,7 +126,8 @@ class CollapseLabel extends BlockControlLabel {
      * Implement MouseListener interface
      * toggle collapse state of block if button pressed
      */
-	public void mouseClicked(MouseEvent e) {
+    @Override
+    public void mouseClicked(MouseEvent e) {
         toggle();
         collapseBlockAndStack();
         update();
