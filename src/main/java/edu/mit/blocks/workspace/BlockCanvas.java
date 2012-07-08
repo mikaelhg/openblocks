@@ -411,8 +411,13 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
      */
     public void reformBlockCanvas() {
         int widthCounter = 0;
+        int maxHeight = 0;
         for (int i = 0; i < pages.size(); i++) {
             Page p = pages.get(i);
+            // compute maximum overall page height.
+            if (p.getMinimumPixelHeight()>maxHeight) {
+                maxHeight = p.getMinimumPixelHeight();
+            }
             if (p.getDefaultPageColor() == null) {
                 if (i % 2 == 1) {
                     p.setPageColor(new Color(30, 30, 30));
@@ -431,7 +436,7 @@ public class BlockCanvas implements PageChangeListener, ISupportMemento {
                     5,
                     d.getLeftPage().getJComponent().getHeight());
         }
-        canvas.setPreferredSize(new Dimension(widthCounter, (int) (Page.DEFAULT_ABSTRACT_HEIGHT * Page.getZoomLevel())));
+        canvas.setPreferredSize(new Dimension(widthCounter, (int) (maxHeight * Page.getZoomLevel())));
         scrollPane.revalidate();
         scrollPane.repaint();
     }
