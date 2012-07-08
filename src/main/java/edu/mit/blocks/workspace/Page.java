@@ -95,6 +95,8 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
     private static final int COLLAPSED_WIDTH = 20;
     /** The smallest value that this.minimumPixelWidth/zoom can be */
     private static final int DEFAULT_MINUMUM_WIDTH = 100;
+    /** The smallest value that this.minimumPixelHeight/zoom can be */
+    private static final int DEFAULT_MINIMUM_HEIGHT = 100;
     /** The default abstract width */
     private static final int DEFAULT_ABSTRACT_WIDTH = 700;
     /** The default abstract height */
@@ -117,6 +119,8 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
     private boolean mouseIsInPage = false;
     /** The minimum width of the page in pixels */
     private int minimumPixelWidth = 0;
+    /** The minimum height of the page in pixels */
+    private int minimumPixelHeight = 0;
     /** Fullview */
     private boolean fullview;
     /** The GUI component for interfacing with the user
@@ -511,6 +515,9 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
                 this.setPixelWidth(p.x + block.getComment().getWidth() + 1);
             }
         }
+        
+        // Recompute page height.
+        reformMinimumPixelHeight();
 
         //repaint all pages
         PageChangeEventManager.notifyListeners();
@@ -543,6 +550,25 @@ public class Page implements WorkspaceWidget, SearchableContainer, ISupportMemen
         if (this.minimumPixelWidth < Page.DEFAULT_MINUMUM_WIDTH * zoom) {
             this.minimumPixelWidth = (int) (Page.DEFAULT_MINUMUM_WIDTH * zoom);
         }
+    }
+    
+    public void reformMinimumPixelHeight() {
+        minimumPixelHeight = 0;
+        for (RenderableBlock b : this.getBlocks()) {
+            if (b.getY()+b.getHeight()+b.getHighlightStrokeWidth() /2 > minimumPixelHeight) {
+                minimumPixelHeight = b.getY() + b.getHeight() + b.getHighlightStrokeWidth()/2+1;
+            }
+            if (b.hasComment()) {
+                minimumPixelHeight = b.getComment().getY() + b.getComment().getHeight() + 1;
+            }
+        }
+        if (this.minimumPixelHeight < Page.DEFAULT_MINIMUM_HEIGHT * zoom) {
+            this.minimumPixelHeight = (int) (Page.DEFAULT_MINIMUM_HEIGHT * zoom);
+        }
+    }
+    
+    public int getMinimumPixelHeight() {
+        return this.minimumPixelHeight;
     }
 
     /**
