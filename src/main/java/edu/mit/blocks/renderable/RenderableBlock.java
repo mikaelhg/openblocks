@@ -1551,51 +1551,50 @@ public class RenderableBlock extends JComponent implements SearchableElement, Mo
 
     public void mouseReleased(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
-            if (!pickedUp) {
-                throw new RuntimeException("dropping without prior dragging?");
-            }
-            dragHandler.mouseReleased(e);
+            if (pickedUp) {
+                dragHandler.mouseReleased(e);
 
-            //if the block was dragged before...then
-            if (dragging) {
-                BlockLink link = getNearbyLink(); //look for nearby link opportunities
-                WorkspaceWidget widget = null;
+                //if the block was dragged before...then
+                if (dragging) {
+                    BlockLink link = getNearbyLink(); //look for nearby link opportunities
+                    WorkspaceWidget widget = null;
 
-                // if a suitable link wasn't found, just drop the block
-                if (link == null) {
-                    widget = lastDragWidget;
-                    stopDragging(this, widget);
-                } // otherwise, if a link WAS found...
-                else {
+                    // if a suitable link wasn't found, just drop the block
+                    if (link == null) {
+                        widget = lastDragWidget;
+                        stopDragging(this, widget);
+                    } // otherwise, if a link WAS found...
+                    else {
 
-                    /* Make sure that no matter who's connecting to whom, the block
-                     * that's being dragged gets dropped on the parent widget of the
-                     * block that's already on the canvas.
-                     */
-                    if (blockID.equals(link.getSocketBlockID())) {
-                        // dragged block is the socket block, so take plug's parent.
-                        widget = workspace.getEnv().getRenderableBlock(link.getPlugBlockID()).getParentWidget();
-                    } else {
-                        // dragged block is the plug block, so take the socket block's parent.
-                        widget = workspace.getEnv().getRenderableBlock(link.getSocketBlockID()).getParentWidget();
+                        /* Make sure that no matter who's connecting to whom, the block
+                        * that's being dragged gets dropped on the parent widget of the
+                        * block that's already on the canvas.
+                        */
+                        if (blockID.equals(link.getSocketBlockID())) {
+                            // dragged block is the socket block, so take plug's parent.
+                            widget = workspace.getEnv().getRenderableBlock(link.getPlugBlockID()).getParentWidget();
+                        } else {
+                            // dragged block is the plug block, so take the socket block's parent.
+                            widget = workspace.getEnv().getRenderableBlock(link.getSocketBlockID()).getParentWidget();
+                        }
+
+                        // drop the block and connect its link
+                        stopDragging(this, widget);
+                        link.connect();
+                        workspace.notifyListeners(new WorkspaceEvent(workspace, widget, link, WorkspaceEvent.BLOCKS_CONNECTED));
+                        workspace.getEnv().getRenderableBlock(link.getSocketBlockID()).moveConnectedBlocks();
                     }
 
-                    // drop the block and connect its link
-                    stopDragging(this, widget);
-                    link.connect();
-                    workspace.notifyListeners(new WorkspaceEvent(workspace, widget, link, WorkspaceEvent.BLOCKS_CONNECTED));
-                    workspace.getEnv().getRenderableBlock(link.getSocketBlockID()).moveConnectedBlocks();
-                }
+                    //set the locations for X and Y based on zoom at 1.0
+                    this.unzoomedX = this.calculateUnzoomedX(this.getX());
+                    this.unzoomedY = this.calculateUnzoomedY(this.getY());
 
-                //set the locations for X and Y based on zoom at 1.0
-                this.unzoomedX = this.calculateUnzoomedX(this.getX());
-                this.unzoomedY = this.calculateUnzoomedY(this.getY());
-
-                workspace.notifyListeners(new WorkspaceEvent(workspace, widget, link, WorkspaceEvent.BLOCK_MOVED, true));
-                if (widget instanceof MiniMap) {
-                    workspace.getMiniMap().animateAutoCenter(this);
+                    workspace.notifyListeners(new WorkspaceEvent(workspace, widget, link, WorkspaceEvent.BLOCK_MOVED, true));
+                    if (widget instanceof MiniMap) {
+                        workspace.getMiniMap().animateAutoCenter(this);
+                    }
                 }
-            }
+            }            
         }
         pickedUp = false;
         if (e.isPopupTrigger() || SwingUtilities.isRightMouseButton(e) || e.isControlDown()) {
@@ -1610,51 +1609,49 @@ public class RenderableBlock extends JComponent implements SearchableElement, Mo
 
     public void mouseDragged(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
-            if (!pickedUp) {
-                throw new RuntimeException("dragging without prior pickup?");
-            }
-
-            Point pp = SwingUtilities.convertPoint(this, e.getPoint(), workspace.getMiniMap());
-            if (workspace.getMiniMap().contains(pp)) {
-                workspace.getMiniMap().blockDragged(this, e.getPoint());
-                lastDragWidget = workspace.getMiniMap();
-                return;
-            }
-
-            // drag this block if appropriate (checks bounds first)
-            dragHandler.mouseDragged(e);
-
-            // Find the widget under the mouse
-            dragHandler.myLoc.move(getX() + dragHandler.mPressedX, getY() + dragHandler.mPressedY);
-            Point p = SwingUtilities.convertPoint(this.getParent(), dragHandler.myLoc, workspace);
-            WorkspaceWidget widget = workspace.getWidgetAt(p);
-            if (widget == null) {
-                // not on a workspace widget, cancel dragging
-                return;
-            }
-
-            //if this is the first call to mouseDragged
-            if (!dragging) {
-                Block block = getBlock();
-                BlockConnector plug = BlockLinkChecker.getPlugEquivalent(block);
-                if (plug != null && plug.hasBlock()) {
-                    Block parent = workspace.getEnv().getBlock(plug.getBlockID());
-                    BlockConnector socket = parent.getConnectorTo(blockID);
-                    BlockLink link = BlockLink.getBlockLink(workspace, block, parent, plug, socket);
-                    link.disconnect();
-                    //socket is removed internally from block's socket list if socket is expandable
-                    workspace.getEnv().getRenderableBlock(parent.getBlockID()).blockDisconnected(socket);
-
-                    //NOTIFY WORKSPACE LISTENERS OF DISCONNECTION
-                    workspace.notifyListeners(new WorkspaceEvent(workspace, widget, link, WorkspaceEvent.BLOCKS_DISCONNECTED));
+            if (pickedUp) {
+                Point pp = SwingUtilities.convertPoint(this, e.getPoint(), workspace.getMiniMap());
+                if (workspace.getMiniMap().contains(pp)) {
+                    workspace.getMiniMap().blockDragged(this, e.getPoint());
+                    lastDragWidget = workspace.getMiniMap();
+                    return;
                 }
-                startDragging(this, widget);
-            }
 
-            // drag this block and all attached to it
-            drag(this, dragHandler.dragDX, dragHandler.dragDY, widget, true);
+                // drag this block if appropriate (checks bounds first)
+                dragHandler.mouseDragged(e);
 
-            workspace.getMiniMap().repaint();
+                // Find the widget under the mouse
+                dragHandler.myLoc.move(getX() + dragHandler.mPressedX, getY() + dragHandler.mPressedY);
+                Point p = SwingUtilities.convertPoint(this.getParent(), dragHandler.myLoc, workspace);
+                WorkspaceWidget widget = workspace.getWidgetAt(p);
+                if (widget == null) {
+                    // not on a workspace widget, cancel dragging
+                    return;
+                }
+
+                //if this is the first call to mouseDragged
+                if (!dragging) {
+                    Block block = getBlock();
+                    BlockConnector plug = BlockLinkChecker.getPlugEquivalent(block);
+                    if (plug != null && plug.hasBlock()) {
+                        Block parent = workspace.getEnv().getBlock(plug.getBlockID());
+                        BlockConnector socket = parent.getConnectorTo(blockID);
+                        BlockLink link = BlockLink.getBlockLink(workspace, block, parent, plug, socket);
+                        link.disconnect();
+                        //socket is removed internally from block's socket list if socket is expandable
+                        workspace.getEnv().getRenderableBlock(parent.getBlockID()).blockDisconnected(socket);
+
+                        //NOTIFY WORKSPACE LISTENERS OF DISCONNECTION
+                        workspace.notifyListeners(new WorkspaceEvent(workspace, widget, link, WorkspaceEvent.BLOCKS_DISCONNECTED));
+                    }
+                    startDragging(this, widget);
+                }
+
+                // drag this block and all attached to it
+                drag(this, dragHandler.dragDX, dragHandler.dragDY, widget, true);
+
+                workspace.getMiniMap().repaint();
+            }            
         }
     }
     //show the pulldown icon if hasComboPopup = true
