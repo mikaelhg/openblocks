@@ -6,6 +6,8 @@ This is a fork of [MIT OpenBlocks](http://education.mit.edu/drupal/openblocks)
 
 The principal objective of the fork is to make the code more amenable to inclusion to other projects.
 
+If you're building a web application, you might want to consider http://code.google.com/p/blockly/ as well.
+
 Getting Started:
 ------
 	$ mvn clean package
