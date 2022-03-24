@@ -4,7 +4,7 @@ import edu.mit.blocks.workspace.Workspace;
 import edu.mit.blocks.workspace.WorkspaceEvent;
 import edu.mit.blocks.workspace.WorkspaceListener;
 
-public class CommandRule implements LinkRule, WorkspaceListener {
+public class CommandRule extends Mandate implements LinkRule, WorkspaceListener {
     
     private final Workspace workspace;
 
@@ -25,9 +25,6 @@ public class CommandRule implements LinkRule, WorkspaceListener {
         return false;
     }
 
-    public boolean isMandatory() {
-        return false;
-    }
 
     public void workspaceEventOccurred(WorkspaceEvent e) {
         // TODO Auto-generated method stub

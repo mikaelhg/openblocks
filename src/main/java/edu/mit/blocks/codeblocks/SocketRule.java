@@ -5,7 +5,7 @@ package edu.mit.blocks.codeblocks;
  * match in kind.
  *
  */
-public class SocketRule implements LinkRule {
+public class SocketRule extends Mandate{
 
     /**
      * Returns true if the two sockets of the two blocks can link by matching their socket kind; false if not.
@@ -30,10 +30,6 @@ public class SocketRule implements LinkRule {
             return true;
         }
 
-        return false;
-    }
-
-    public boolean isMandatory() {
         return false;
     }
 }

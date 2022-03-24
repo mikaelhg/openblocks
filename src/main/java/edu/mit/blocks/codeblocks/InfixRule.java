@@ -7,7 +7,7 @@ import edu.mit.blocks.workspace.WorkspaceListener;
  * <code>InfixRule</code> specifies a rule for <code>Block</code> linking.
  * Allows users to insert infix blocks in between two blocks.
  */
-public class InfixRule implements LinkRule, WorkspaceListener {
+public class InfixRule extends Mandate implements LinkRule, WorkspaceListener {
 
     /**
      * Returns true if the two sockets of the two blocks can link; false if not
@@ -70,10 +70,6 @@ public class InfixRule implements LinkRule, WorkspaceListener {
 
 
         //no assumptions work, return false
-        return false;
-    }
-
-    public boolean isMandatory() {
         return false;
     }
 
