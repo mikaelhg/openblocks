@@ -51,9 +51,6 @@ public class StackExplorer extends JLayeredPane implements Explorer, ActionListe
     public void addListener(ExplorerListener gel) {
     }
 
-    public void removeListener(ExplorerListener gel) {
-    }
-
     /**
      * Reassigns this explorer to the new list of canvases and
      * reforms the location of each canvas's origin and destination

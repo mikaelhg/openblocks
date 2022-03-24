@@ -18,5 +18,5 @@ public interface SearchableElement {
      *
      * @param inSearchResults true when the SearchableElement is part of the current results.
      */
-    public void updateInSearchResults(boolean inSearchResults);
+   public void updateInSearchResults(boolean inSearchResults);
 }

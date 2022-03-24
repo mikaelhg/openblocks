@@ -133,8 +133,7 @@ public class TabbedExplorer extends JPanel implements Explorer, MouseListener, A
     public void addListener(ExplorerListener gel) {
     }
 
-    public void removeListener(ExplorerListener gel) {
-    }
+
 
     /**
      * Reassigns the set of canvases that this explorer controls.

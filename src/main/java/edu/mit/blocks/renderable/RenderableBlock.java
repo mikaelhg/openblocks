@@ -756,7 +756,7 @@ public class RenderableBlock extends JComponent implements SearchableElement, Mo
      * Returns the parent WorkspaceWidget containing this
      * @return the parent WorkspaceWidget containing this
      */
-    @Override
+   // @Override
     public WorkspaceWidget getParentWidget() {
         return parent;
     }

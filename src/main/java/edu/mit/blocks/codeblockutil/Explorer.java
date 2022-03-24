@@ -98,5 +98,5 @@ public interface Explorer {
      * Removes listener from the explorer
      * @param gel
      */
-    public void removeListener(ExplorerListener gel);
+
 }

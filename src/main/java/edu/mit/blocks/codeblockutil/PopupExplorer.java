@@ -78,8 +78,6 @@ public class PopupExplorer extends JLayeredPane implements Explorer, ComponentLi
     public void addListener(ExplorerListener gel) {
     }
 
-    public void removeListener(ExplorerListener gel) {
-    }
 
     /**
      * Reassigns the set of canvases that this explorer controls.

@@ -61,8 +61,7 @@ public class WindowExplorer extends JPanel implements Explorer {
     public void addListener(ExplorerListener gel) {
     }
 
-    public void removeListener(ExplorerListener gel) {
-    }
+
 
     /**
      * Reassigns the set of canvases that this explorer controls.
