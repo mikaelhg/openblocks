@@ -4,7 +4,7 @@ import edu.mit.blocks.workspace.Workspace;
 import edu.mit.blocks.workspace.WorkspaceEvent;
 import edu.mit.blocks.workspace.WorkspaceListener;
 
-public class CommandRule extends Mandate implements LinkRule, WorkspaceListener {
+public class CommandRule extends Mandate implements WorkspaceListener {
     
     private final Workspace workspace;
 
