@@ -318,51 +318,97 @@ public class Comment extends JPanel {
         return (int) (x / zoom);
     }
 
+
+    public Node getSaveNode(Document document) {
+        Element commentElement = document.createElement("Comment");
+
+        // Text
+        Element textElement = document.createElement("Text");
+        Text text = document.createTextNode(this.getText().replaceAll("`", "'"));
+        textElement.appendChild(text);
+        commentElement.appendChild(textElement);
+
+        // Location
+        Element locationElement = document.createElement("Location");
+        Element xElement = document.createElement("X");
+        xElement.appendChild(document.createTextNode(String.valueOf(descale(getLocation().getX()))));
+        locationElement.appendChild(xElement);
+
+        Element yElement = document.createElement("Y");
+        yElement.appendChild(document.createTextNode(String.valueOf(descale(getLocation().getY()))));
+        locationElement.appendChild(yElement);
+
+        commentElement.appendChild(locationElement);
+
+        // Box size
+        Element boxSizeElement = document.createElement("BoxSize");
+        Element widthElement = document.createElement("Width");
+        widthElement.appendChild(document.createTextNode(String.valueOf(descale(getWidth()))));
+        boxSizeElement.appendChild(widthElement);
+
+        Element heightElement = document.createElement("Height");
+        heightElement.appendChild(document.createTextNode(String.valueOf(descale(getHeight()))));
+        boxSizeElement.appendChild(heightElement);
+
+        commentElement.appendChild(boxSizeElement);
+
+        // Collapse
+        if (!commentLabel.isActive()) {
+            Element collapsedElement = document.createElement("Collapsed");
+            commentElement.appendChild(collapsedElement);
+        }
+
+        return commentElement;
+    }
+
+
+
+
     /**
      * Returns the node for this comment.
      * @return
      */
-    public Node getSaveNode(Document document) {
-    	Element commentElement = document.createElement("Comment");
-    	
-    	// Text
-    	Element textElement = document.createElement("Text");
-    	Text text = document.createTextNode(this.getText().replaceAll("`", "'"));
-    	textElement.appendChild(text);
-    	commentElement.appendChild(textElement);
-    	
-    	// Location
-    	Element locationElement = document.createElement("Location");
-    	Element xElement = document.createElement("X");
-    	xElement.appendChild(document.createTextNode(String.valueOf(descale(getLocation().getX()))));
-    	locationElement.appendChild(xElement);
-    	
-    	Element yElement = document.createElement("Y");
-    	yElement.appendChild(document.createTextNode(String.valueOf(descale(getLocation().getY()))));
-    	locationElement.appendChild(yElement);
-    	
-    	commentElement.appendChild(locationElement);
-    	
-    	// Box size
-    	Element boxSizeElement = document.createElement("BoxSize");
-    	Element widthElement = document.createElement("Width");
-    	widthElement.appendChild(document.createTextNode(String.valueOf(descale(getWidth()))));
-    	boxSizeElement.appendChild(widthElement);
-    	
-    	Element heightElement = document.createElement("Height");
-    	heightElement.appendChild(document.createTextNode(String.valueOf(descale(getHeight()))));
-    	boxSizeElement.appendChild(heightElement);
-    	
-    	commentElement.appendChild(boxSizeElement);
-    	
-    	// Collapse
-    	if (!commentLabel.isActive()) {
-    		Element collapsedElement = document.createElement("Collapsed");
-    		commentElement.appendChild(collapsedElement);
-    	}
-    	
-    	return commentElement;
-    }
+//    public Node getSaveNode(Document document) {
+//    	Element commentElement = document.createElement("Comment");
+//
+//    	// Text
+//    	Element textElement = document.createElement("Text");
+//    	Text text = document.createTextNode(this.getText().replaceAll("`", "'"));
+//    	textElement.appendChild(text);
+//    	commentElement.appendChild(textElement);
+//
+//    	// Location
+//    	Element locationElement = document.createElement("Location");
+//    	Element xElement = document.createElement("X");
+//    	xElement.appendChild(document.createTextNode(String.valueOf(descale(getLocation().getX()))));
+//    	locationElement.appendChild(xElement);
+//
+//    	Element yElement = document.createElement("Y");
+//    	yElement.appendChild(document.createTextNode(String.valueOf(descale(getLocation().getY()))));
+//    	locationElement.appendChild(yElement);
+//
+//    	commentElement.appendChild(locationElement);
+//
+//    	// Box size
+//    	Element boxSizeElement = document.createElement("BoxSize");
+//    	Element widthElement = document.createElement("Width");
+//    	widthElement.appendChild(document.createTextNode(String.valueOf(descale(getWidth()))));
+//    	boxSizeElement.appendChild(widthElement);
+//
+//    	Element heightElement = document.createElement("Height");
+//    	heightElement.appendChild(document.createTextNode(String.valueOf(descale(getHeight()))));
+//    	boxSizeElement.appendChild(heightElement);
+//
+//    	commentElement.appendChild(boxSizeElement);
+//
+//    	// Collapse
+//    	if (!commentLabel.isActive()) {
+//    		Element collapsedElement = document.createElement("Collapsed");
+//    		commentElement.appendChild(collapsedElement);
+//    	}
+//
+//    	return commentElement;
+//    }
 
     /**
      * Loads the comment from a NodeList of comment parts

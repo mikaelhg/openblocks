@@ -56,6 +56,7 @@ public class CSlider extends JPanel implements MouseListener, MouseMotionListene
     private boolean startMark = false; // whether the start mark of the thumb is turned on
     private String startMarkLabel = ""; //what the label for the start point is
 
+    private ReformTempUtils reform = new ReformTempUtils();
     /**
      * @requires none
      * @effects Constructs a CSlider such that this.min=0 && this.max=100 &&
@@ -246,92 +247,7 @@ public class CSlider extends JPanel implements MouseListener, MouseMotionListene
         this.firePropertyChange(VALUE_CHANGED, oldvalue, this.value);
     }
 
-    /**
-     * creates the shape of the track on the left side of the thumb
-     * @param blueprint
-     * @return general path shape of track on the left side of the thumb
-     */
-    public Shape reformLeadingTrack(SliderBlueprint blueprint) {
-        GeneralPath shape = new GeneralPath();
-        shape.moveTo(blueprint.closeTrackEdgeLeft, blueprint.trackTop);
-        shape.lineTo(blueprint.thumbCenter, blueprint.trackTop);
-        shape.lineTo(blueprint.thumbCenter, blueprint.trackBottom);
-        shape.lineTo(blueprint.closeTrackEdgeLeft, blueprint.trackBottom);
-        shape.curveTo(blueprint.farTrackEdgeLeft, blueprint.trackBottom,
-                blueprint.farTrackEdgeLeft, blueprint.trackTop,
-                blueprint.closeTrackEdgeLeft, blueprint.trackTop);
-        shape.closePath();
-        return shape;
-    }
 
-    /**
-     * creates the shape of the track on the right side of the thumb
-     * @param blueprint
-     * @return general path shape of the track on the right side of the thumb
-     */
-    public Shape reformTrailingTrack(SliderBlueprint blueprint) {
-        GeneralPath shape = new GeneralPath();
-        shape.moveTo(blueprint.thumbCenter, blueprint.trackTop);
-        shape.lineTo(blueprint.closeTrackEdgeRight, blueprint.trackTop);
-        shape.curveTo(blueprint.farTrackEdgeRight, blueprint.trackTop,
-                blueprint.farTrackEdgeRight, blueprint.trackBottom,
-                blueprint.closeTrackEdgeRight, blueprint.trackBottom);
-        shape.lineTo(blueprint.thumbCenter, blueprint.trackBottom);
-        shape.lineTo(blueprint.thumbCenter, blueprint.trackTop);
-        shape.closePath();
-        return shape;
-    }
-
-    /**
-     * creates the shape of the thumb
-     * @param blueprint
-     * @param diameter
-     * @return ellipse of the thumb
-     */
-    public Shape reformThumb(SliderBlueprint blueprint, int diameter) {
-        return new Ellipse2D.Double(blueprint.thumbCenter - diameter / 2,
-                blueprint.trackMiddleY - diameter / 2, diameter, diameter);
-    }
-
-    /**
-     * creates the shape of the ticks
-     * @param blueprint
-     * @return general path of the ticks
-     */
-    public Shape reformTicks(SliderBlueprint blueprint) {
-        GeneralPath ticks = new GeneralPath();
-        int count = 0;
-        float position = blueprint.closeTrackEdgeLeft;
-        float interval = (float) (blueprint.closeTrackEdgeRight - blueprint.closeTrackEdgeLeft) / this.tickNumber;
-        while (count < (tickNumber + 1)) {
-            ticks.moveTo((int) position, blueprint.trackTop);
-            ticks.lineTo((int) position, blueprint.trackBottom);
-            position += interval;
-            count += 1;
-        }
-        ticks.closePath();
-        return ticks;
-    }
-
-    /**
-     * Sets the values in the class SliderBlueprint
-     * @param blueprint
-     * @param width
-     * @param height
-     * @param girth
-     * @param thumbX - distance from the upper left corner to the center of the thumb
-     */
-    public void reformBlueprint(SliderBlueprint blueprint,
-            int width, int height, int girth, int thumbX) {
-        blueprint.farTrackEdgeLeft = height / 2 - girth / 2;
-        blueprint.closeTrackEdgeLeft = height / 2;
-        blueprint.thumbCenter = thumbX;
-        blueprint.closeTrackEdgeRight = width - height / 2;
-        blueprint.farTrackEdgeRight = width - height / 2 + girth / 2;
-        blueprint.trackTop = height / 2 - girth / 2;
-        blueprint.trackMiddleY = height / 2;
-        blueprint.trackBottom = height / 2 + girth / 2;
-    }
 
     /**
      * Paints the CSlider
@@ -344,13 +260,13 @@ public class CSlider extends JPanel implements MouseListener, MouseMotionListene
         // gets the distance from the left side of the slider to the thumb in pixel
         int thumbX = getThumbX();
 
-        this.reformBlueprint(blueprint,
+        reform.reformBlueprint(blueprint,
                 this.getWidth(),
                 this.getHeight(), (int) (trackThickness * this.getHeight()), thumbX);
-        Shape leading = this.reformLeadingTrack(blueprint);
-        Shape trailing = this.reformTrailingTrack(blueprint);
-        Shape thumb = this.reformThumb(blueprint, this.getHeight() / 2);
-        Shape miniThumb = this.reformThumb(blueprint, this.getHeight() / 4);
+        Shape leading = reform.reformLeadingTrack(blueprint);
+        Shape trailing = reform.reformTrailingTrack(blueprint);
+        Shape thumb = reform.reformThumb(blueprint, this.getHeight() / 2);
+        Shape miniThumb = reform.reformThumb(blueprint, this.getHeight() / 4);
 
 
         //draw shapes
@@ -371,7 +287,7 @@ public class CSlider extends JPanel implements MouseListener, MouseMotionListene
         // also draws where the triangle where thumb starts
         g2.setColor(Color.lightGray);
         if (this.tickNumber != 0 && this.setTicks) {
-            Shape ticks = this.reformTicks(blueprint);
+            Shape ticks = reform.reformTicks(blueprint,tickNumber);
             g2.draw(ticks);
         }
 
