@@ -774,81 +774,7 @@ public class BlockGenus {
                 /// LOAD BLOCK GENUS PROPERTIES ///
                 BlockGenus newGenus = new BlockGenus(env);
                 //first, parse out the attributes
-                nameMatcher = attrExtractor.matcher(genusNode.getAttributes().getNamedItem("name").toString());
-                if (nameMatcher.find()) {
-                    newGenus.genusName = nameMatcher.group(1);
-                }
-                //assert that no other genus has this name
-                assert env.getGenusWithName(newGenus.genusName) == null : "Block genus names must be unique.  A block genus already exists with this name: " + newGenus.genusName;
-                nameMatcher = attrExtractor.matcher(genusNode.getAttributes().getNamedItem("color").toString());
-                if (nameMatcher.find()) { //will be true
-                    col = new StringTokenizer(nameMatcher.group(1));
-                    if (col.countTokens() == 3) {
-                        newGenus.color = new Color(Integer.parseInt(col.nextToken()), Integer.parseInt(col.nextToken()), Integer.parseInt(col.nextToken()));
-                    } else {
-                        newGenus.color = Color.BLACK;
-                    }
-                }
-                nameMatcher = attrExtractor.matcher(genusNode.getAttributes().getNamedItem("kind").toString());
-                if (nameMatcher.find()) {
-                    newGenus.kind = nameMatcher.group(1);
-                }
-                nameMatcher = attrExtractor.matcher(genusNode.getAttributes().getNamedItem("initlabel").toString());
-                if (nameMatcher.find()) {
-                    //implied that it is global, but it may be redefined
-                    newGenus.initLabel = nameMatcher.group(1);
-                }
-                nameMatcher = attrExtractor.matcher(genusNode.getAttributes().getNamedItem("editable-label").toString());
-                if (nameMatcher.find()) {
-                    newGenus.isLabelEditable = nameMatcher.group(1).equals("yes") ? true : false;
-                }
-                nameMatcher = attrExtractor.matcher(genusNode.getAttributes().getNamedItem("label-unique").toString());
-                if (nameMatcher.find()) {
-                    newGenus.labelMustBeUnique = nameMatcher.group(1).equals("yes") ? true : false;
-                }
-                //load optional items
-                Node opt_item = genusNode.getAttributes().getNamedItem("is-starter");
-                if (opt_item != null) {
-                    nameMatcher = attrExtractor.matcher(opt_item.toString());
-                    if (nameMatcher.find()) {
-                        newGenus.isStarter = nameMatcher.group(1).equals("yes") ? true : false;
-                    }
-                }
-                opt_item = genusNode.getAttributes().getNamedItem("is-terminator");
-                if (opt_item != null) {
-                    nameMatcher = attrExtractor.matcher(opt_item.toString());
-                    if (nameMatcher.find()) {
-                        newGenus.isTerminator = nameMatcher.group(1).equals("yes") ? true : false;
-                    }
-                }
-                opt_item = genusNode.getAttributes().getNamedItem("is-label-value");
-                if (opt_item != null) {
-                    nameMatcher = attrExtractor.matcher(opt_item.toString());
-                    if (nameMatcher.find()) {
-                        newGenus.isLabelValue = nameMatcher.group(1).equals("yes") ? true : false;
-                    }
-                }
-                opt_item = genusNode.getAttributes().getNamedItem("label-prefix");
-                if (opt_item != null) {
-                    nameMatcher = attrExtractor.matcher(opt_item.toString());
-                    if (nameMatcher.find()) {
-                        newGenus.labelPrefix = nameMatcher.group(1);
-                    }
-                }
-                opt_item = genusNode.getAttributes().getNamedItem("label-suffix");
-                if (opt_item != null) {
-                    nameMatcher = attrExtractor.matcher(opt_item.toString());
-                    if (nameMatcher.find()) {
-                        newGenus.labelSuffix = nameMatcher.group(1);
-                    }
-                }
-                opt_item = genusNode.getAttributes().getNamedItem("page-label-enabled");
-                if (opt_item != null) {
-                    nameMatcher = attrExtractor.matcher(opt_item.toString());
-                    if (nameMatcher.find()) {
-                        newGenus.isPageLabelEnabled = nameMatcher.group(1).equals("yes") ? true : false;
-                    }
-                }
+                parseGeneraAttributes(env, attrExtractor, genusNode, newGenus);
                 //if genus is a data genus (kind=data) or a variable block (and soon a declaration block)
                 //it is both a starter and terminator
                 //in other words, it should not have before and after connectors
@@ -858,34 +784,7 @@ public class BlockGenus {
                 }
 
                 //next, parse out the elements
-                NodeList genusChildren = genusNode.getChildNodes();
-                Node genusChild;
-                for (int j = 0; j < genusChildren.getLength(); j++) {
-                    genusChild = genusChildren.item(j);
-                    if (genusChild.getNodeName().equals("description")) {
-                        /// LOAD BLOCK GENUS DESCRIPTION ///
-                        loadGenusDescription(genusChild.getChildNodes(), newGenus);
-                    } else if (genusChild.getNodeName().equals("BlockConnectors")) {
-                        /// LOAD BLOCK CONNECTOR INFORMATION ///
-                        loadBlockConnectorInformation(workspace, genusChild.getChildNodes(), newGenus);
-                        //if genus has two connectors both of bottom position type than this block is an infix operator
-                        if (newGenus.sockets != null && newGenus.sockets.size() == 2
-                                && newGenus.sockets.get(0).getPositionType() == BlockConnector.PositionType.BOTTOM
-                                && newGenus.sockets.get(1).getPositionType() == BlockConnector.PositionType.BOTTOM) {
-                            newGenus.isInfix = true;
-                        }
-                    } else if (genusChild.getNodeName().equals("Images")) {
-                        /// LOAD BLOCK IMAGES ///
-                        loadBlockImages(genusChild.getChildNodes(), newGenus);
-                    } else if (genusChild.getNodeName().equals("LangSpecProperties")) {
-                        /// LOAD LANGUAGE SPECIFIC PROPERTIES ///
-                        loadLangDefProperties(genusChild.getChildNodes(), newGenus);
-
-                    } else if (genusChild.getNodeName().equals("Stubs")) {
-                        /// LOAD STUBS INFO AND GENERATE GENUSES FOR EACH STUB ///
-                        loadStubs(genusChild.getChildNodes(), newGenus);
-                    }
-                }
+                parseBlockGeneraElements(workspace, genusNode, newGenus);
 
                 // John's code to add command sockets... probably in the wrong place
                 if (!newGenus.isStarter) {
@@ -930,6 +829,117 @@ public class BlockGenus {
                 }
             }
             famList.clear();
+        }
+    }
+
+    private static void parseBlockGeneraElements(Workspace workspace, Node genusNode, BlockGenus newGenus) {
+        NodeList genusChildren = genusNode.getChildNodes();
+        Node genusChild;
+        for (int j = 0; j < genusChildren.getLength(); j++) {
+            genusChild = genusChildren.item(j);
+            if (genusChild.getNodeName().equals("description")) {
+                /// LOAD BLOCK GENUS DESCRIPTION ///
+                loadGenusDescription(genusChild.getChildNodes(), newGenus);
+            } else if (genusChild.getNodeName().equals("BlockConnectors")) {
+                /// LOAD BLOCK CONNECTOR INFORMATION ///
+                loadBlockConnectorInformation(workspace, genusChild.getChildNodes(), newGenus);
+                //if genus has two connectors both of bottom position type than this block is an infix operator
+                if (newGenus.sockets != null && newGenus.sockets.size() == 2
+                        && newGenus.sockets.get(0).getPositionType() == BlockConnector.PositionType.BOTTOM
+                        && newGenus.sockets.get(1).getPositionType() == BlockConnector.PositionType.BOTTOM) {
+                    newGenus.isInfix = true;
+                }
+            } else if (genusChild.getNodeName().equals("Images")) {
+                /// LOAD BLOCK IMAGES ///
+                loadBlockImages(genusChild.getChildNodes(), newGenus);
+            } else if (genusChild.getNodeName().equals("LangSpecProperties")) {
+                /// LOAD LANGUAGE SPECIFIC PROPERTIES ///
+                loadLangDefProperties(genusChild.getChildNodes(), newGenus);
+
+            } else if (genusChild.getNodeName().equals("Stubs")) {
+                /// LOAD STUBS INFO AND GENERATE GENUSES FOR EACH STUB ///
+                loadStubs(genusChild.getChildNodes(), newGenus);
+            }
+        }
+    }
+
+    private static void parseGeneraAttributes(WorkspaceEnvironment env, Pattern attrExtractor, Node genusNode, BlockGenus newGenus) {
+        Matcher nameMatcher;
+        StringTokenizer col;
+        nameMatcher = attrExtractor.matcher(genusNode.getAttributes().getNamedItem("name").toString());
+        if (nameMatcher.find()) {
+            newGenus.genusName = nameMatcher.group(1);
+        }
+        //assert that no other genus has this name
+        assert env.getGenusWithName(newGenus.genusName) == null : "Block genus names must be unique.  A block genus already exists with this name: " + newGenus.genusName;
+        nameMatcher = attrExtractor.matcher(genusNode.getAttributes().getNamedItem("color").toString());
+        if (nameMatcher.find()) { //will be true
+            col = new StringTokenizer(nameMatcher.group(1));
+            if (col.countTokens() == 3) {
+                newGenus.color = new Color(Integer.parseInt(col.nextToken()), Integer.parseInt(col.nextToken()), Integer.parseInt(col.nextToken()));
+            } else {
+                newGenus.color = Color.BLACK;
+            }
+        }
+        nameMatcher = attrExtractor.matcher(genusNode.getAttributes().getNamedItem("kind").toString());
+        if (nameMatcher.find()) {
+            newGenus.kind = nameMatcher.group(1);
+        }
+        nameMatcher = attrExtractor.matcher(genusNode.getAttributes().getNamedItem("initlabel").toString());
+        if (nameMatcher.find()) {
+            //implied that it is global, but it may be redefined
+            newGenus.initLabel = nameMatcher.group(1);
+        }
+        nameMatcher = attrExtractor.matcher(genusNode.getAttributes().getNamedItem("editable-label").toString());
+        if (nameMatcher.find()) {
+            newGenus.isLabelEditable = nameMatcher.group(1).equals("yes") ? true : false;
+        }
+        nameMatcher = attrExtractor.matcher(genusNode.getAttributes().getNamedItem("label-unique").toString());
+        if (nameMatcher.find()) {
+            newGenus.labelMustBeUnique = nameMatcher.group(1).equals("yes") ? true : false;
+        }
+        //load optional items
+        Node opt_item = genusNode.getAttributes().getNamedItem("is-starter");
+        if (opt_item != null) {
+            nameMatcher = attrExtractor.matcher(opt_item.toString());
+            if (nameMatcher.find()) {
+                newGenus.isStarter = nameMatcher.group(1).equals("yes") ? true : false;
+            }
+        }
+        opt_item = genusNode.getAttributes().getNamedItem("is-terminator");
+        if (opt_item != null) {
+            nameMatcher = attrExtractor.matcher(opt_item.toString());
+            if (nameMatcher.find()) {
+                newGenus.isTerminator = nameMatcher.group(1).equals("yes") ? true : false;
+            }
+        }
+        opt_item = genusNode.getAttributes().getNamedItem("is-label-value");
+        if (opt_item != null) {
+            nameMatcher = attrExtractor.matcher(opt_item.toString());
+            if (nameMatcher.find()) {
+                newGenus.isLabelValue = nameMatcher.group(1).equals("yes") ? true : false;
+            }
+        }
+        opt_item = genusNode.getAttributes().getNamedItem("label-prefix");
+        if (opt_item != null) {
+            nameMatcher = attrExtractor.matcher(opt_item.toString());
+            if (nameMatcher.find()) {
+                newGenus.labelPrefix = nameMatcher.group(1);
+            }
+        }
+        opt_item = genusNode.getAttributes().getNamedItem("label-suffix");
+        if (opt_item != null) {
+            nameMatcher = attrExtractor.matcher(opt_item.toString());
+            if (nameMatcher.find()) {
+                newGenus.labelSuffix = nameMatcher.group(1);
+            }
+        }
+        opt_item = genusNode.getAttributes().getNamedItem("page-label-enabled");
+        if (opt_item != null) {
+            nameMatcher = attrExtractor.matcher(opt_item.toString());
+            if (nameMatcher.find()) {
+                newGenus.isPageLabelEnabled = nameMatcher.group(1).equals("yes") ? true : false;
+            }
         }
     }
 
