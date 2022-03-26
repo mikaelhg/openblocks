@@ -1,9 +1,9 @@
 package edu.mit.blocks.codeblocks;
 
-public class Case3 {
+public class Case13 {
     private final BlockConnectorShape blockConnectorShape;
 
-    public Case3(BlockConnectorShape blockConnectorShape) {
+    public Case13(BlockConnectorShape blockConnectorShape) {
         this.blockConnectorShape = blockConnectorShape;
     }
 

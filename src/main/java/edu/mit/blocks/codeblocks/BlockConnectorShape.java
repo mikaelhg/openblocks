@@ -53,6 +53,8 @@ public class BlockConnectorShape {
 
     /** default height of command input */
     public static final float DEFAULT_COMMAND_INPUT_HEIGHT = DATA_PLUG_HEIGHT;
+    private final Triangle1 triangle1 = new Triangle1();
+    private final Triangle2 triangle2 = new Triangle2();
     private final Triangle3 triangle3 = new Triangle3(this);
     private final Circle1 circle1 = new Circle1(this);
     private final Circle2 circle2 = new Circle2(this);
@@ -63,7 +65,7 @@ public class BlockConnectorShape {
     private final Polymorphic1 polymorphic1 = new Polymorphic1(this);
     private final Polymorphic2 polymorphic2 = new Polymorphic2(this);
     private final Polymorphic3 polymorphic3 = new Polymorphic3(this);
-    private final Case3 case13 = new Case3(this);
+    private final Case13 case13 = new Case13(this);
 
     /** The starting point of the current connection begin drawn */
     private Point2D startPoint;
@@ -334,16 +336,14 @@ public class BlockConnectorShape {
         currentConnectorPath.moveTo(xStart, yStart);
 
         Point2D socketPoint = new Point2D.Float((float) startPoint.getX(), (startFromTop ? ((float) startPoint.getY() + ((int) DATA_PLUG_HEIGHT / 2)) : ((float) startPoint.getY() - ((int) DATA_PLUG_HEIGHT / 2))));
-        TRIANGLE_1 t1 = new TRIANGLE_1();
-        TRIANGLE_1 t2 = new TRIANGLE_1();
         switch (connectionShapeInt) {
             //Starlogo Numbers
             case TRIANGLE_1:
-                t1.extracted();
+                triangle1.extracted();
                 break;
 
             case TRIANGLE_2:
-                t2.extracted();
+                triangle2.extracted();
                 break;
 
             case TRIANGLE_3:
