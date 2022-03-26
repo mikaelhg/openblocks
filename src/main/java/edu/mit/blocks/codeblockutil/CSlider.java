@@ -19,6 +19,9 @@ import javax.swing.JPanel;
 
 public class CSlider extends JPanel implements MouseListener, MouseMotionListener {
 
+    /** ratio conversion form raw (int) value to real (float) value */
+    private static float ratio = 1000;
+
     private static final long serialVersionUID = 328149080257L;
 
     /** Property name of the event thrown by this widget */
@@ -525,6 +528,23 @@ public class CSlider extends JPanel implements MouseListener, MouseMotionListene
         }
         this.setValue(xPos);
     }
+    public void setMaximum(float max) {
+        if (getLeft() > getRight()) {
+            setLeft((int) (max * ratio));
+        } else {
+            setRight((int) (max * ratio));
+        }
+    }
+
+    public void setMinimum(float min) {
+        if (getLeft() < getRight()) {
+            setLeft((int) (min * ratio));
+        } else {
+            setRight((int) (min * ratio));
+        }
+    }
+
+
 
 }
 

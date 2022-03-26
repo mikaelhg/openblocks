@@ -210,13 +210,13 @@ public class CSliderPane extends JPanel implements ComponentListener {
      * 			3] Update the GUI components such that the slider
      * 			   reflects the current bounded range model
      */
-    public void setMinimum(float min) {
-        if (slider.getLeft() < slider.getRight()) {
-            slider.setLeft((int) (min * ratio));
-        } else {
-            slider.setRight((int) (min * ratio));
-        }
-    }
+//    public void setMinimum(float min) {
+//        if (slider.getLeft() < slider.getRight()) {
+//            slider.setLeft((int) (min * ratio));
+//        } else {
+//            slider.setRight((int) (min * ratio));
+//        }
+//    }
 
     /**
      * @param max
@@ -229,13 +229,13 @@ public class CSliderPane extends JPanel implements ComponentListener {
      * 			3] Update the GUI components such that the slider
      * 			   reflects the current bounded range model
      */
-    public void setMaximum(float max) {
-        if (slider.getLeft() > slider.getRight()) {
-            slider.setLeft((int) (max * ratio));
-        } else {
-            slider.setRight((int) (max * ratio));
-        }
-    }
+//    public void setMaximum(float max) {
+//        if (slider.getLeft() > slider.getRight()) {
+//            slider.setLeft((int) (max * ratio));
+//        } else {
+//            slider.setRight((int) (max * ratio));
+//        }
+//    }
 
     /**
      * @param value

@@ -53,7 +53,18 @@ public class BlockConnectorShape {
 
     /** default height of command input */
     public static final float DEFAULT_COMMAND_INPUT_HEIGHT = DATA_PLUG_HEIGHT;
-    
+    private final Triangle3 triangle3 = new Triangle3(this);
+    private final Circle1 circle1 = new Circle1(this);
+    private final Circle2 circle2 = new Circle2(this);
+    private final Circle3 circle3 = new Circle3(this);
+    private final Square1 square1 = new Square1(this);
+    private final Square2 square2 = new Square2(this);
+    private final Square3 square3 = new Square3(this);
+    private final Polymorphic1 polymorphic1 = new Polymorphic1(this);
+    private final Polymorphic2 polymorphic2 = new Polymorphic2(this);
+    private final Polymorphic3 polymorphic3 = new Polymorphic3(this);
+    private final Case3 case13 = new Case3(this);
+
     /** The starting point of the current connection begin drawn */
     private Point2D startPoint;
 
@@ -323,171 +334,72 @@ public class BlockConnectorShape {
         currentConnectorPath.moveTo(xStart, yStart);
 
         Point2D socketPoint = new Point2D.Float((float) startPoint.getX(), (startFromTop ? ((float) startPoint.getY() + ((int) DATA_PLUG_HEIGHT / 2)) : ((float) startPoint.getY() - ((int) DATA_PLUG_HEIGHT / 2))));
-
+        TRIANGLE_1 t1 = new TRIANGLE_1();
+        TRIANGLE_1 t2 = new TRIANGLE_1();
         switch (connectionShapeInt) {
-            //Starlogo Number
+            //Starlogo Numbers
             case TRIANGLE_1:
-                _lineTo(NORMAL_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT / 2);
-                _lineTo(0, DATA_PLUG_HEIGHT);
+                t1.extracted();
                 break;
 
             case TRIANGLE_2:
-                _lineTo(NORMAL_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT / 4);
-                _lineTo(0, DATA_PLUG_HEIGHT / 2);
-                //shifted duplicate
-                _lineTo(NORMAL_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT * 3 / 4);
-                _lineTo(0, DATA_PLUG_HEIGHT);
+                t2.extracted();
                 break;
 
             case TRIANGLE_3:
-                _lineTo(NORMAL_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT / 4);
-                _lineTo(0, DATA_PLUG_HEIGHT / 2);
-                //inversion
-                _lineTo(-NORMAL_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT * 3 / 4);
-                _lineTo(0, DATA_PLUG_HEIGHT);
+                triangle3.extracted();
                 break;
 
 
 
             //Starlogo Boolean
             case CIRCLE_1:
-                _curveTo(
-                        (NORMAL_DATA_PLUG_WIDTH) * 4 / 3, 0,
-                        (NORMAL_DATA_PLUG_WIDTH) * 4 / 3, DATA_PLUG_HEIGHT,
-                        0, DATA_PLUG_HEIGHT);
+                circle1.extracted();
                 break;
 
 
             case CIRCLE_2:
-                _curveTo(
-                        NORMAL_DATA_PLUG_WIDTH, 0,
-                        NORMAL_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT * 1 / 4,
-                        NORMAL_DATA_PLUG_WIDTH * 1 / 2, DATA_PLUG_HEIGHT * 1 / 2);
-                _curveTo(NORMAL_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT * 3 / 4,
-                        NORMAL_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT,
-                        0, DATA_PLUG_HEIGHT);
+                circle2.extracted();
                 break;
 
             case CIRCLE_3:
-                _curveTo(
-                        NORMAL_DATA_PLUG_WIDTH, 0,
-                        NORMAL_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT * 1 / 4,
-                        NORMAL_DATA_PLUG_WIDTH * 1 / 2, DATA_PLUG_HEIGHT * 1 / 2);
-                //inversion
-                _curveTo(-NORMAL_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT * 3 / 4,
-                        -NORMAL_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT,
-                        0, DATA_PLUG_HEIGHT);
+                circle3.extracted();
                 break;
 
 
 
             //Starlogo String
             case SQUARE_1:
-                _lineTo(0, DATA_PLUG_HEIGHT * 0.15f);
-                _lineTo(NORMAL_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT * 0.15f);
-                _lineTo(NORMAL_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT * 0.85f);
-                _lineTo(0, DATA_PLUG_HEIGHT * 0.85f);
-                _lineTo(0, DATA_PLUG_HEIGHT);
+                square1.extracted();
                 break;
 
             case SQUARE_2:
-                _lineTo(0, DATA_PLUG_HEIGHT * 0.15f);
-                _lineTo(NORMAL_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT * 0.15f);
-                _lineTo(NORMAL_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT * 0.45f);
-                _lineTo(0, DATA_PLUG_HEIGHT * 0.45f);
-                _lineTo(0, DATA_PLUG_HEIGHT * 0.55f);
-                _lineTo(NORMAL_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT * 0.55f);
-                _lineTo(NORMAL_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT * 0.85f);
-                _lineTo(0, DATA_PLUG_HEIGHT * 0.85f);
-                _lineTo(0, DATA_PLUG_HEIGHT);
+                square2.extracted();
                 break;
 
             case SQUARE_3:
-                _lineTo(0, DATA_PLUG_HEIGHT * 0.15f);
-                _lineTo(NORMAL_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT * 0.15f);
-                _lineTo(NORMAL_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT * 0.50f);
-                _lineTo(-NORMAL_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT * 0.50f);
-                _lineTo(-NORMAL_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT * 0.85f);
-                _lineTo(0, DATA_PLUG_HEIGHT * 0.85f);
-                _lineTo(0, DATA_PLUG_HEIGHT);
+                square3.extracted();
                 break;
 
 
 
             case POLYMORPHIC_1:
-                _curveTo(0, DATA_PLUG_HEIGHT / 3,
-                        POLYMORPHIC_DATA_PLUG_WIDTH / 3, DATA_PLUG_HEIGHT / 3,
-                        POLYMORPHIC_DATA_PLUG_WIDTH / 2, DATA_PLUG_HEIGHT / 4);
-                _curveTo(POLYMORPHIC_DATA_PLUG_WIDTH * 2 / 3, DATA_PLUG_HEIGHT / 6,
-                        POLYMORPHIC_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT / 6,
-                        POLYMORPHIC_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT / 2);
-                _curveTo(POLYMORPHIC_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT * 5 / 6,
-                        POLYMORPHIC_DATA_PLUG_WIDTH * 2 / 3, DATA_PLUG_HEIGHT * 5 / 6,
-                        POLYMORPHIC_DATA_PLUG_WIDTH / 2, DATA_PLUG_HEIGHT * 3 / 4);
-                _curveTo(POLYMORPHIC_DATA_PLUG_WIDTH / 3, DATA_PLUG_HEIGHT * 2 / 3,
-                        0, DATA_PLUG_HEIGHT * 2 / 3,
-                        0, DATA_PLUG_HEIGHT);
+                polymorphic1.extracted();
                 break;
 
             case POLYMORPHIC_2:
-                _curveTo(0, DATA_PLUG_HEIGHT / 6,
-                        POLYMORPHIC_DATA_PLUG_WIDTH / 3, DATA_PLUG_HEIGHT / 6,
-                        POLYMORPHIC_DATA_PLUG_WIDTH / 2, DATA_PLUG_HEIGHT / 8);
-                _curveTo(POLYMORPHIC_DATA_PLUG_WIDTH * 2 / 3, DATA_PLUG_HEIGHT / 12,
-                        POLYMORPHIC_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT / 12,
-                        POLYMORPHIC_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT / 4);
-                _curveTo(POLYMORPHIC_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT * 5 / 12,
-                        POLYMORPHIC_DATA_PLUG_WIDTH * 2 / 3, DATA_PLUG_HEIGHT * 5 / 12,
-                        POLYMORPHIC_DATA_PLUG_WIDTH / 2, DATA_PLUG_HEIGHT * 3 / 8);
-                _curveTo(POLYMORPHIC_DATA_PLUG_WIDTH / 3, DATA_PLUG_HEIGHT * 2 / 6,
-                        0, DATA_PLUG_HEIGHT * 2 / 6,
-                        0, DATA_PLUG_HEIGHT / 2);
-                //shifted duplicate
-                _curveTo(0, DATA_PLUG_HEIGHT * 4 / 6,
-                        POLYMORPHIC_DATA_PLUG_WIDTH / 3, DATA_PLUG_HEIGHT * 4 / 6,
-                        POLYMORPHIC_DATA_PLUG_WIDTH / 2, DATA_PLUG_HEIGHT * 5 / 8);
-                _curveTo(POLYMORPHIC_DATA_PLUG_WIDTH * 2 / 3, DATA_PLUG_HEIGHT * 7 / 12,
-                        POLYMORPHIC_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT * 7 / 12,
-                        POLYMORPHIC_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT * 3 / 4);
-                _curveTo(POLYMORPHIC_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT * 11 / 12,
-                        POLYMORPHIC_DATA_PLUG_WIDTH * 2 / 3, DATA_PLUG_HEIGHT * 11 / 12,
-                        POLYMORPHIC_DATA_PLUG_WIDTH / 2, DATA_PLUG_HEIGHT * 7 / 8);
-                _curveTo(POLYMORPHIC_DATA_PLUG_WIDTH / 3, DATA_PLUG_HEIGHT * 5 / 6,
-                        0, DATA_PLUG_HEIGHT * 5 / 6,
-                        0, DATA_PLUG_HEIGHT);
+                polymorphic2.extracted();
                 break;
 
 
             case POLYMORPHIC_3:
-                _lineTo(POLYMORPHIC_DATA_PLUG_WIDTH / 3, DATA_PLUG_HEIGHT / 8);
-                _lineTo(POLYMORPHIC_DATA_PLUG_WIDTH / 2, DATA_PLUG_HEIGHT * 0.025f);
-                _lineTo(POLYMORPHIC_DATA_PLUG_WIDTH * 3 / 4, DATA_PLUG_HEIGHT / 8);
-                _curveTo(POLYMORPHIC_DATA_PLUG_WIDTH * 10 / 9, DATA_PLUG_HEIGHT * 0.15f,
-                        POLYMORPHIC_DATA_PLUG_WIDTH * 10 / 9, DATA_PLUG_HEIGHT * 0.35f,
-                        POLYMORPHIC_DATA_PLUG_WIDTH * 3 / 4, DATA_PLUG_HEIGHT * 3 / 8);
-                _lineTo(POLYMORPHIC_DATA_PLUG_WIDTH / 2, DATA_PLUG_HEIGHT * 0.475f);
-                _lineTo(POLYMORPHIC_DATA_PLUG_WIDTH / 3, DATA_PLUG_HEIGHT * 3 / 8);
-                _lineTo(0, DATA_PLUG_HEIGHT / 2);
-                //inversion
-                _lineTo(-POLYMORPHIC_DATA_PLUG_WIDTH / 3, DATA_PLUG_HEIGHT / 8 + DATA_PLUG_HEIGHT / 2);
-                _lineTo(-POLYMORPHIC_DATA_PLUG_WIDTH / 2, DATA_PLUG_HEIGHT * 0.025f + DATA_PLUG_HEIGHT / 2);
-                _lineTo(-POLYMORPHIC_DATA_PLUG_WIDTH * 3 / 4, DATA_PLUG_HEIGHT / 8 + DATA_PLUG_HEIGHT / 2);
-                _curveTo(-POLYMORPHIC_DATA_PLUG_WIDTH * 10 / 9, DATA_PLUG_HEIGHT * 0.15f + DATA_PLUG_HEIGHT / 2,
-                        -POLYMORPHIC_DATA_PLUG_WIDTH * 10 / 9, DATA_PLUG_HEIGHT * 0.35f + DATA_PLUG_HEIGHT / 2,
-                        -POLYMORPHIC_DATA_PLUG_WIDTH * 3 / 4, DATA_PLUG_HEIGHT * 3 / 8 + DATA_PLUG_HEIGHT / 2);
-                _lineTo(-POLYMORPHIC_DATA_PLUG_WIDTH / 2, DATA_PLUG_HEIGHT * 0.475f + DATA_PLUG_HEIGHT / 2);
-                _lineTo(-POLYMORPHIC_DATA_PLUG_WIDTH / 3, DATA_PLUG_HEIGHT * 3 / 8 + DATA_PLUG_HEIGHT / 2);
-                _lineTo(0, DATA_PLUG_HEIGHT);
+                polymorphic3.extracted();
                 break;
 
 
             //formally BlockGenus.PROC_PARAM
             case 13:
-                _lineTo(0, DATA_PLUG_HEIGHT * 1 / 4);
-                _lineTo(NORMAL_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT * 1 / 4);
-                _lineTo(NORMAL_DATA_PLUG_WIDTH, DATA_PLUG_HEIGHT * 3 / 4);
-                _lineTo(0, DATA_PLUG_HEIGHT * 3 / 4);
-                _lineTo(0, DATA_PLUG_HEIGHT);
+                case13.extracted();
                 break;
 
             //look for additional 3rd party shapes here...
@@ -516,7 +428,7 @@ public class BlockConnectorShape {
      * Draws a line segment relative to the starting point of the current
      * connector.
      */
-    private void _lineTo(float x, float y) {
+    void _lineTo(float x, float y) {
         currentConnectorPath.lineTo(x + (float) startPoint.getX(), y + (float) startPoint.getY());
     }
     
@@ -529,7 +441,7 @@ public class BlockConnectorShape {
      * the coordinates (x3, y3), using the specified points (x1, y1) and (x2,
      * y2) as Bézier control points.
      */
-    private void _curveTo(float x1, float y1, float x2, float y2, float x3, float y3) {
+    void _curveTo(float x1, float y1, float x2, float y2, float x3, float y3) {
         currentConnectorPath.curveTo(
                 x1 + (float) startPoint.getX(), y1 + (float) startPoint.getY(),
                 x2 + (float) startPoint.getX(), y2 + (float) startPoint.getY(),

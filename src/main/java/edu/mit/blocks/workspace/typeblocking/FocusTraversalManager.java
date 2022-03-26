@@ -70,7 +70,7 @@ import edu.mit.blocks.workspace.WorkspaceListener;
  * @specfield blockFocusPoint : Point //focus point on block relative to block
  *
  */
-public class FocusTraversalManager implements MouseListener, KeyListener, WorkspaceListener {
+public class FocusTraversalManager extends Listners implements MouseListener, KeyListener, WorkspaceListener {
 
     /** this.focuspoint: the point on the block with focus */
     private Point blockFocusPoint = null;
@@ -722,14 +722,14 @@ public class FocusTraversalManager implements MouseListener, KeyListener, Worksp
         grabFocus(e);
     }
 
-    public void mouseEntered(MouseEvent e) {
-    }
-
-    public void mouseExited(MouseEvent e) {
-    }
-
-    public void mouseClicked(MouseEvent e) {
-    }
+//    public void mouseEntered(MouseEvent e) {
+//    }
+//
+//    public void mouseExited(MouseEvent e) {
+//    }
+//
+//    public void mouseClicked(MouseEvent e) {
+//    }
 
     ///////////////////////////////
     // Key Listeners Method      //
@@ -738,11 +738,11 @@ public class FocusTraversalManager implements MouseListener, KeyListener, Worksp
         KeyInputMap.processKeyChar(workspace, e);
     }
 
-    public void keyReleased(KeyEvent e) {
-    }
-
-    public void keyTyped(KeyEvent e) {
-    }
+//    public void keyReleased(KeyEvent e) {
+//    }
+//
+//    public void keyTyped(KeyEvent e) {
+//    }
 
     /////////////////////////////// 
     // WORKSPACE LISTENER METHOD //

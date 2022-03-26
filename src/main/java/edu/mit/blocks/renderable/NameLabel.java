@@ -20,54 +20,65 @@ class NameLabel extends BlockLabel {
     }
 
     void update() {
-        RenderableBlock rb = workspace.getEnv().getRenderableBlock(blockID);
-        if (rb != null) {
-            int x = 0;
-            int y = 0;
-            if (rb.getBlock().isCommandBlock()) {
-                x += 5;
-            }
-            if (rb.getBlock().isDeclaration()) {
-                x += 12;
-            }
-            if (rb.getBlock().hasPlug()) {
-                x += 4 + BlockConnectorShape.getConnectorDimensions(rb.getBlock().getPlug()).width;
-            }
-            if (rb.getBlock().isInfix()) {
-                if (!rb.getBlock().getSocketAt(0).hasBlock()) {
-                    x += 30;
-                } else {
-                    x += rb.getSocketSpaceDimension(rb.getBlock().getSocketAt(0)).width;
-                }
+        RenderableBlock renderableBlock = workspace.getEnv().getRenderableBlock(blockID);
+        if (renderableBlock != null) {
+            int x_axis = 0;
+            int y_axis = 0;
+            x_axis = checkandgetX(renderableBlock, x_axis);
 
-            }
-
-            if (rb.getBlockWidget() == null) {
-                y += rb.getAbstractBlockArea().getBounds().height / 2;
-            } else {
-                y += 12;
-            }
-
-            if (rb.getBlock().isCommandBlock()) {
-                y -= 2;
-            }
-            if (rb.getBlock().hasPageLabel() && rb.getBlock().hasAfterConnector()) {
-                y -= BlockConnectorShape.CONTROL_PLUG_HEIGHT;
-            }
-            if (!rb.getBlock().hasPageLabel()) {
-                y -= getAbstractHeight() / 2;
-            }
+            y_axis = checkandgetY(renderableBlock, y_axis);
 
             //Comment Label and Collapse Label take up some additional amount of space
-            x += rb.getControlLabelsWidth();
+            x_axis += renderableBlock.getControlLabelsWidth();
 
             //if block is collapsed keep the name label from moving
-            y += (rb.isCollapsed() ? BlockConnectorShape.CONTROL_PLUG_HEIGHT / 2 : 0);
+            y_axis += (renderableBlock.isCollapsed() ? BlockConnectorShape.CONTROL_PLUG_HEIGHT / 2 : 0);
 
-            x = rescale(x);
-            y = rescale(y);
+            x_axis = rescale(x_axis);
+            y_axis = rescale(y_axis);
 
-            setPixelLocation(x, y);
+            setPixelLocation(x_axis, y_axis);
         }
     }
+
+    private int checkandgetX(RenderableBlock block, int x_axis) {
+        if (block.getBlock().isCommandBlock()) {
+            x_axis += 5;
+        }
+        if (block.getBlock().isDeclaration()) {
+            x_axis += 12;
+        }
+        if (block.getBlock().hasPlug()) {
+            x_axis += 4 + BlockConnectorShape.getConnectorDimensions(block.getBlock().getPlug()).width;
+        }
+        if (block.getBlock().isInfix()) {
+            if (!block.getBlock().getSocketAt(0).hasBlock()) {
+                x_axis += 30;
+            } else {
+                x_axis += block.getSocketSpaceDimension(block.getBlock().getSocketAt(0)).width;
+            }
+
+        }
+        return x_axis;
+    }
+
+    private int checkandgetY(RenderableBlock block, int y_axis) {
+        if (block.getBlockWidget() == null) {
+            y_axis += block.getAbstractBlockArea().getBounds().height / 2;
+        } else {
+            y_axis += 12;
+        }
+
+        if (block.getBlock().isCommandBlock()) {
+            y_axis -= 2;
+        }
+        if (block.getBlock().hasPageLabel() && block.getBlock().hasAfterConnector()) {
+            y_axis -= BlockConnectorShape.CONTROL_PLUG_HEIGHT;
+        }
+        if (!block.getBlock().hasPageLabel()) {
+            y_axis -= getAbstractHeight() / 2;
+        }
+        return y_axis;
+    }
+
 }
