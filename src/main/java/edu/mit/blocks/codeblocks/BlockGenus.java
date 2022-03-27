@@ -774,7 +774,7 @@ public class BlockGenus {
                 /// LOAD BLOCK GENUS PROPERTIES ///
                 BlockGenus newGenus = new BlockGenus(env);
                 //first, parse out the attributes
-                parseGeneraAttributes(env, attrExtractor, genusNode, newGenus);
+                parseBlockGeneraAttributes(env, attrExtractor, genusNode, newGenus);
                 //if genus is a data genus (kind=data) or a variable block (and soon a declaration block)
                 //it is both a starter and terminator
                 //in other words, it should not have before and after connectors
@@ -863,7 +863,7 @@ public class BlockGenus {
         }
     }
 
-    private static void parseGeneraAttributes(WorkspaceEnvironment env, Pattern attrExtractor, Node genusNode, BlockGenus newGenus) {
+    private static void parseBlockGeneraAttributes(WorkspaceEnvironment env, Pattern attrExtractor, Node genusNode, BlockGenus newGenus) {
         Matcher nameMatcher;
         StringTokenizer col;
         nameMatcher = attrExtractor.matcher(genusNode.getAttributes().getNamedItem("name").toString());
