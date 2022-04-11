@@ -13,6 +13,7 @@ public interface LinkRule {
      * @param socket2 a <code>Socket</code> of block2
      * @return true if the two sockets of the two blocks can link; false if not
      */
+
     public boolean canLink(Block block1, Block block2, BlockConnector socket1, BlockConnector socket2);
 
     public boolean isMandatory();

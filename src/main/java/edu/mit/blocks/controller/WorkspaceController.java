@@ -36,18 +36,13 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import edu.mit.blocks.codeblocks.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import edu.mit.blocks.codeblocks.BlockConnectorShape;
-import edu.mit.blocks.codeblocks.BlockGenus;
-import edu.mit.blocks.codeblocks.BlockLinkChecker;
-import edu.mit.blocks.codeblocks.CommandRule;
-import edu.mit.blocks.codeblocks.Constants;
-import edu.mit.blocks.codeblocks.SocketRule;
 import edu.mit.blocks.workspace.SearchBar;
 import edu.mit.blocks.workspace.SearchableContainer;
 import edu.mit.blocks.workspace.Workspace;
@@ -149,9 +144,10 @@ public class WorkspaceController {
         //load genuses
         BlockGenus.loadBlockGenera(workspace, root);
 
+        FactoryLinkRule factoryLinkRule = new FactoryLinkRule();
         //load rules
         BlockLinkChecker.addRule(workspace, new CommandRule(workspace));
-        BlockLinkChecker.addRule(workspace, new SocketRule());
+        BlockLinkChecker.addRule(workspace, factoryLinkRule.getInstance("InfixRule"));
 
         //set the dirty flag for the language definition file
         //to false now that the lang file has been loaded
@@ -316,7 +312,6 @@ public class WorkspaceController {
      * assumes that a Language Definition File has already been specified for
      * this programming project.
      *
-     * @param element element of the programming project to load
      */
     public void loadProjectFromElement(Element elementToLoad) {
         workspace.loadWorkspaceFrom(elementToLoad, langDefRoot);
