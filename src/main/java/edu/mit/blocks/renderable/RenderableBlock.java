@@ -32,18 +32,11 @@ import javax.swing.JToolTip;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import edu.mit.blocks.codeblocks.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import edu.mit.blocks.codeblocks.Block;
-import edu.mit.blocks.codeblocks.BlockConnector;
-import edu.mit.blocks.codeblocks.BlockConnectorShape;
-import edu.mit.blocks.codeblocks.BlockLink;
-import edu.mit.blocks.codeblocks.BlockLinkChecker;
-import edu.mit.blocks.codeblocks.BlockShape;
-import edu.mit.blocks.codeblocks.InfixBlockShape;
-import edu.mit.blocks.codeblocks.JComponentDragHandler;
 import edu.mit.blocks.codeblocks.rendering.BlockShapeUtil;
 import edu.mit.blocks.codeblockutil.CToolTip;
 import edu.mit.blocks.codeblockutil.GraphicsManager;
@@ -118,6 +111,7 @@ public class RenderableBlock extends JComponent implements SearchableElement, Mo
     private RBHighlightHandler highlighter;
     /** dragHandler keeps the block within the workspace area. It manages relocating the block. */
     private JComponentDragHandler dragHandler;
+    private BlockShape cloneblockShape;
     ////////////////////////
     //ATTRIBUTE FIELDS
     /** Binary atttributes of this RenderableBlocks:
@@ -224,7 +218,9 @@ public class RenderableBlock extends JComponent implements SearchableElement, Mo
         if (getBlock().isInfix()) {
             blockShape = new InfixBlockShape(this);
         } else {
+            CloneFactory cloneFactory = new CloneFactory();
             blockShape = new BlockShape(this);
+            cloneblockShape = (BlockShape)cloneFactory.makeACopy(blockShape);
         }
 
         if (!isLoading) {

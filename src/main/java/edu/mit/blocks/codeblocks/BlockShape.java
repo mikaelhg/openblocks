@@ -17,7 +17,7 @@ import edu.mit.blocks.codeblocks.rendering.BlockShapeUtil;
  * 
  * BlockShape does not know where it is in the world -- all coords are local.
  */
-public class BlockShape {
+public class BlockShape implements CloneBlockInterface{
 
     /** Draws the individual connectors.  Shouldn't need more than one of these */
     protected static BlockConnectorShape BCS = new BlockConnectorShape();
@@ -90,6 +90,17 @@ public class BlockShape {
         setupProperties();
     }
 
+    public CloneBlockInterface makeCopy(){
+        BlockShape blockShape;
+        try {
+            blockShape = (BlockShape) super.clone();
+            return blockShape;
+        }
+        catch(Exception e){
+            return null;
+        }
+
+    }
     /**
      * Determine charactoristics of the block shape depending on properties of the block
      */
