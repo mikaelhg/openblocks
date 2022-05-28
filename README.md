@@ -1,12 +1,16 @@
 OpenBlocks refactoring branch
 =============================
 
-This is a fork of [MIT OpenBlocks](http://education.mit.edu/drupal/openblocks)
+This is a fork of [MIT OpenBlocks](https://web.mit.edu/mitstep/openblocks.html)
 (covered by the MIT license) for refactoring purposes.
 
-The principal objective of the fork is to make the code more amenable to inclusion to other projects.
+I left this repository open for many years, as a resource for others with an interest in the topic,
+even though my active use case became moot twelve years back.
+Now, however, as there are many better maintained forks, I am about to archive this repository.
 
-If you're building a web application, you might want to consider http://code.google.com/p/blockly/ as well.
+The principal objective of the fork was to make the code more amenable to inclusion to other projects.
+
+If you're building a web application, you might want to consider [Google Blockly](https://developers.google.com/blockly) instead.
 
 Getting Started:
 ------
